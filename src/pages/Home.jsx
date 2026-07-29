@@ -2,6 +2,8 @@ import DatePicker from "../components/DatePicker";
 
 import { useState } from "react";
 import { useNavigate } from "react-router";
+import { Search, MapPin, Calendar, Waves } from "lucide-react";
+
 function Home() {
   const navigate = useNavigate();
   const [from, setFrom] = useState("");
@@ -93,6 +95,42 @@ function Home() {
               Search Boat Rides
             </button>
           </form>
+        </div>
+      </div>
+      
+      {/* How It Works */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
+          How Brodić Works
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Search className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-900">1. Search</h3>
+            <p className="text-gray-600">
+              Find boat rides between Croatian coastal cities and islands
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Calendar className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-900">2. Book</h3>
+            <p className="text-gray-600">
+              Choose your captain and reserve your seat instantly
+            </p>
+          </div>
+          <div className="text-center">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+              <Waves className="w-8 h-8 text-blue-600" />
+            </div>
+            <h3 className="text-xl font-semibold mb-2 text-gray-900">3. Travel</h3>
+            <p className="text-gray-600">
+              Enjoy the ride along the beautiful Adriatic coast
+            </p>
+          </div>
         </div>
       </div>
     </>
