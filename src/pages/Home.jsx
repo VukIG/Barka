@@ -5,11 +5,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Search, MapPin, Calendar, Waves } from "lucide-react";
 import { croatianLocations } from "../data/mockData";
+import { format } from "date-fns";
 
 function Home() {
     const navigate = useNavigate();
     const [date, setDate] = useState(undefined);
-
+    const [error, setError] = useState("");
     const [openDropdown, setOpenDropdown] = useState(null); // "from" | "to" | null
     const [from, setFrom] = useState("");
     const [to, setTo] = useState("");
@@ -17,7 +18,15 @@ function Home() {
 
     const handleSearch = (e) => {
         e.preventDefault();
+        if (!from || !to || !date) {
+            setError("Please select a departure, destination and date.");
+            return;
+        }
+        setError("");
+        const dateStr = format(date, "yyyy-MM-dd");
+        navigate(`/search?from=${from}&to=${to}&date=${dateStr}`);
     };
+
 
     return(
         <>
@@ -75,14 +84,16 @@ function Home() {
                     Date
                     </label>
                     <DatePicker
-                    selected={date}
-                    onSelect={setDate}
-                    placeholder="Select date"
-                    minDate={new Date()}
+                        selected={date}
+                        onSelect={setDate}
+                        placeholder="Select date"
+                        minDate={new Date()}
                     />
                 </div>
                 </div>
-
+                {error && (
+                    <p className="text-red-600 text-sm text-center mb-3">{error}</p>
+                )}
                 <button
                 type="submit"
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
