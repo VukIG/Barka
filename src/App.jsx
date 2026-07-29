@@ -1,14 +1,22 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import { BrowserRouter, Routes, Route } from "react-router";
 
-function App() {
-  const [count, setCount] = useState(0)
+import { Home } from "./pages/Home";
+import { SearchResults } from "./pages/SearchResults";
+import { TripDetails } from "./pages/TripDetails";
+import { OfferRide } from "./pages/OfferRide";
+import { Profile } from "./pages/Profile";
 
+
+export default function App() {
   return (
-    <div className='flex bold m-10 text-green-600 font-bold text-4xl justify-center align-middle h-full'>SIVKA</div>
-  )
+    <BrowserRouter>
+      <Routes>
+          <Route index element={<Home />} />
+          <Route path="search" element={<SearchResults />} />
+          <Route path="trip/:id" element={<TripDetails />} />
+          <Route path="offer" element={<OfferRide />} />
+          <Route path="profile/:id" element={<Profile />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App
