@@ -2,7 +2,7 @@ import TripCard from "../components/TripCard"
 
 import { useState, useMemo } from "react";
 import { useSearchParams, useNavigate } from "react-router";
-import { Calendar, Filter } from "lucide-react";
+import { Calendar, Filter, Anchor } from "lucide-react";
 import { mockTrips, boatTypes } from "../data/mockData";
 
 function SearchResults() {
