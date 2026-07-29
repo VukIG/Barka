@@ -1,6 +1,7 @@
+import DatePicker from "../components/DatePicker";
+
 import { useState } from "react";
 import { useNavigate } from "react-router";
-
 function Home() {
   const navigate = useNavigate();
   const [from, setFrom] = useState("");
@@ -33,11 +34,13 @@ function Home() {
             Share boat rides along the stunning Croatian coast. Save money, meet people, and explore the Adriatic.
           </p>
 
+          {/* Search Form */}
           <form
             onSubmit={handleSearch}
             className="bg-white rounded-2xl shadow-2xl p-6 md:p-8 w-full max-w-4xl"
           >
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+              {/* From */}
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   From
@@ -53,6 +56,7 @@ function Home() {
                 </select>
               </div>
 
+              {/* To */}
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   To
@@ -68,11 +72,17 @@ function Home() {
                 </select>
               </div>
 
+              {/* Date */}
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Date
                 </label>
-                
+                <DatePicker
+                  selected={date}
+                  onSelect={setDate}
+                  placeholder="Select date"
+                  minDate={new Date()}
+                />
               </div>
             </div>
 
