@@ -6,16 +6,19 @@ import TripDetails from "./pages/TripDetails";
 import OfferRide from "./pages/OfferRide";
 import Profile from "./pages/Profile";
 
+import Layout  from "./components/Layout";
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-          <Route path="/" index element={<Home />} />
+      <Routes >
+         <Route element={<Layout />}>
+          <Route index element={<Home />} />
           <Route path="search" element={<SearchResults />} />
           <Route path="trip/:id" element={<TripDetails />} />
           <Route path="offer" element={<OfferRide />} />
           <Route path="profile/:id" element={<Profile />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );
