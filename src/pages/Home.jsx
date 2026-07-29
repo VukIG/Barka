@@ -1,5 +1,5 @@
+import RouteCard from "../components/RouteCard";
 import DatePicker from "../components/DatePicker";
-
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Search, MapPin, Calendar, Waves } from "lucide-react";
@@ -133,6 +133,52 @@ function Home() {
           </div>
         </div>
       </div>
+
+      {/* Popular Routes */}
+      <div className="bg-gray-50 py-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
+            Popular Routes
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <RouteCard
+              image="https://images.unsplash.com/photo-1768118603672-c5759fe08d1f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxkdWJyb3ZuaWslMjBjcm9hdGlhJTIwY29hc3RhbCUyMHZpZXd8ZW58MXx8fHwxNzc0NTA1NjE2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+              from="Split"
+              to="Hvar"
+              price="from €35"
+            />
+            <RouteCard
+              image="https://images.unsplash.com/photo-1612443091566-f90ed3ded0c0?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzYWlsaW5nJTIweWFjaHQlMjBtZWRpdGVycmFuZWFufGVufDF8fHx8MTc3NDU5MjE2NXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+              from="Dubrovnik"
+              to="Korčula"
+              price="from €45"
+            />
+            <RouteCard
+              image="https://images.unsplash.com/photo-1612468399191-34e535bbefbd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGxpdCUyMGNyb2F0aWElMjBoYXJib3J8ZW58MXx8fHwxNzc0NjE2NjA2fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
+              from="Zadar"
+              to="Pag"
+              price="from €25"
+            />
+          </div>
+        </div>
+      </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+            <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-12 text-center text-white shadow-xl">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Own a boat? Start earning today!
+            </h2>
+            <p className="text-xl mb-8 text-blue-100">
+                Share your boat trips and connect with passengers along the coast
+            </p>
+            <button
+                onClick={() => navigate("/offer")}
+                className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl"
+            >
+                Offer a Ride
+            </button>
+            </div>
+        </div>
     </>
   )
 }
