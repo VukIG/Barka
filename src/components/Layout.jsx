@@ -18,7 +18,7 @@ function Layout() {
               </div>
               <div>
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-                  Brodić
+                  Barka
                 </span>
                 <div className="text-xs text-gray-500">Boat Sharing Croatia</div>
               </div>
@@ -103,7 +103,7 @@ function Layout() {
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 p-2 rounded-lg">
                   <Anchor className="w-5 h-5 text-white" />
                 </div>
-                <span className="font-bold text-blue-600">Brodić</span>
+                <span className="font-bold text-blue-600">Barka</span>
               </div>
               <p className="text-sm text-gray-600">
                 Connecting captains and passengers across the beautiful Croatian coast.
@@ -135,7 +135,7 @@ function Layout() {
             </div>
           </div>
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-500">
-            © 2026 Brodić. All rights reserved.
+            © 2026 Barka. All rights reserved.
           </div>
         </div>
       </footer>
