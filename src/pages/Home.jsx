@@ -3,6 +3,7 @@ import DatePicker from "../components/DatePicker";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Search, MapPin, Calendar, Waves } from "lucide-react";
+import { croatianLocations } from "../data/mockData";
 
 function Home() {
   const navigate = useNavigate();
@@ -54,7 +55,11 @@ function Home() {
                   required
                 >
                   <option value="">Select departure</option>
-                  
+                  {croatianLocations.map((location) => (
+                    <option key={location} value={location}>
+                      {location}
+                    </option>
+                  ))}
                 </select>
               </div>
 
@@ -70,7 +75,11 @@ function Home() {
                   required
                 >
                   <option value="">Select destination</option>
-                  
+                  {croatianLocations.map((location) => (
+                    <option key={location} value={location}>
+                      {location}
+                    </option>
+                  ))}
                 </select>
               </div>
 
