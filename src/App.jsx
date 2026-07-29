@@ -5,7 +5,7 @@ import SearchResults from "./pages/SearchResults";
 import TripDetails from "./pages/TripDetails";
 import OfferRide from "./pages/OfferRide";
 import Profile from "./pages/Profile";
-
+import AuthPage from "./pages/AuthPage"
 import Layout  from "./components/Layout";
 
 export default function App() {
@@ -17,6 +17,7 @@ export default function App() {
           <Route path="search" element={<SearchResults />} />
           <Route path="trip/:id" element={<TripDetails />} />
           <Route path="offer" element={<OfferRide />} />
+          <Route path="auth" element={<AuthPage />} />
           <Route path="profile/:id" element={<Profile />} />
         </Route>
       </Routes>
