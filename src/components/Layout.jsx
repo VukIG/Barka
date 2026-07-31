@@ -20,21 +20,11 @@ function Layout() {
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   Barka
                 </span>
-                <div className="text-xs text-gray-500">Boat Sharing Croatia</div>
+                <div className="text-xs text-gray-500">Boat Sharing Adriatic</div>
               </div>
             </Link>
 
             <div className="hidden md:flex items-center gap-6">
-              <Link
-                to="/search"
-                className={`text-sm transition-colors ${
-                  location.pathname === "/search"
-                    ? "text-blue-600 font-medium"
-                    : "text-gray-600 hover:text-blue-600"
-                }`}
-              >
-                Find a Ride
-              </Link>
               <Link
                 to="/offer"
                 className={`text-sm transition-colors ${
@@ -106,7 +96,7 @@ function Layout() {
                 <span className="font-bold text-blue-600">Barka</span>
               </div>
               <p className="text-sm text-gray-600">
-                Connecting captains and passengers across the beautiful Croatian coast.
+                Connecting captains and passengers across the beautiful Adriatic coast.
               </p>
             </div>
             <div>
