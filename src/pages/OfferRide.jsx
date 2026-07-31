@@ -4,7 +4,7 @@ import { MapPin, Calendar, Clock, Euro, Anchor, Users, Plus, X } from "lucide-re
 import { croatianLocations, boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 
-export function OfferRide() {
+function OfferRide() {
   const navigate = useNavigate();
   const [amenities, setAmenities] = useState([]);
   const [newAmenity, setNewAmenity] = useState("");
@@ -24,10 +24,22 @@ export function OfferRide() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // TODO: hook up to backend later
     console.log({ formData, amenities, selectedDate });
     navigate("/");
   };
+
+  const addAmenity = () => {
+    if (newAmenity.trim() && !amenities.includes(newAmenity.trim())) {
+      setAmenities([...amenities, newAmenity.trim()]);
+      setNewAmenity("");
+    }
+  };
+
+  const removeAmenity = (amenity) => {
+    setAmenities(amenities.filter((a) => a !== amenity));
+  };
+
+  const commonAmenities = ["WiFi", "Snacks", "Drinks", "Bathroom", "Life Jackets"];
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -37,8 +49,8 @@ export function OfferRide() {
         <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow p-6 space-y-6">
           {/* Route */}
           <div>
-            <h2 className="text-lg font-semibold mb-3">Route</h2>
-            <div className="grid grid-cols-2 gap-4">
+            <h2 className="text-lg font-semibold mb-3">Route & Locations</h2>
+            <div className="grid grid-cols-2 gap-4 mb-4">
               <select
                 value={formData.from}
                 onChange={(e) => setFormData({ ...formData, from: e.target.value })}
@@ -63,26 +75,103 @@ export function OfferRide() {
                 ))}
               </select>
             </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <input
+                type="text"
+                placeholder="Pickup Point (e.g., Split Harbor)"
+                value={formData.pickupPoint}
+                onChange={(e) => setFormData({ ...formData, pickupPoint: e.target.value })}
+                className="border p-2 rounded"
+                required
+              />
+              <input
+                type="text"
+                placeholder="Dropoff Point (e.g., Hvar Marina)"
+                value={formData.dropoffPoint}
+                onChange={(e) => setFormData({ ...formData, dropoffPoint: e.target.value })}
+                className="border p-2 rounded"
+                required
+              />
+            </div>
           </div>
 
-          {/* Details */}
+          {/* Boat Details */}
+          <div>
+            <h2 className="text-lg font-semibold mb-3">Boat Details</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <select
+                value={formData.boatType}
+                onChange={(e) => setFormData({ ...formData, boatType: e.target.value })}
+                className="border p-2 rounded"
+                required
+              >
+                <option value="">Select boat type</option>
+                {boatTypes.filter((t) => t !== "All Boat Types").map((type) => (
+                  <option key={type} value={type}>{type}</option>
+                ))}
+              </select>
+              <input
+                type="number"
+                placeholder="Total Seats"
+                min="1"
+                max="20"
+                value={formData.totalSeats}
+                onChange={(e) => setFormData({ ...formData, totalSeats: e.target.value })}
+                className="border p-2 rounded"
+                required
+              />
+            </div>
+          </div>
+
+          {/* Amenities Section */}
+          <div>
+            <h2 className="text-lg font-semibold mb-3">Amenities</h2>
+            <div className="flex flex-wrap gap-2 mb-3">
+              {commonAmenities.map((amenity) => (
+                <button
+                  key={amenity}
+                  type="button"
+                  onClick={() => !amenities.includes(amenity) && setAmenities([...amenities, amenity])}
+                  className={`px-3 py-1 rounded text-sm ${
+                    amenities.includes(amenity) ? "bg-blue-200 text-blue-800" : "bg-gray-200"
+                  }`}
+                >
+                  {amenity}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-2 mb-2">
+              <input
+                type="text"
+                placeholder="Custom amenity"
+                value={newAmenity}
+                onChange={(e) => setNewAmenity(e.target.value)}
+                className="border p-2 rounded flex-1"
+              />
+              <button type="button" onClick={addAmenity} className="bg-gray-800 text-white px-4 py-2 rounded">
+                Add
+              </button>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {amenities.map((a) => (
+                <span key={a} className="bg-blue-100 text-blue-700 px-2 py-1 rounded text-sm flex items-center gap-1">
+                  {a} <X className="w-3 h-3 cursor-pointer" onClick={() => removeAmenity(a)} />
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Pricing & Basics */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium mb-1">Price (€)</label>
+              <label className="block text-sm font-medium mb-1">Price per person (€)</label>
               <input
                 type="number"
                 value={formData.price}
                 onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                className="border p-2 rounded w-full"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">Seats</label>
-              <input
-                type="number"
-                value={formData.totalSeats}
-                onChange={(e) => setFormData({ ...formData, totalSeats: e.target.value })}
                 className="border p-2 rounded w-full"
                 required
               />
