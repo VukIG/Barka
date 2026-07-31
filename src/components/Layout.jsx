@@ -20,7 +20,7 @@ function Layout() {
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   Barka
                 </span>
-                <div className="text-xs text-gray-500">Boat Sharing Croatia</div>
+                <div className="text-xs text-gray-500">Boat Sharing Adriatic</div>
               </div>
             </Link>
 
@@ -96,7 +96,7 @@ function Layout() {
                 <span className="font-bold text-blue-600">Barka</span>
               </div>
               <p className="text-sm text-gray-600">
-                Connecting captains and passengers across the beautiful Croatian coast.
+                Connecting captains and passengers across the beautiful Adriatic coast.
               </p>
             </div>
             <div>
