@@ -26,16 +26,6 @@ function Layout() {
 
             <div className="hidden md:flex items-center gap-6">
               <Link
-                to="/search"
-                className={`text-sm transition-colors ${
-                  location.pathname === "/search"
-                    ? "text-blue-600 font-medium"
-                    : "text-gray-600 hover:text-blue-600"
-                }`}
-              >
-                Find a Ride
-              </Link>
-              <Link
                 to="/offer"
                 className={`text-sm transition-colors ${
                   location.pathname === "/offer"
