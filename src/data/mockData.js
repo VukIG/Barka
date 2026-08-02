@@ -1,3 +1,4 @@
+import { Radar, Sparkles, Flame, ShieldCheck } from "lucide-react";
 
 export const croatianLocations = [
   "Dubrovnik",
@@ -202,3 +203,114 @@ export const reviews = [
     route: "Split → Brač",
   },
 ];
+
+// Real decimal-degree coordinates. Add/move a port here — the map re-projects automatically.
+export const traffic = [
+  { name: "Koper", longitude: 13.73, latitude: 45.55, traffic: "Srednji", boats: 8, color: "#53d8fb" },
+  { name: "Pula", longitude: 13.85, latitude: 44.87, traffic: "Srednji", boats: 14, color: "#53d8fb" },
+  { name: "Rijeka", longitude: 14.44, latitude: 45.33, traffic: "Visok", boats: 22, color: "#ffbf69" },
+  { name: "Zadar", longitude: 15.23, latitude: 44.12, traffic: "Visok", boats: 19, color: "#ffbf69" },
+  { name: "Šibenik", longitude: 15.90, latitude: 43.73, traffic: "Srednji", boats: 11, color: "#53d8fb" },
+  { name: "Split", longitude: 16.44, latitude: 43.51, traffic: "Visok", boats: 39, color: "#ffbf69" },
+  { name: "Hvar", longitude: 16.44, latitude: 43.17, traffic: "Vrhunac", boats: 31, color: "#ff735c" },
+  { name: "Korčula", longitude: 17.13, latitude: 42.96, traffic: "Visok", boats: 24, color: "#ffbf69" },
+  { name: "Dubrovnik", longitude: 18.09, latitude: 42.65, traffic: "Visok", boats: 17, color: "#ffbf69" },
+  { name: "Kotor", longitude: 18.77, latitude: 42.42, traffic: "Srednji", boats: 9, color: "#53d8fb" },
+];
+
+export const eastAdriaticRoutes = [
+  { id: "koper-rijeka", from: "Koper", to: "Rijeka", intensity: "low" },
+  { id: "pula-zadar", from: "Pula", to: "Zadar", intensity: "medium" },
+  { id: "rijeka-zadar", from: "Rijeka", to: "Zadar", intensity: "medium" },
+  { id: "zadar-sibenik", from: "Zadar", to: "Šibenik", intensity: "medium" },
+  { id: "sibenik-split", from: "Šibenik", to: "Split", intensity: "medium" },
+  { id: "split-hvar", from: "Split", to: "Hvar", intensity: "high" },
+  { id: "split-korcula", from: "Split", to: "Korčula", intensity: "high" },
+  { id: "hvar-korcula", from: "Hvar", to: "Korčula", intensity: "high" },
+  { id: "korcula-dubrovnik", from: "Korčula", to: "Dubrovnik", intensity: "medium" },
+  { id: "dubrovnik-kotor", from: "Dubrovnik", to: "Kotor", intensity: "low" },
+];
+
+export const fleet = [
+  { name: "Jadran 7", type: "Speedboat", route: "Split → Hvar", state: "Na ruti", eta: "12 min", tone: "bg-[#bff2ed] text-[#0d5a5b]" },
+  { name: "Mare Blu", type: "Katamaran", route: "Trogir → Brač", state: "Ukrcaj", eta: "27 min", tone: "bg-[#fff0be] text-[#72510b]" },
+  { name: "Val 04", type: "Gliser", route: "Hvar → Korčula", state: "Na ruti", eta: "41 min", tone: "bg-[#bff2ed] text-[#0d5a5b]" },
+];
+
+export const demandByRange = {
+  Danas: [
+    { time: "07h", actual: 38, forecast: 34 }, { time: "09h", actual: 71, forecast: 62 }, { time: "11h", actual: 138, forecast: 120 },
+    { time: "13h", actual: 164, forecast: 158 }, { time: "15h", actual: 152, forecast: 169 }, { time: "17h", actual: 186, forecast: 194 },
+    { time: "19h", actual: 128, forecast: 148 }, { time: "21h", actual: 72, forecast: 76 },
+  ],
+  "7 dana": [
+    { time: "Pon", actual: 740, forecast: 710 }, { time: "Uto", actual: 882, forecast: 830 }, { time: "Sri", actual: 1041, forecast: 1010 },
+    { time: "Čet", actual: 1198, forecast: 1160 }, { time: "Pet", actual: 1310, forecast: 1360 }, { time: "Sub", actual: 1540, forecast: 1570 }, { time: "Ned", actual: 1280, forecast: 1300 },
+  ],
+  "30 dana": [
+    { time: "1. tjedan", actual: 5400, forecast: 5100 }, { time: "2. tjedan", actual: 7120, forecast: 6900 }, { time: "3. tjedan", actual: 8760, forecast: 8500 }, { time: "4. tjedan", actual: 9840, forecast: 10100 },
+  ],
+};
+
+export const arrivals = [
+  { place: "Dubrovnik", value: 91, guests: "15.1k", spend: 58 },
+  { place: "Split", value: 84, guests: "12.4k", spend: 46 },
+  { place: "Hvar", value: 72, guests: "8.9k", spend: 61 },
+  { place: "Korčula", value: 46, guests: "4.3k", spend: 39 },
+  { place: "Vis", value: 33, guests: "2.8k", spend: 44 },
+];
+
+// Brand names that scroll across the "Trusted by" strip.
+const PARTNERS = [
+  "OŽUJSKO",
+  "VALAMAR",
+  "CROATIA AIRLINES",
+  "MAISTRA",
+  "HRVATSKI TELEKOM",
+  "JAMNICA",
+  "MASTERCARD",
+  "UBER",
+];
+
+
+// Words that cycle in the big hero headline (Teads-style).
+export const HERO_WORDS = ["Signals", "Predictions", "Reach", "Results"];
+
+// English labels for the chart range buttons. The KEYS ("Danas", "Tjedan")
+// must stay the same because they come from the demandByRange data object.
+export const RANGE_LABELS = { Danas: "Today", Tjedan: "Week" };
+
+// English labels for the traffic level, which comes from mockData.
+export const TRAFFIC_LABELS = { Nizak: "low", Srednji: "moderate", Visok: "high", Vrhunac: "peak" };
+
+// The four things a company actually buys ("what you get").
+export const PILLARS = [
+  {
+    icon: Radar,
+    title: "Live traffic signals",
+    text: "Arrivals, routes, and port occupancy in real time, straight from boat traffic.",
+  },
+  {
+    icon: Sparkles,
+    title: "Predictive model",
+    text: "ML predicts not just how many tourists arrive, but what type they are and where they go.",
+  },
+  {
+    icon: Flame,
+    title: "Demand heatmaps",
+    text: "See where the coast is filling up and plan campaigns by exact location.",
+  },
+  {
+    icon: ShieldCheck,
+    title: "GDPR-safe data",
+    text: "Anonymized and aggregated, hosted in the EEA, ready for partners.",
+  },
+];
+
+// Dark tooltip used by both charts so they match the theme.
+export const darkTooltip = {
+  backgroundColor: "#0c2834",
+  borderColor: "#278c91",
+  color: "#fff",
+  borderRadius: "8px",
+};

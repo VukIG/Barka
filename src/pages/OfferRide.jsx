@@ -5,7 +5,7 @@ import { croatianLocations, boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 import { format } from "date-fns";
 
-function OfferRide() {
+function OfferRide(){
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
   const [amenities, setAmenities] = useState([]);

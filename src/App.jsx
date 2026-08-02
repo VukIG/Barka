@@ -6,6 +6,7 @@ import TripDetails from "./pages/TripDetails";
 import OfferRide from "./pages/OfferRide";
 import Profile from "./pages/Profile";
 import AuthPage from "./pages/AuthPage"
+import BuissnesDashboard from "./pages/BuissnessDashboard";
 import Layout  from "./components/Layout";
 
 export default function App() {
@@ -18,6 +19,7 @@ export default function App() {
           <Route path="trip/:id" element={<TripDetails />} />
           <Route path="offer" element={<OfferRide />} />
           <Route path="auth" element={<AuthPage />} />
+          <Route path="buissnes" element={<BuissnesDashboard />} />
           <Route path="profile/:id" element={<Profile />} />
         </Route>
       </Routes>
