@@ -3,7 +3,7 @@ import DatePicker from "../components/DatePicker";
 import LocationSelect from "../components/LocationSelect"
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { Search, MapPin, Calendar, Waves } from "lucide-react";
+import { Search, MapPin, Calendar, Waves, Anchor, TrendingUp } from "lucide-react";
 import { croatianLocations } from "../data/mockData";
 import { format } from "date-fns";
 
@@ -47,7 +47,7 @@ function Home() {
                 </h1>
             </div>
             <p className="text-xl md:text-2xl text-blue-100 mb-12 max-w-2xl">
-                Share boat rides along the stunning Croatian coast. Save money, meet people, and explore the Adriatic.
+                Share boat rides along the stunning Adriatic coast. Save money, meet people, and explore the Adriatic.
             </p>
 
             {/* Search Form */}
@@ -116,7 +116,7 @@ function Home() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-gray-900">1. Search</h3>
                 <p className="text-gray-600">
-                Find boat rides between Croatian coastal cities and islands
+                Find boat rides between Adriatic coastal cities and islands
                 </p>
             </div>
             <div className="text-center">
@@ -169,20 +169,47 @@ function Home() {
             </div>
         </div>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-                <div className="bg-gradient-to-r from-blue-600 to-blue-500 rounded-2xl p-12 text-center text-white shadow-xl">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
-                    Own a boat? Start earning today!
-                </h2>
-                <p className="text-xl mb-8 text-blue-100">
-                    Share your boat trips and connect with passengers along the coast
-                </p>
-                <button
-                    onClick={() => navigate("/offer")}
-                    className="bg-white text-blue-600 px-8 py-4 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-lg hover:shadow-xl"
-                >
-                    Offer a Ride
-                </button>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+
+                    {/* Boat owners */}
+                    <div className="group bg-gradient-to-br from-blue-600 to-blue-500 rounded-2xl p-8 md:p-10 text-center text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-5">
+                        <Anchor className="w-7 h-7" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                        Own a boat? Start earning today!
+                    </h2>
+                    <p className="text-base md:text-lg mb-8 text-blue-100">
+                        Share your boat trips and connect with passengers along the coast
+                    </p>
+                    <button
+                        onClick={() => navigate("/offer")}
+                        className="bg-white text-blue-600 px-8 py-3.5 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-lg"
+                    >
+                        Offer a Ride
+                    </button>
+                    </div>
+
+                    {/* Businesses */}
+                    <div className="group bg-gradient-to-br from-cyan-600 to-blue-600 rounded-2xl p-8 md:p-10 text-center text-white shadow-xl hover:shadow-2xl hover:-translate-y-1 transition-all duration-300">
+                    <div className="w-14 h-14 bg-white/20 rounded-full flex items-center justify-center mx-auto mb-5">
+                        <TrendingUp className="w-7 h-7" />
+                    </div>
+                    <h2 className="text-2xl md:text-3xl font-bold mb-3">
+                        Own a business? Boost your revenue!
+                    </h2>
+                    <p className="text-base md:text-lg mb-8 text-blue-100">
+                        Use insights into current boat traffic to predict when your customers will arrive
+                    </p>
+                    <button
+                        onClick={() => navigate("/buissnes")}
+                        className="bg-white text-blue-600 px-8 py-3.5 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-lg"
+                    >
+                        Get data access
+                    </button>
+                    </div>
+
                 </div>
             </div>
         </>

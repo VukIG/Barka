@@ -36,11 +36,18 @@ function Layout() {
                 Offer a Ride
               </Link>
               <Link
+                to="/buissnes"
+                className="px-4 py-2  rounded-lg transition-colors text-sm font-medium"
+              >
+                For buisnesses
+              </Link>
+              <Link
                 to="/auth"
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
               >
                 Sign In
               </Link>
+              
             </div>
 
             <button
@@ -85,7 +92,7 @@ function Layout() {
         <Outlet />
       </main>
 
-      <footer className="bg-gray-50 border-t border-gray-200 mt-20">
+      <footer className="bg-gray-50 border-t border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
