@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { createrideItem, filteredRides } from "../db/database.js";
+import { createRideItem, filteredRides } from "../db/database.js";
 
 const router = Router();
 
@@ -9,22 +9,44 @@ const addrideItem = async (
   next: NextFunction
 ) => {
   try {
-    const { title, slug, text } = req.body as {
-      title?: string;
-      slug?: string;
-      text?: string;
+    const {
+      boatType,
+      description,
+      dropoffPoint,
+      from,
+      pickupPoint,
+      price,
+      time,
+      to,
+      totalSeats
+    } = req.body as {
+      boatType: string;
+      description: string;
+      dropoffPoint: string;
+      from: string;
+      pickupPoint: string;
+      price: string;
+      time: string;
+      to: string;
+      totalSeats: string;
     };
 
-    if (!title || !slug || !text) {
-      res.status(400).json({
-        success: false,
-        message: "Title, slug and text are required.",
-      });
-
+    if (!pickupPoint || !dropoffPoint || !price || !time || !to) {
+      res.status(400).json({ success: false, message: "Missing required ride fields." });
       return;
     }
 
-    const queryResult = await createrideItem(title, slug, text);
+    const queryResult = await createRideItem(
+      42,                 
+      1,                   
+      pickupPoint,         
+      dropoffPoint,        
+      price,     
+      time,         
+      to,                
+      description,
+      Number(totalSeats) 
+    ); 
 
     if (queryResult.affectedRows === 1) {
       res.status(201).json({

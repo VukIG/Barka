@@ -24,13 +24,25 @@ function OfferRide(){
     description: "",
   });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+
+   async function handleSubmit (e) {
+    const API_URL = "http://localhost:5000";
+    const response = await fetch(`${API_URL}/rides/post-ride`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(formData)
+    });
+    if (!response.ok) {
+      throw new Error(`HTTP errorstatus: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result);
     setShowSuccess(true);
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
-  };
+
+  }
 
   const addAmenity = () => {
     if (newAmenity.trim() && !amenities.includes(newAmenity.trim())) {
