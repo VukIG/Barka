@@ -5,8 +5,10 @@ function RouteCard({ image, from, to, price }) {
   const navigate = useNavigate();
   
   const handleClick = () => {
-    navigate(`/search?from=${from}&to=${to}&date=`);
+    const today = new Date().toISOString().split('T')[0]; 
+    navigate(`/search?from=${from}&to=${to}&date=${today}`);
   };
+  
   
   return (
     <div 

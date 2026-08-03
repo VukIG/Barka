@@ -1,21 +1,7 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { allRide, createrideItem, filteredRides } from "../db/database.js";
+import { createrideItem, filteredRides } from "../db/database.js";
 
 const router = Router();
-
-const getAllrides = async (
-  _req: Request,
-  res: Response,
-  next: NextFunction
-) => {
-  try {
-    const queryResult = await allRide();
-
-    res.json(queryResult);
-  } catch (error) {
-    next(error);
-  }
-};
 
 const addrideItem = async (
   req: Request,

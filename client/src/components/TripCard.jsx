@@ -10,6 +10,7 @@ function TripCard({ trip }) {
       minute: "2-digit",
     });
 
+    
   const departure = new Date(trip.date);
   const arrival = new Date(trip.expected_arrival);
   const durationHours = ((arrival - departure) / (1000 * 60 * 60)).toFixed(1);
@@ -31,6 +32,11 @@ function TripCard({ trip }) {
             <div>
               <h3 className="font-semibold text-gray-900">
                 {trip.first_name} {trip.last_name}
+              </h3>
+              <h3>
+                {
+                new Date(trip.date).toLocaleDateString("en-GB", {day: "numeric",month: "long", year:"numeric"})
+                }
               </h3>
               {/* Rating comes from the review table — not joined yet, placeholder for now */}
               <div className="flex items-center gap-1 text-sm text-gray-400">
