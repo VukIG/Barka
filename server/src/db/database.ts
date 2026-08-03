@@ -10,13 +10,18 @@ const pool = mysql.createPool({
   queueLimit: 0,
 });
 
-export interface rideItem extends RowDataPacket {
+export interface RideItem extends RowDataPacket {
+  first_name: string,
+  last_name: string,
   id: number;
-  title: string;
-  slug: string;
-  text: string;
+  ticket_cost: number;
+  date: string;
+  expected_arrival: string;
+  fromPort: string;
+  toPort: string;
+  boatType: string;
+  totalSeats: number;
 }
-
 export interface UserLogin extends RowDataPacket {
   id: number;
   user_name: string;
@@ -24,8 +29,8 @@ export interface UserLogin extends RowDataPacket {
   user_password: string;
 }
 
-export const allRide = async (): Promise<rideItem[]> => {
-  const [rows] = await pool.query<rideItem[]>(`
+export const allRide = async (): Promise<RideItem[]> => {
+  const [rows] = await pool.query<RideItem[]>(`
     SELECT
       *
     FROM ride
@@ -37,26 +42,31 @@ export const allRide = async (): Promise<rideItem[]> => {
   return rows;
 };
 
-export const filteredRides = async (): Promise<rideItem[]> => {
-  const [rows] = await pool.query<rideItem[]>(`
-    SELECT
-      *
-    FROM ride
-    JOIN port  AS start_port ON ride.start_port_id = start_port.id
-    JOIN port  AS end_port   ON ride.end_port_id   = end_port.id
-    JOIN boats               ON ride.boat_id       = boats.id
-    JOIN user  AS owner      ON ride.owner_id      = owner.id
-    WHERE 
+export const filteredRides = async (
+  from: string,
+  to: string,
+  date: string
+): Promise<RideItem[]> => {
+  const [rows] = await pool.query<RideItem[]>(
     `
-  )
-}
-
-export const onerideItem = async (id: string): Promise<rideItem[]> => {
-  const [rows] = await pool.query<rideItem[]>(
-    "SELECT * FROM ride WHERE id = ?",
-    [id]
+    SELECT ride.id, ride.ticket_cost, ride.date, ride.expected_arrival,
+           start_port.name AS fromPort,
+           end_port.name AS toPort,
+           boats.type AS boatType,
+           boats.seats AS totalSeats,
+           user.first_name,
+           user.last_name
+    FROM ride
+    JOIN port AS start_port ON ride.start_port_id = start_port.id
+    JOIN port AS end_port ON ride.end_port_id = end_port.id
+    JOIN boats ON ride.boat_id = boats.id
+    JOIN user ON ride.owner_id = user.id
+    WHERE start_port.name = ?
+      AND end_port.name = ?
+      AND DATE(ride.date) > ?
+    `,
+    [from, to, date]
   );
-
   return rows;
 };
 

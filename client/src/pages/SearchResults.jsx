@@ -1,7 +1,6 @@
 import TripCard from "../components/TripCard"
-
-import { useState, useMemo } from "react";
-import { useSearchParams, useNavigate } from "react-router";
+import { useState, useMemo, useEffect } from "react";
+import { useSearchParams, useNavigate, data } from "react-router";
 import { Calendar, Filter, Anchor } from "lucide-react";
 import { mockTrips, boatTypes } from "../data/mockData";
 
@@ -11,23 +10,22 @@ function SearchResults() {
   const from = searchParams.get("from") || "";
   const to = searchParams.get("to") || "";
   const date = searchParams.get("date") || "";
-
   const [selectedBoatType, setSelectedBoatType] = useState("All Boat Types");
   const [maxPrice, setMaxPrice] = useState(100);
   const [minSeats, setMinSeats] = useState(1);
+  const [filteredTrips, setFilteredTrips] = useState([])
+  const API_URL = "http://localhost:5000";
 
-  const filteredTrips = useMemo(() => {
-    return mockTrips.filter((trip) => {
-      const matchesRoute = trip.from === from && trip.to === to;
-      const matchesDate = !date || trip.date === date;
-      const matchesBoatType =
-        selectedBoatType === "All Boat Types" || trip.boatType === selectedBoatType;
-      const matchesPrice = trip.price <= maxPrice;
-      const matchesSeats = trip.seatsAvailable >= minSeats;
-
-      return matchesRoute && matchesDate && matchesBoatType && matchesPrice && matchesSeats;
-    });
-  }, [from, to, date, selectedBoatType, maxPrice, minSeats]);
+  const params = new URLSearchParams({ from, to, date });
+  useEffect(() => {
+    fetch(`${API_URL}/rides/search?${params}`)            
+      .then(response => response.json())   
+      .then(data => {
+        console.log(data)
+        setFilteredTrips(data);            
+      })
+      .catch(err => console.log("Error loading rides:", err));
+  }, [from,to,date]);
 
   return (
     <div className="min-h-screen bg-gray-50">
