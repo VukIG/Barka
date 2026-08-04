@@ -112,7 +112,7 @@ function SearchResults() {
 
           {/* Results */}
           <div className="lg:col-span-3 space-y-4">
-            {filteredTrips.length === 0 ? (
+            {filteredTrips.length === 0 || filteredTrips.success === false ? (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <Anchor className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">

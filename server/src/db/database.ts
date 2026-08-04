@@ -51,14 +51,43 @@ export const filteredRides = async (
   return rows;
 };
 
-export const createrideItem = async (
-  title: string,
-  slug: string,
-  text: string
+export const createRideItem = async (
+  ownerId: number,         
+  boatId: number,        
+  from: string,    
+  to: string,   
+  price: string,          
+  departure: string,     
+  arrival: string,        
+  description: string,
 ): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
-    "INSERT INTO ride (title, slug, text) VALUES (?, ?, ?)",
-    [title, slug, text]
+    `
+    INSERT INTO ride
+      (owner_id, boat_id, start_port_id, end_port_id, ticket_cost,
+       expected_arrival, \`date\`, description)
+    VALUES
+      (
+        ?,                                          -- owner_id
+        ?,                                          -- boat_id
+        (SELECT id FROM port WHERE name = ?),       -- start_port_id, looked up by name
+        (SELECT id FROM port WHERE name = ?),       -- end_port_id, looked up by name
+        ?,                                          -- ticket_cost
+        ?,                                          -- expected_arrival
+        ?,                                          -- date (departure)
+        ?                                           -- description
+      )
+    `,
+    [
+      42,
+      boatId,
+      from,          
+      to,         
+      Number(price),        
+      arrival,
+      departure,
+      description,
+    ]
   );
 
   return result;

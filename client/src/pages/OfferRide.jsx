@@ -1,11 +1,20 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
-import { MapPin, Calendar, Clock, Euro, Anchor, Users, Plus, X } from "lucide-react";
+import {
+  MapPin,
+  Calendar,
+  Clock,
+  Euro,
+  Anchor,
+  Users,
+  Plus,
+  X,
+} from "lucide-react";
 import { croatianLocations, boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 import { format } from "date-fns";
 
-function OfferRide(){
+function OfferRide() {
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
   const [amenities, setAmenities] = useState([]);
@@ -15,7 +24,9 @@ function OfferRide(){
   const [formData, setFormData] = useState({
     from: "",
     to: "",
-    time: "",
+    departureTime: "",
+    arrivalTime: "",
+    selectedDate: "",
     price: "",
     totalSeats: "",
     boatType: "",
@@ -24,13 +35,47 @@ function OfferRide(){
     description: "",
   });
 
-  const handleSubmit = (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
+    const API_URL = "http://localhost:5000";
+
+    if (!selectedDate) {
+      alert("Please pick a date.");
+      return;
+    }
+
+    const departureTime = `${format(selectedDate, "yyyy-MM-dd")} ${formData.departureTime}:00`;
+    const arrivalTime = `${format(selectedDate, "yyyy-MM-dd")} ${formData.arrivalTime}:00`;
+
+    const payload = {
+      boatType: formData.boatType,
+      description: formData.description,
+      from: formData.from,
+      to: formData.to,
+      price: formData.price,
+      departureTime: departureTime,
+      arrivalTime: arrivalTime
+    };
+
+    console.log("sending:", payload);
+
+    const response = await fetch(`${API_URL}/rides/add`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error status: ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log(result);
     setShowSuccess(true);
-    setTimeout(() => {
-      navigate("/");
-    }, 2000);
-  };
+    setTimeout(()=>{
+      navigate("/")
+    }, 3000)
+  }
 
   const addAmenity = () => {
     if (newAmenity.trim() && !amenities.includes(newAmenity.trim())) {
@@ -43,21 +88,35 @@ function OfferRide(){
     setAmenities(amenities.filter((a) => a !== amenity));
   };
 
-  const commonAmenities = ["WiFi", "Snacks", "Drinks", "Bathroom", "Life Jackets", "Waterproof Storage", "Music", "Sundeck"];
+  const commonAmenities = [
+    "WiFi",
+    "Snacks",
+    "Drinks",
+    "Bathroom",
+    "Life Jackets",
+    "Waterproof Storage",
+    "Music",
+    "Sundeck",
+  ];
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Offer a Boat Ride</h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+            Offer a Boat Ride
+          </h1>
           <p className="text-lg text-gray-600">
             Share your boat trip and earn money while connecting with passengers
           </p>
         </div>
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="bg-white rounded-lg shadow-md p-8">
+        <form
+          onSubmit={handleSubmit}
+          className="bg-white rounded-lg shadow-md p-8"
+        >
           {/* Route Information */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
@@ -71,7 +130,9 @@ function OfferRide(){
                 </label>
                 <select
                   value={formData.from}
-                  onChange={(e) => setFormData({ ...formData, from: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, from: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
@@ -89,7 +150,9 @@ function OfferRide(){
                 </label>
                 <select
                   value={formData.to}
-                  onChange={(e) => setFormData({ ...formData, to: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, to: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
@@ -108,7 +171,9 @@ function OfferRide(){
                 <input
                   type="text"
                   value={formData.pickupPoint}
-                  onChange={(e) => setFormData({ ...formData, pickupPoint: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, pickupPoint: e.target.value })
+                  }
                   placeholder="e.g., Split Harbor, Pier 5"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -121,7 +186,9 @@ function OfferRide(){
                 <input
                   type="text"
                   value={formData.dropoffPoint}
-                  onChange={(e) => setFormData({ ...formData, dropoffPoint: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, dropoffPoint: e.target.value })
+                  }
                   placeholder="e.g., Hvar Town Marina"
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
@@ -136,7 +203,9 @@ function OfferRide(){
               <Calendar className="w-5 h-5 text-blue-600" />
               Date & Time
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+            <div className="space-y-4">
+              {/* Date on its own row */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Date
@@ -148,17 +217,40 @@ function OfferRide(){
                   minDate={new Date()}
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Departure Time
-                </label>
-                <input
-                  type="time"
-                  value={formData.time}
-                  onChange={(e) => setFormData({ ...formData, time: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  required
-                />
+
+              {/* Two times: stacked on mobile, side by side on md+ */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Expected Departure Time
+                  </label>
+                  <input
+                    type="time"
+                    value={formData.departureTime}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        departureTime: e.target.value,
+                      })
+                    }
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Expected Arrival Time
+                  </label>
+                  <input
+                    type="time"
+                    value={formData.arrivalTime}
+                    onChange={(e) =>
+                      setFormData({ ...formData, arrivalTime: e.target.value })
+                    }
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    required
+                  />
+                </div>
               </div>
             </div>
           </div>
@@ -176,16 +268,20 @@ function OfferRide(){
                 </label>
                 <select
                   value={formData.boatType}
-                  onChange={(e) => setFormData({ ...formData, boatType: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, boatType: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
                   <option value="">Select boat type</option>
-                  {boatTypes.filter((t) => t !== "All Boat Types").map((type) => (
-                    <option key={type} value={type}>
-                      {type}
-                    </option>
-                  ))}
+                  {boatTypes
+                    .filter((t) => t !== "All Boat Types")
+                    .map((type) => (
+                      <option key={type} value={type}>
+                        {type}
+                      </option>
+                    ))}
                 </select>
               </div>
               <div>
@@ -197,7 +293,9 @@ function OfferRide(){
                   min="1"
                   max="20"
                   value={formData.totalSeats}
-                  onChange={(e) => setFormData({ ...formData, totalSeats: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, totalSeats: e.target.value })
+                  }
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
@@ -207,8 +305,10 @@ function OfferRide(){
 
           {/* Amenities */}
           <div className="mb-8">
-            <h2 className="text-xl font-semibold text-gray-900 mb-4">Amenities</h2>
-            
+            <h2 className="text-xl font-semibold text-gray-900 mb-4">
+              Amenities
+            </h2>
+
             {/* Quick Add Common Amenities */}
             <div className="mb-4">
               <p className="text-sm text-gray-600 mb-2">Quick add:</p>
@@ -241,7 +341,9 @@ function OfferRide(){
                 type="text"
                 value={newAmenity}
                 onChange={(e) => setNewAmenity(e.target.value)}
-                onKeyPress={(e) => e.key === "Enter" && (e.preventDefault(), addAmenity())}
+                onKeyPress={(e) =>
+                  e.key === "Enter" && (e.preventDefault(), addAmenity())
+                }
                 placeholder="Add custom amenity"
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
@@ -284,13 +386,17 @@ function OfferRide(){
               Price per Person
             </h2>
             <div className="relative">
-              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">€</span>
+              <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
+                €
+              </span>
               <input
                 type="number"
                 min="1"
                 step="0.01"
                 value={formData.price}
-                onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, price: e.target.value })
+                }
                 className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="0.00"
                 required
@@ -308,7 +414,9 @@ function OfferRide(){
             </h2>
             <textarea
               value={formData.description}
-              onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, description: e.target.value })
+              }
               rows={4}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
               placeholder="Tell passengers about your boat, experience, and what makes this trip special..."
@@ -357,7 +465,8 @@ function OfferRide(){
                 Ride Published!
               </h3>
               <p className="text-gray-600">
-                Your boat ride has been successfully listed. Passengers can now book your trip!
+                Your boat ride has been successfully listed. Passengers can now
+                book your trip!
               </p>
             </div>
           </div>

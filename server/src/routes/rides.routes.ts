@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { createrideItem, filteredRides } from "../db/database.js";
+import { createRideItem, filteredRides } from "../db/database.js";
 
 const router = Router();
 
@@ -9,36 +9,55 @@ const addrideItem = async (
   next: NextFunction
 ) => {
   try {
-    const { title, slug, text } = req.body as {
-      title?: string;
-      slug?: string;
-      text?: string;
+    const {
+      boatType,
+      description,
+      from,
+      to,
+      price,
+      departureTime,
+      arrivalTime,
+    } = req.body as {
+      boatType: string;
+      description: string;
+      from: string;
+      to: string;
+      price: string;
+      departureTime: string;
+      arrivalTime: string;
     };
 
-    if (!title || !slug || !text) {
+    if (!from || !to || !price || !departureTime || !arrivalTime) {
+      res.status(400).json({ success: false, message: "Missing required ride fields." });
+      return;
+    }
+
+    const DATETIME = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+    if (!DATETIME.test(departureTime) || !DATETIME.test(arrivalTime)) {
       res.status(400).json({
         success: false,
-        message: "Title, slug and text are required.",
+        message: "departureTime and arrivalTime must be 'YYYY-MM-DD HH:MM:SS'.",
       });
-
       return;
     }
 
-    const queryResult = await createrideItem(title, slug, text);
+    const queryResult = await createRideItem(
+      42,             // ownerId (dummy for now)
+      1,              // boatId  (dummy for now)
+      from,           // -> start_port_id 
+      to,             // -> end_port_id
+      price,          // -> ticket_cost
+      departureTime,  // -> departure -> `date`
+      arrivalTime,    // -> arrival   -> expected_arrival
+      description,
+    );
 
     if (queryResult.affectedRows === 1) {
-      res.status(201).json({
-        success: true,
-        message: "ride item added.",
-      });
-
+      res.status(201).json({ success: true, message: "ride item added." });
       return;
     }
 
-    res.status(500).json({
-      success: false,
-      message: "ride item was not added.",
-    });
+    res.status(500).json({ success: false, message: "ride item was not added." });
   } catch (error) {
     next(error);
   }
@@ -62,6 +81,6 @@ const getFilteredRides = async (
 
 
 router.get("/search", getFilteredRides);
-router.post("/", addrideItem);
+router.post("/add", addrideItem);
 
 export default router;

@@ -13,8 +13,10 @@ function TripCard({ trip }) {
     
   const departure = new Date(trip.date);
   const arrival = new Date(trip.expected_arrival);
-  const durationHours = ((arrival - departure) / (1000 * 60 * 60)).toFixed(1);
-
+  let durationHours = ((arrival - departure) / (1000 * 60 * 60)).toFixed(1);
+  if (durationHours<0){
+    durationHours*=-1
+  }
   return (
     <div
       onClick={() => navigate(`/trip/${trip.id}`)}
