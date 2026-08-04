@@ -54,13 +54,12 @@ export const filteredRides = async (
 export const createRideItem = async (
   ownerId: number,         
   boatId: number,        
-  pickupPoint: string,    
-  dropoffPoint: string,   
+  from: string,    
+  to: string,   
   price: string,          
   departure: string,     
   arrival: string,        
   description: string,
-  totalSeats: number
 ): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
     `
@@ -82,8 +81,8 @@ export const createRideItem = async (
     [
       42,
       boatId,
-      pickupPoint,          
-      dropoffPoint,         
+      from,          
+      to,         
       Number(price),        
       arrival,
       departure,
