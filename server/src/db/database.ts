@@ -79,7 +79,7 @@ export const createRideItem = async (
       )
     `,
     [
-      42,
+      Number(ownerId),
       boatId,
       from,          
       to,         

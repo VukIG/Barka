@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   MapPin,
@@ -13,14 +13,17 @@ import {
 import { croatianLocations, boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 import { format } from "date-fns";
-
+import { API_URL } from "../config/api";
 function OfferRide() {
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
   const [amenities, setAmenities] = useState([]);
   const [newAmenity, setNewAmenity] = useState("");
   const [selectedDate, setSelectedDate] = useState(undefined);
-
+  const [user,setUser] = useState(undefined)
+  useEffect(()=>{
+    setUser(JSON.parse(localStorage.getItem("user")))
+  },[])
   const [formData, setFormData] = useState({
     from: "",
     to: "",
@@ -37,7 +40,11 @@ function OfferRide() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    const API_URL = "http://localhost:5000";
+    if (!user) {
+      alert("You must be signed in to offer a ride.");
+      navigate("/auth");  
+      return;
+    }
 
     if (!selectedDate) {
       alert("Please pick a date.");
@@ -48,6 +55,7 @@ function OfferRide() {
     const arrivalTime = `${format(selectedDate, "yyyy-MM-dd")} ${formData.arrivalTime}:00`;
 
     const payload = {
+      ownerId: user.id,
       boatType: formData.boatType,
       description: formData.description,
       from: formData.from,

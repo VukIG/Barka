@@ -7,8 +7,7 @@ import OfferRide from "./pages/OfferRide";
 import Profile from "./pages/Profile";
 import AuthPage from "./pages/AuthPage"
 import BuissnesDashboard from "./pages/BuissnessDashboard";
-import Layout  from "./components/Layout";
-
+import Layout from "./components/Layout";
 export default function App() {
   return (
     <BrowserRouter>
