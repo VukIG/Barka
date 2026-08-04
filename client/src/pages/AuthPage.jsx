@@ -3,52 +3,86 @@ import { useNavigate } from "react-router";
 import { Anchor, Mail, Lock, User, Eye, EyeOff, Waves } from "lucide-react";
 
 function AuthPage() {
+  const nationalities = [
+    { code: "HR", name: "Croatia" },
+    { code: "SI", name: "Slovenia" },
+    { code: "ME", name: "Montenegro" },
+    { code: "IT", name: "Italy" },
+    { code: "DE", name: "Germany" },
+    { code: "AT", name: "Austria" },
+    { code: "GB", name: "United Kingdom" },
+    { code: "FR", name: "France" },
+    { code: "US", name: "United States" },
+  ];
+
+  const EMPTY_FORM = {
+    name: "",
+    firstname: "",
+    lastname: "",
+    age: "",
+    gender: "",
+    nationality: "",
+    role: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+  };
 
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
+  const [formData, setFormData] = useState(EMPTY_FORM);
 
   const API_URL = "http://localhost:5000";
 
   async function handleSubmit(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  const url = isSignUp ? `${API_URL}/users/signUp` : `${API_URL}/users/logIn`;
-  const payload = isSignUp
-    ? { name: formData.name, email: formData.email, password: formData.password }
-    : { email: formData.email, password: formData.password };
-
-  console.log("sending:", payload);
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      credentials: "include",          
-      body: JSON.stringify(payload),
-    });
-
-    const data = await response.json();   
-    console.log("server said:", data);
-
-    if (!response.ok) {
-      alert(data.message || "Login failed.");
+    if (isSignUp && formData.password !== formData.confirmPassword) {
+      alert("Passwords do not match.");
       return;
     }
 
-    localStorage.setItem("user", JSON.stringify(data.user));
-    window.location.href = "/";          
-  } catch (err) {
-    console.error("Request failed:", err);
-    alert("Could not reach the server.");
+    const url = isSignUp ? `${API_URL}/users/signUp` : `${API_URL}/users/logIn`;
+    const payload = isSignUp
+      ? {
+          username: formData.name,
+          firstName: formData.firstname,
+          lastName: formData.lastname,
+          age: formData.age,
+          gender: formData.gender,
+          nationality: formData.nationality,
+          role: formData.role,
+          email: formData.email,
+          password: formData.password,
+        }
+      : { email: formData.email, password: formData.password };
+
+    console.log("sending:", payload);
+
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify(payload),
+      });
+
+      const data = await response.json();
+      console.log("server said:", data);
+
+      if (!response.ok) {
+        alert(data.message || (isSignUp ? "Sign up failed." : "Login failed."));
+        return;
+      }
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+      window.location.href = "/";
+    } catch (err) {
+      console.error("Request failed:", err);
+      alert("Could not reach the server.");
+    }
   }
-}
 
   return (
     <div className="min-h-screen flex">
@@ -68,31 +102,173 @@ function AuthPage() {
             </h1>
             <p className="text-gray-600">
               {isSignUp
-                ? "Join the Croatian boat sharing community"
+                ? "Join the Adriatic boat sharing community"
                 : "Sign in to continue your journey"}
             </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {isSignUp && (
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Full Name
-                </label>
-                <div className="relative">
-                  <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                  <input
-                    type="text"
-                    value={formData.name}
-                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                    className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Enter your name"
-                    required={isSignUp}
-                  />
+              <div className="space-y-4">
+                {/* Username */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Username
+                  </label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                    <input
+                      type="text"
+                      value={formData.name}
+                      onChange={(e) =>
+                        setFormData({ ...formData, name: e.target.value })
+                      }
+                      className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Choose a username"
+                      required={isSignUp}
+                    />
+                  </div>
+                </div>
+
+                {/* First + Last name — stacks on mobile, two columns on sm+ */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      First name
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="text"
+                        value={formData.firstname}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            firstname: e.target.value,
+                          })
+                        }
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="First name"
+                        required={isSignUp}
+                      />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Last name
+                    </label>
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                      <input
+                        type="text"
+                        value={formData.lastname}
+                        onChange={(e) =>
+                          setFormData({ ...formData, lastname: e.target.value })
+                        }
+                        className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Last name"
+                        required={isSignUp}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Age + Gender */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Age
+                    </label>
+                    <input
+                      type="number"
+                      min="18"
+                      value={formData.age}
+                      onChange={(e) =>
+                        setFormData({ ...formData, age: e.target.value })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="18"
+                      required={isSignUp}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Gender
+                    </label>
+                    <div className="flex gap-3">
+                      {["male", "female"].map((g) => (
+                        <label
+                          key={g}
+                          className={`flex-1 flex items-center justify-center px-4 py-3 border rounded-lg cursor-pointer capitalize transition-colors ${
+                            formData.gender === g
+                              ? "border-blue-500 bg-blue-50 text-blue-700"
+                              : "border-gray-300 text-gray-700 hover:bg-gray-50"
+                          }`}
+                        >
+                          <input
+                            type="radio"
+                            name="gender"
+                            className="sr-only"
+                            checked={formData.gender === g}
+                            onChange={() =>
+                              setFormData({ ...formData, gender: g })
+                            }
+                          />
+                          {g}
+                        </label>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Nationality + Role */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Nationality
+                    </label>
+                    <select
+                      value={formData.nationality}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          nationality: e.target.value,
+                        })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required={isSignUp}
+                    >
+                      <option value="">Select nationality</option>
+                      {nationalities.map((c) => (
+                        <option key={c.code} value={c.code}>
+                          {c.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Role
+                    </label>
+                    <select
+                      value={formData.role}
+                      onChange={(e) =>
+                        setFormData({ ...formData, role: e.target.value })
+                      }
+                      className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      required={isSignUp}
+                    >
+                      <option value="">Select role</option>
+                      {["tourist", "owner", "both"].map((r) => (
+                        <option key={r} value={r} className="capitalize">
+                          {r}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
               </div>
             )}
-
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
@@ -102,7 +278,9 @@ function AuthPage() {
                 <input
                   type="email"
                   value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, email: e.target.value })
+                  }
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your email"
                   required
@@ -119,7 +297,9 @@ function AuthPage() {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={formData.password}
-                  onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, password: e.target.value })
+                  }
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   placeholder="Enter your password"
                   required
@@ -149,7 +329,10 @@ function AuthPage() {
                     type={showPassword ? "text" : "password"}
                     value={formData.confirmPassword}
                     onChange={(e) =>
-                      setFormData({ ...formData, confirmPassword: e.target.value })
+                      setFormData({
+                        ...formData,
+                        confirmPassword: e.target.value,
+                      })
                     }
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Confirm your password"
@@ -162,10 +345,16 @@ function AuthPage() {
             {!isSignUp && (
               <div className="flex items-center justify-between text-sm">
                 <label className="flex items-center gap-2 cursor-pointer">
-                  <input type="checkbox" className="w-4 h-4 text-blue-600 rounded" />
+                  <input
+                    type="checkbox"
+                    className="w-4 h-4 text-blue-600 rounded"
+                  />
                   <span className="text-gray-600">Remember me</span>
                 </label>
-                <button type="button" className="text-blue-600 hover:text-blue-700">
+                <button
+                  type="button"
+                  className="text-blue-600 hover:text-blue-700"
+                >
                   Forgot password?
                 </button>
               </div>
@@ -186,7 +375,12 @@ function AuthPage() {
               <button
                 onClick={() => {
                   setIsSignUp(!isSignUp);
-                  setFormData({ name: "", email: "", password: "", confirmPassword: "" });
+                  setFormData({
+                    name: "",
+                    email: "",
+                    password: "",
+                    confirmPassword: "",
+                  });
                 }}
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
@@ -198,7 +392,6 @@ function AuthPage() {
             <div className="absolute inset-0 flex items-center">
               <div className="w-full border-t border-gray-300" />
             </div>
-            
           </div>
         </div>
       </div>
@@ -206,17 +399,18 @@ function AuthPage() {
       <div className="hidden lg:block lg:w-1/2 relative">
         <img
           src="https://images.unsplash.com/photo-1759068207850-35367e2dc3f9?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjcm9hdGlhbiUyMGNvYXN0JTIwYm9hdHMlMjBhZHJpYXRpYyUyMHNlYXxlbnwxfHx8fDE3NzQ2MTY2MDR8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-          alt="Croatian Coast"
+          alt="Adriatic Coast"
           className="absolute inset-0 w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/40 to-transparent" />
         <div className="absolute bottom-12 left-12 right-12 text-white">
           <Waves className="w-12 h-12 mb-4" />
           <h2 className="text-4xl font-bold mb-4">
-            Explore the Croatian Coast
+            Explore the Adriatic Coast
           </h2>
           <p className="text-xl text-blue-100">
-            Connect with captains and passengers for unforgettable journeys along the Adriatic Sea
+            Connect with captains and passengers for unforgettable journeys
+            along the Adriatic Sea
           </p>
         </div>
       </div>

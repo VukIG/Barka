@@ -5,7 +5,12 @@ import { Calendar as CalendarIcon } from "lucide-react";
 import * as Popover from "@radix-ui/react-popover";
 import "react-day-picker/dist/style.css";
 
-function DatePicker({ selected, onSelect, placeholder = "Pick a date", minDate }) {
+function DatePicker({
+  selected,
+  onSelect,
+  placeholder = "Pick a date",
+  minDate,
+}) {
   const [open, setOpen] = useState(false);
 
   return (

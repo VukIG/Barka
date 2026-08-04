@@ -10,18 +10,18 @@ function Layout() {
   const API_URL = "http://localhost:5000";
 
   const handleSignOut = async () => {
-  try {
-    await fetch(`${API_URL}/users/logout`, {
-      method: "POST",
-      credentials: "include",
-    });
-  } catch (err) {
-    console.error("Logout request failed:", err);
-  }
-  localStorage.removeItem("user");
-  setMobileMenuOpen(false);
-  navigate("/");
-};
+    try {
+      await fetch(`${API_URL}/users/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout request failed:", err);
+    }
+    localStorage.removeItem("user");
+    setMobileMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -36,7 +36,9 @@ function Layout() {
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   Barka
                 </span>
-                <div className="text-xs text-gray-500">Boat Sharing Adriatic</div>
+                <div className="text-xs text-gray-500">
+                  Boat Sharing Adriatic
+                </div>
               </div>
             </Link>
 
@@ -85,7 +87,11 @@ function Layout() {
               className="md:hidden text-gray-600"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
 
@@ -114,7 +120,7 @@ function Layout() {
                 >
                   For Businesses
                 </Link>
-                
+
                 {isSignedIn ? (
                   <button
                     onClick={handleSignOut}
@@ -152,31 +158,70 @@ function Layout() {
                 <span className="font-bold text-blue-600">Barka</span>
               </div>
               <p className="text-sm text-gray-600">
-                Connecting captains and passengers across the beautiful Adriatic coast.
+                Connecting captains and passengers across the beautiful Adriatic
+                coast.
               </p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">About</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-blue-600 transition-colors">How it works</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Safety</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Trust & Safety</a></li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    How it works
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Safety
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Trust & Safety
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Terms of Service</a></li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Terms of Service
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Popular Routes</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">
+                Popular Routes
+              </h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Split → Hvar</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Dubrovnik → Korčula</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Zadar → Pag</a></li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Split → Hvar
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Dubrovnik → Korčula
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Zadar → Pag
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

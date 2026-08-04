@@ -110,12 +110,20 @@ export const authUser = async (email: string): Promise<UserLogin[]> => {
 
 export const createUser = async (
   username: string,
+  firstName: string,
+  lastName: string,
+  age: number,
+  gender: string | null,
+  nationality: string,
+  role: string,
   email: string,
   password: string
 ): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
-    "INSERT INTO user (user_name, email, password) VALUES (?, ?, ?)",
-    [username, email, password]
+    `INSERT INTO user
+       (user_name, first_name, last_name, age, gender, nationality, role, email, password)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    [username, firstName, lastName, age, gender, nationality, role, email, password]
   );
 
   return result;

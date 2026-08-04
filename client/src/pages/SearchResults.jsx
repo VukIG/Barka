@@ -1,4 +1,4 @@
-import TripCard from "../components/TripCard"
+import TripCard from "../components/TripCard";
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useNavigate, data } from "react-router";
 import { Calendar, Filter, Anchor } from "lucide-react";
@@ -13,19 +13,19 @@ function SearchResults() {
   const [selectedBoatType, setSelectedBoatType] = useState("All Boat Types");
   const [maxPrice, setMaxPrice] = useState(100);
   const [minSeats, setMinSeats] = useState(1);
-  const [filteredTrips, setFilteredTrips] = useState([])
+  const [filteredTrips, setFilteredTrips] = useState([]);
   const API_URL = "http://localhost:5000";
 
   const params = new URLSearchParams({ from, to, date });
   useEffect(() => {
-    fetch(`${API_URL}/rides/search?${params}`)            
-      .then(response => response.json())   
-      .then(data => {
-        console.log(data)
-        setFilteredTrips(data);            
+    fetch(`${API_URL}/rides/search?${params}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setFilteredTrips(data);
       })
-      .catch(err => console.log("Error loading rides:", err));
-  }, [from,to,date]);
+      .catch((err) => console.log("Error loading rides:", err));
+  }, [from, to, date]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -33,7 +33,7 @@ function SearchResults() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            { from ? `${from} → ${to}` : "" }
+            {from ? `${from} → ${to}` : ""}
           </h1>
           <div className="flex items-center gap-4 text-gray-600">
             <div className="flex items-center gap-1">
@@ -61,7 +61,10 @@ function SearchResults() {
                 </label>
                 <div className="space-y-2">
                   {boatTypes.map((type) => (
-                    <label key={type} className="flex items-center gap-2 cursor-pointer">
+                    <label
+                      key={type}
+                      className="flex items-center gap-2 cursor-pointer"
+                    >
                       <input
                         type="radio"
                         name="boatType"
@@ -129,7 +132,9 @@ function SearchResults() {
                 </button>
               </div>
             ) : (
-              filteredTrips.map((trip) => <TripCard key={trip.id} trip={trip} />)
+              filteredTrips.map((trip) => (
+                <TripCard key={trip.id} trip={trip} />
+              ))
             )}
           </div>
         </div>

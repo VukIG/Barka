@@ -13,15 +13,14 @@ import {
 } from "lucide-react";
 import { mockTrips, reviews } from "../data/mockData";
 
-
 function renderStars(rating) {
-    const stars = [];
-    for (let i = 0; i < rating; i++) {
-      stars.push(
-        <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-      );
-    }
-    return stars;
+  const stars = [];
+  for (let i = 0; i < rating; i++) {
+    stars.push(
+      <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />,
+    );
+  }
+  return stars;
 }
 
 function renderSeatOptions(maxSeats) {
@@ -30,12 +29,11 @@ function renderSeatOptions(maxSeats) {
     options.push(
       <option key={i} value={i}>
         {i} {i === 1 ? "seat" : "seats"}
-      </option>
+      </option>,
     );
   }
   return options;
 }
-
 
 function TripDetails() {
   const { id } = useParams();
@@ -49,7 +47,9 @@ function TripDetails() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Trip not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            Trip not found
+          </h1>
           <button
             onClick={() => navigate("/")}
             className="text-blue-600 hover:text-blue-700"
@@ -107,17 +107,27 @@ function TripDetails() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-blue-50 rounded-lg">
                 <div>
                   <div className="text-sm text-gray-600 mb-1">Departure</div>
-                  <div className="font-semibold text-gray-900 mb-1">{trip.from}</div>
-                  <div className="text-sm text-gray-600">{trip.pickupPoint}</div>
+                  <div className="font-semibold text-gray-900 mb-1">
+                    {trip.from}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {trip.pickupPoint}
+                  </div>
                   <div className="flex items-center gap-1 text-sm text-blue-600 mt-2">
                     <Clock className="w-4 h-4" />
-                    <span>{trip.date} at {trip.time}</span>
+                    <span>
+                      {trip.date} at {trip.time}
+                    </span>
                   </div>
                 </div>
                 <div className="text-left md:text-right">
                   <div className="text-sm text-gray-600 mb-1">Arrival</div>
-                  <div className="font-semibold text-gray-900 mb-1">{trip.to}</div>
-                  <div className="text-sm text-gray-600">{trip.dropoffPoint}</div>
+                  <div className="font-semibold text-gray-900 mb-1">
+                    {trip.to}
+                  </div>
+                  <div className="text-sm text-gray-600">
+                    {trip.dropoffPoint}
+                  </div>
                   <div className="text-sm text-gray-600 mt-2">
                     Duration: {trip.duration}
                   </div>
@@ -126,7 +136,9 @@ function TripDetails() {
 
               {/* Boat Details */}
               <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Boat Details</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Boat Details
+                </h2>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-2 text-gray-700">
                     <Anchor className="w-5 h-5 text-blue-600" />
@@ -134,14 +146,18 @@ function TripDetails() {
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Users className="w-5 h-5 text-blue-600" />
-                    <span>{trip.seatsAvailable} of {trip.totalSeats} seats available</span>
+                    <span>
+                      {trip.seatsAvailable} of {trip.totalSeats} seats available
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Amenities */}
               <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Amenities</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Amenities
+                </h2>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
                   {trip.amenities.map((amenity) => (
                     <div
@@ -160,13 +176,17 @@ function TripDetails() {
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
                   About this trip
                 </h2>
-                <p className="text-gray-700 leading-relaxed">{trip.description}</p>
+                <p className="text-gray-700 leading-relaxed">
+                  {trip.description}
+                </p>
               </div>
             </div>
 
             {/* Captain Info */}
             <div className="bg-white rounded-lg shadow-md p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Your Captain</h2>
+              <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                Your Captain
+              </h2>
               <div className="flex items-start gap-4">
                 <img
                   src={trip.captain.avatar}
@@ -188,7 +208,10 @@ function TripDetails() {
                   <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                     <div className="flex items-center gap-1">
                       <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span>{trip.captain.rating} ({trip.captain.reviewCount} reviews)</span>
+                      <span>
+                        {trip.captain.rating} ({trip.captain.reviewCount}{" "}
+                        reviews)
+                      </span>
                     </div>
                     <span>Member since {trip.captain.memberSince}</span>
                   </div>
@@ -203,10 +226,15 @@ function TripDetails() {
             {/* Reviews */}
             {tripReviews.length > 0 && (
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Reviews</h2>
+                <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                  Reviews
+                </h2>
                 <div className="space-y-4">
                   {tripReviews.map((review) => (
-                    <div key={review.id} className="border-b border-gray-200 last:border-0 pb-4 last:pb-0">
+                    <div
+                      key={review.id}
+                      className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
+                    >
                       <div className="flex items-start gap-3">
                         <img
                           src={review.userAvatar}
@@ -215,12 +243,16 @@ function TripDetails() {
                         />
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
-                            <span className="font-semibold text-gray-900">{review.userName}</span>
+                            <span className="font-semibold text-gray-900">
+                              {review.userName}
+                            </span>
                             <div className="flex items-center gap-1">
                               {renderStars(review.rating)}
                             </div>
                           </div>
-                          <p className="text-sm text-gray-700 mb-1">{review.comment}</p>
+                          <p className="text-sm text-gray-700 mb-1">
+                            {review.comment}
+                          </p>
                           <div className="flex items-center gap-2 text-xs text-gray-500">
                             <span>{review.route}</span>
                             <span>•</span>
@@ -255,15 +287,17 @@ function TripDetails() {
                   onChange={(e) => setSelectedSeats(Number(e.target.value))}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  
-                    {renderSeatOptions(trip.seatsAvailable)}
+                  {renderSeatOptions(trip.seatsAvailable)}
                 </select>
               </div>
 
               {/* Price Breakdown */}
               <div className="mb-6 p-4 bg-gray-50 rounded-lg">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
-                  <span>€{trip.price} × {selectedSeats} {selectedSeats === 1 ? "seat" : "seats"}</span>
+                  <span>
+                    €{trip.price} × {selectedSeats}{" "}
+                    {selectedSeats === 1 ? "seat" : "seats"}
+                  </span>
                   <span>€{totalPrice}</span>
                 </div>
                 <div className="border-t border-gray-200 pt-2 mt-2">

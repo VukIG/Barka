@@ -1,6 +1,14 @@
 import { MapPin, ChevronDown } from "lucide-react";
 
-function LocationSelect({ label, value, placeholder, options, isOpen, onToggle, onSelect }) {
+function LocationSelect({
+  label,
+  value,
+  placeholder,
+  options,
+  isOpen,
+  onToggle,
+  onSelect,
+}) {
   return (
     <div className="relative">
       <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -12,7 +20,9 @@ function LocationSelect({ label, value, placeholder, options, isOpen, onToggle, 
         onClick={onToggle}
         className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 cursor-pointer flex items-center justify-between"
       >
-        <span className={value ? "" : "text-gray-400"}>{value || placeholder}</span>
+        <span className={value ? "" : "text-gray-400"}>
+          {value || placeholder}
+        </span>
         <ChevronDown
           className={`w-4 h-4 text-gray-500 transition-transform ${isOpen ? "rotate-180" : ""}`}
         />

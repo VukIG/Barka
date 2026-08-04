@@ -62,27 +62,54 @@ const loginUser = async (
   }
 };
 
+
 const signUpUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
   try {
-    const { username, email, password } = req.body as {
+    const {
+      username,
+      firstName,
+      lastName,
+      age,
+      gender,
+      nationality,
+      role,
+      email,
+      password,
+    } = req.body as {
       username?: string;
+      firstName?: string;
+      lastName?: string;
+      age?: string;         
+      gender?: string;
+      nationality?: string;
+      role?: string;
       email?: string;
       password?: string;
     };
 
-    if (!username || !email || !password) {
+    if (!username || !firstName || !lastName || !age || !nationality || !role || !email || !password) {
       res.status(400).json({
         success: false,
-        message: "Username, email and password are required.",
+        message: "All fields except gender are required.",
       });
       return;
     }
 
-    const queryResult = await createUser(username, email, password);
+    const queryResult = await createUser(
+      username,
+      firstName,
+      lastName,
+      Number(age),           
+      gender ?? null,        
+      nationality,
+      role,
+      email,
+      password
+    );
 
     if (queryResult.affectedRows !== 1) {
       res.status(500).json({
@@ -111,7 +138,6 @@ const signUpUser = async (
     next(error);
   }
 };
-
 const logoutUser = (
   req: Request,
   res: Response,
