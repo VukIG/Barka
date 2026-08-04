@@ -1,12 +1,21 @@
 import { useParams, useNavigate } from "react-router";
-import { Star, Shield, Calendar, Anchor, MapPin, Edit, Mail, Phone } from "lucide-react";
+import {
+  Star,
+  Shield,
+  Calendar,
+  Anchor,
+  MapPin,
+  Edit,
+  Mail,
+  Phone,
+} from "lucide-react";
 import { mockUsers, mockTrips, reviews } from "../data/mockData";
 
 export default function Profile({}) {
   const navigate = useNavigate();
   const id = "1";
   const user = mockUsers.find((u) => u.id === id);
-  console.log(mockUsers)
+  console.log(mockUsers);
   const userTrips = mockTrips.filter((t) => t.captain.id === id);
   const userReviews = reviews.filter((r) => r.userId !== id);
 
@@ -14,7 +23,9 @@ export default function Profile({}) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">User not found</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            User not found
+          </h1>
           <button
             onClick={() => navigate("/")}
             className="text-blue-600 hover:text-blue-700"
@@ -39,7 +50,9 @@ export default function Profile({}) {
             />
             <div className="flex-1 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
-                <h1 className="text-3xl font-bold text-gray-900">{user.name}</h1>
+                <h1 className="text-3xl font-bold text-gray-900">
+                  {user.name}
+                </h1>
                 {user.verified && (
                   <div className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
                     <Shield className="w-4 h-4" />
@@ -51,10 +64,14 @@ export default function Profile({}) {
                 <div className="flex items-center gap-1">
                   <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">{user.rating}</span>
-                  <span className="text-gray-600">({user.reviewCount} reviews)</span>
+                  <span className="text-gray-600">
+                    ({user.reviewCount} reviews)
+                  </span>
                 </div>
                 <span className="text-gray-400">•</span>
-                <span className="text-gray-600">Member since {user.memberSince}</span>
+                <span className="text-gray-600">
+                  Member since {user.memberSince}
+                </span>
               </div>
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                 <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -78,15 +95,21 @@ export default function Profile({}) {
           {/* Stats */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-gray-200">
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-3xl font-bold text-blue-600 mb-1">{userTrips.length}</div>
+              <div className="text-3xl font-bold text-blue-600 mb-1">
+                {userTrips.length}
+              </div>
               <div className="text-sm text-gray-600">Trips Offered</div>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-3xl font-bold text-blue-600 mb-1">{user.reviewCount}</div>
+              <div className="text-3xl font-bold text-blue-600 mb-1">
+                {user.reviewCount}
+              </div>
               <div className="text-sm text-gray-600">Reviews</div>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-3xl font-bold text-blue-600 mb-1">{user.rating}</div>
+              <div className="text-3xl font-bold text-blue-600 mb-1">
+                {user.rating}
+              </div>
               <div className="text-sm text-gray-600">Rating</div>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -100,19 +123,23 @@ export default function Profile({}) {
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">About</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            Hi! I'm {user.name.split(' ')[0]} and I've been captaining boats along the Croatian coast for over 5 years. 
-            I love sharing the beauty of the Adriatic with passengers and making every trip memorable.
+            Hi! I'm {user.name.split(" ")[0]} and I've been captaining boats
+            along the Croatian coast for over 5 years. I love sharing the beauty
+            of the Adriatic with passengers and making every trip memorable.
           </p>
           <p className="text-gray-700 leading-relaxed">
-            My boat is well-maintained, comfortable, and equipped with all necessary safety equipment. 
-            I pride myself on punctuality and ensuring every passenger has a great experience.
+            My boat is well-maintained, comfortable, and equipped with all
+            necessary safety equipment. I pride myself on punctuality and
+            ensuring every passenger has a great experience.
           </p>
         </div>
 
         {/* Active Trips */}
         {userTrips.length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Active Trips</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              Active Trips
+            </h2>
             <div className="space-y-4">
               {userTrips.map((trip) => (
                 <div
@@ -132,7 +159,9 @@ export default function Profile({}) {
                       <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-4 h-4" />
-                          <span>{trip.date} at {trip.time}</span>
+                          <span>
+                            {trip.date} at {trip.time}
+                          </span>
                         </div>
                         <div className="flex items-center gap-1">
                           <Anchor className="w-4 h-4" />
@@ -142,7 +171,9 @@ export default function Profile({}) {
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-blue-600">€{trip.price}</div>
+                      <div className="text-2xl font-bold text-blue-600">
+                        €{trip.price}
+                      </div>
                       <div className="text-sm text-gray-500">per person</div>
                     </div>
                   </div>
@@ -173,7 +204,9 @@ export default function Profile({}) {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <h3 className="font-semibold text-gray-900">{review.userName}</h3>
+                          <h3 className="font-semibold text-gray-900">
+                            {review.userName}
+                          </h3>
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span>{review.route}</span>
                             <span>•</span>
@@ -189,7 +222,9 @@ export default function Profile({}) {
                           ))}
                         </div>
                       </div>
-                      <p className="text-gray-700 leading-relaxed">{review.comment}</p>
+                      <p className="text-gray-700 leading-relaxed">
+                        {review.comment}
+                      </p>
                     </div>
                   </div>
                 </div>

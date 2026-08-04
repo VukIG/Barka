@@ -26,7 +26,9 @@ export default function ActiveTrips({ trips, onSelectTrip }) {
                 <div className="flex flex-wrap items-center gap-4 text-sm text-gray-600">
                   <div className="flex items-center gap-1">
                     <Calendar className="w-4 h-4" />
-                    <span>{trip.date} at {trip.time}</span>
+                    <span>
+                      {trip.date} at {trip.time}
+                    </span>
                   </div>
                   <div className="flex items-center gap-1">
                     <Anchor className="w-4 h-4" />
@@ -36,7 +38,9 @@ export default function ActiveTrips({ trips, onSelectTrip }) {
                 </div>
               </div>
               <div className="text-right">
-                <div className="text-2xl font-bold text-blue-600">€{trip.price}</div>
+                <div className="text-2xl font-bold text-blue-600">
+                  €{trip.price}
+                </div>
                 <div className="text-sm text-gray-500">per person</div>
               </div>
             </div>

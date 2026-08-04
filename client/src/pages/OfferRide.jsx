@@ -20,10 +20,10 @@ function OfferRide() {
   const [amenities, setAmenities] = useState([]);
   const [newAmenity, setNewAmenity] = useState("");
   const [selectedDate, setSelectedDate] = useState(undefined);
-  const [user,setUser] = useState(undefined)
-  useEffect(()=>{
-    setUser(JSON.parse(localStorage.getItem("user")))
-  },[])
+  const [user, setUser] = useState(undefined);
+  useEffect(() => {
+    setUser(JSON.parse(localStorage.getItem("user")));
+  }, []);
   const [formData, setFormData] = useState({
     from: "",
     to: "",
@@ -42,7 +42,7 @@ function OfferRide() {
     e.preventDefault();
     if (!user) {
       alert("You must be signed in to offer a ride.");
-      navigate("/auth");  
+      navigate("/auth");
       return;
     }
 
@@ -62,7 +62,7 @@ function OfferRide() {
       to: formData.to,
       price: formData.price,
       departureTime: departureTime,
-      arrivalTime: arrivalTime
+      arrivalTime: arrivalTime,
     };
 
     console.log("sending:", payload);
@@ -80,9 +80,9 @@ function OfferRide() {
     const result = await response.json();
     console.log(result);
     setShowSuccess(true);
-    setTimeout(()=>{
-      navigate("/")
-    }, 3000)
+    setTimeout(() => {
+      navigate("/");
+    }, 3000);
   }
 
   const addAmenity = () => {

@@ -24,10 +24,14 @@ export default function ProfileHeader({ user, userTripsCount, currentUserId }) {
             <div className="flex items-center gap-1">
               <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
               <span className="font-semibold">{user.rating}</span>
-              <span className="text-gray-600">({user.reviewCount} reviews)</span>
+              <span className="text-gray-600">
+                ({user.reviewCount} reviews)
+              </span>
             </div>
             <span className="text-gray-400">•</span>
-            <span className="text-gray-600">Member since {user.memberSince}</span>
+            <span className="text-gray-600">
+              Member since {user.memberSince}
+            </span>
           </div>
           <div className="flex flex-wrap gap-3 justify-center md:justify-start">
             <button className="flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
@@ -51,15 +55,21 @@ export default function ProfileHeader({ user, userTripsCount, currentUserId }) {
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mt-8 pt-8 border-t border-gray-200">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <div className="text-3xl font-bold text-blue-600 mb-1">{userTripsCount}</div>
+          <div className="text-3xl font-bold text-blue-600 mb-1">
+            {userTripsCount}
+          </div>
           <div className="text-sm text-gray-600">Trips Offered</div>
         </div>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <div className="text-3xl font-bold text-blue-600 mb-1">{user.reviewCount}</div>
+          <div className="text-3xl font-bold text-blue-600 mb-1">
+            {user.reviewCount}
+          </div>
           <div className="text-sm text-gray-600">Reviews</div>
         </div>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <div className="text-3xl font-bold text-blue-600 mb-1">{user.rating}</div>
+          <div className="text-3xl font-bold text-blue-600 mb-1">
+            {user.rating}
+          </div>
           <div className="text-sm text-gray-600">Rating</div>
         </div>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
