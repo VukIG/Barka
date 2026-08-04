@@ -112,6 +112,22 @@ const signUpUser = async (
   }
 };
 
+const logoutUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  req.session.destroy((error) => {
+    if (error) {
+      next(error);
+      return;
+    }
+    res.clearCookie("connect.sid");
+    res.status(200).json({ success: true, message: "Logout successful." });
+  });
+};
+
+router.post("/logout", logoutUser);
 router.post("/logIn", loginUser);
 router.post("/signUp", signUpUser);
 

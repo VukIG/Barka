@@ -6,16 +6,22 @@ function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [isSignedIn, setIsSignedIn] = useState(false);
-
   const isSignedIn = Boolean(localStorage.getItem("user"));
+  const API_URL = "http://localhost:5000";
 
-  const handleSignOut = () => {
-    localStorage.removeItem("user");
-    setIsSignedIn(false);
-    setMobileMenuOpen(false);
-    navigate("/");
-  };
+  const handleSignOut = async () => {
+  try {
+    await fetch(`${API_URL}/users/logout`, {
+      method: "POST",
+      credentials: "include",
+    });
+  } catch (err) {
+    console.error("Logout request failed:", err);
+  }
+  localStorage.removeItem("user");
+  setMobileMenuOpen(false);
+  navigate("/");
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
