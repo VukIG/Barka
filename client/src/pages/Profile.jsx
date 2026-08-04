@@ -2,10 +2,11 @@ import { useParams, useNavigate } from "react-router";
 import { Star, Shield, Calendar, Anchor, MapPin, Edit, Mail, Phone } from "lucide-react";
 import { mockUsers, mockTrips, reviews } from "../data/mockData";
 
-export default function Profile({id}) {
+export default function Profile({}) {
   const navigate = useNavigate();
-  
+  const id = "1";
   const user = mockUsers.find((u) => u.id === id);
+  console.log(mockUsers)
   const userTrips = mockTrips.filter((t) => t.captain.id === id);
   const userReviews = reviews.filter((r) => r.userId !== id);
 
