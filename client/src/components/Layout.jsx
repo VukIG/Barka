@@ -1,11 +1,21 @@
-import { Outlet, Link, useLocation } from "react-router";
-import { Anchor, User, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router";
+import { Anchor, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
 
 function Layout() {
-    
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isSignedIn, setIsSignedIn] = useState(false);
+
+  const isSignedIn = Boolean(localStorage.getItem("user"));
+
+  const handleSignOut = () => {
+    localStorage.removeItem("user");
+    setIsSignedIn(false);
+    setMobileMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -24,6 +34,7 @@ function Layout() {
               </div>
             </Link>
 
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
               <Link
                 to="/offer"
@@ -36,20 +47,34 @@ function Layout() {
                 Offer a Ride
               </Link>
               <Link
-                to="/buissnes"
-                className="px-4 py-2  rounded-lg transition-colors text-sm font-medium"
+                to="/business"
+                className={`text-sm transition-colors ${
+                  location.pathname === "/business"
+                    ? "text-blue-600 font-medium"
+                    : "text-gray-600 hover:text-blue-600"
+                }`}
               >
-                For buisnesses
+                For Businesses
               </Link>
-              <Link
-                to="/auth"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-              >
-                Sign In
-              </Link>
-              
+
+              {isSignedIn ? (
+                <button
+                  onClick={handleSignOut}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
 
+            {/* Mobile Menu Button */}
             <button
               className="md:hidden text-gray-600"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -58,6 +83,7 @@ function Layout() {
             </button>
           </div>
 
+          {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <div className="md:hidden py-4 border-t border-gray-100">
               <div className="flex flex-col gap-4">
@@ -76,12 +102,29 @@ function Layout() {
                   Offer a Ride
                 </Link>
                 <Link
-                  to="/auth"
+                  to="/business"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Sign In
+                  For Businesses
                 </Link>
+                
+                {isSignedIn ? (
+                  <button
+                    onClick={handleSignOut}
+                    className="text-left text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                )}
               </div>
             </div>
           )}

@@ -79,7 +79,6 @@ const getFilteredRides = async (
   }
 };
 
-
 router.get("/search", getFilteredRides);
 router.post("/add", addrideItem);
 

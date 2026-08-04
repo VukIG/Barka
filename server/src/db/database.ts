@@ -23,6 +23,13 @@ export interface RideItem extends RowDataPacket {
   totalSeats: number;
 }
 
+export interface UserLogin extends RowDataPacket {
+  id: number;
+  user_name: string;
+  user_email: string;
+  user_password: string;
+}
+
 export const filteredRides = async (
   from: string,
   to: string,
@@ -88,6 +95,27 @@ export const createRideItem = async (
       departure,
       description,
     ]
+  );
+
+  return result;
+};
+
+export const authUser = async (email: string): Promise<UserLogin[]> => {
+  const [rows] = await pool.query<UserLogin[]>(
+    "SELECT * FROM user WHERE user.email = ?",
+    [email]
+  );
+  return rows;
+};
+
+export const createUser = async (
+  username: string,
+  email: string,
+  password: string
+): Promise<ResultSetHeader> => {
+  const [result] = await pool.query<ResultSetHeader>(
+    "INSERT INTO user (user_name, email, password) VALUES (?, ?, ?)",
+    [username, email, password]
   );
 
   return result;
