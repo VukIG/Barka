@@ -1,20 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Anchor, Mail, Lock, User, Eye, EyeOff, Waves } from "lucide-react";
-
+import { API_URL } from "../config/api";
 function AuthPage() {
 
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  });
-
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState(EMPTY_FORM);
+  
+  async function handleSubmit(e) {
     e.preventDefault();
     console.log()
     navigate("/profile/1");

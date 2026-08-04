@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, Router } from "express";
 import { createRideItem, filteredRides } from "../db/database.js";
-
+import { requireLogin } from "../middleware/require-login.js";
 const router = Router();
 
 const addrideItem = async (
@@ -10,6 +10,7 @@ const addrideItem = async (
 ) => {
   try {
     const {
+      ownerId,
       boatType,
       description,
       from,
@@ -18,6 +19,7 @@ const addrideItem = async (
       departureTime,
       arrivalTime,
     } = req.body as {
+      ownerId: number,
       boatType: string;
       description: string;
       from: string;
@@ -27,6 +29,7 @@ const addrideItem = async (
       arrivalTime: string;
     };
 
+    console.log(ownerId)
     if (!from || !to || !price || !departureTime || !arrivalTime) {
       res.status(400).json({ success: false, message: "Missing required ride fields." });
       return;
@@ -42,7 +45,7 @@ const addrideItem = async (
     }
 
     const queryResult = await createRideItem(
-      42,             // ownerId (dummy for now)
+      ownerId,             // ownerId (dummy for now)
       1,              // boatId  (dummy for now)
       from,           // -> start_port_id 
       to,             // -> end_port_id
@@ -81,6 +84,6 @@ const getFilteredRides = async (
 
 
 router.get("/search", getFilteredRides);
-router.post("/add", addrideItem);
+router.post("/add",requireLogin, addrideItem);
 
 export default router;

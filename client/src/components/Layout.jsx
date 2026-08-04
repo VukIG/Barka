@@ -1,6 +1,7 @@
-import { Outlet, Link, useLocation } from "react-router";
-import { Anchor, User, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router";
+import { Anchor, Menu, X } from "lucide-react";
+import { useState, useEffect } from "react";
+import { API_URL } from "../config/api";
 
 function Layout() {
     
@@ -33,7 +34,7 @@ function Layout() {
                     : "text-gray-600 hover:text-blue-600"
                 }`}
               >
-                Offer a Ride
+                Offer ride
               </Link>
               <Link
                 to="/buissnes"
