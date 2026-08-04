@@ -11,7 +11,7 @@ function Map({ ports, onPortSelect }) {
 
     const map = new maplibregl.Map({
       container: containerRef.current,
-      style: "https://tiles.openfreemap.org/styles/dark", 
+      style: "https://tiles.openfreemap.org/styles/dark",
       center: [16.4, 43.5],
       zoom: 7,
       attributionControl: false,
@@ -29,13 +29,22 @@ function Map({ ports, onPortSelect }) {
           boats: port.boats,
           color: port.color ?? "#53d8fb",
         },
-        geometry: { type: "Point", coordinates: [port.longitude, port.latitude] },
+        geometry: {
+          type: "Point",
+          coordinates: [port.longitude, port.latitude],
+        },
       })),
     };
 
     map.on("load", () => {
       map.resize();
-      map.fitBounds([[13.0, 42.0], [19.5, 45.9]], { padding: 30, duration: 0 });
+      map.fitBounds(
+        [
+          [13.0, 42.0],
+          [19.5, 45.9],
+        ],
+        { padding: 30, duration: 0 },
+      );
 
       map.addSource("ports", { type: "geojson", data: portData });
 
@@ -44,18 +53,34 @@ function Map({ ports, onPortSelect }) {
         type: "heatmap",
         source: "ports",
         paint: {
-          "heatmap-weight": ["interpolate", ["linear"], ["get", "boats"], 0, 0, maxBoats, 1],
+          "heatmap-weight": [
+            "interpolate",
+            ["linear"],
+            ["get", "boats"],
+            0,
+            0,
+            maxBoats,
+            1,
+          ],
           "heatmap-intensity": 1.6,
           "heatmap-radius": 80,
           "heatmap-opacity": 0.65,
           "heatmap-color": [
-            "interpolate", ["linear"], ["heatmap-density"],
-            0, "rgba(6,20,29,0)",
-            0.15, "#0d5a63",
-            0.4, "#278c91",
-            0.65, "#53d8fb",
-            0.85, "#ffbf69",
-            1, "#ff735c",
+            "interpolate",
+            ["linear"],
+            ["heatmap-density"],
+            0,
+            "rgba(6,20,29,0)",
+            0.15,
+            "#0d5a63",
+            0.4,
+            "#278c91",
+            0.65,
+            "#53d8fb",
+            0.85,
+            "#ffbf69",
+            1,
+            "#ff735c",
           ],
         },
       });
@@ -107,7 +132,11 @@ function Map({ ports, onPortSelect }) {
         const port = ports.find((p) => p.name === clicked.properties.name);
         if (port) onPortSelect(port);
       });
-      map.on("mouseenter", "dots", () => (map.getCanvas().style.cursor = "pointer"));
+      map.on(
+        "mouseenter",
+        "dots",
+        () => (map.getCanvas().style.cursor = "pointer"),
+      );
       map.on("mouseleave", "dots", () => (map.getCanvas().style.cursor = ""));
     });
 

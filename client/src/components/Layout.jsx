@@ -1,12 +1,27 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import { Anchor, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
-import { API_URL } from "../config/api";
 
 function Layout() {
-    
   const location = useLocation();
+  const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isSignedIn = Boolean(localStorage.getItem("user"));
+  const API_URL = "http://localhost:5000";
+
+  const handleSignOut = async () => {
+    try {
+      await fetch(`${API_URL}/users/logout`, {
+        method: "POST",
+        credentials: "include",
+      });
+    } catch (err) {
+      console.error("Logout request failed:", err);
+    }
+    localStorage.removeItem("user");
+    setMobileMenuOpen(false);
+    navigate("/");
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -21,10 +36,13 @@ function Layout() {
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   Barka
                 </span>
-                <div className="text-xs text-gray-500">Boat Sharing Adriatic</div>
+                <div className="text-xs text-gray-500">
+                  Boat Sharing Adriatic
+                </div>
               </div>
             </Link>
 
+            {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
               <Link
                 to="/offer"
@@ -38,27 +56,46 @@ function Layout() {
               </Link>
               <Link
                 to="/buissnes"
-                className="px-4 py-2  rounded-lg transition-colors text-sm font-medium"
+                className={`text-sm transition-colors ${
+                  location.pathname === "/buissnes"
+                    ? "text-blue-600 font-medium"
+                    : "text-gray-600 hover:text-blue-600"
+                }`}
               >
-                For buisnesses
+                For Businesses
               </Link>
-              <Link
-                to="/auth"
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
-              >
-                Sign In
-              </Link>
-              
+
+              {isSignedIn ? (
+                <button
+                  onClick={handleSignOut}
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
+                >
+                  Sign Out
+                </button>
+              ) : (
+                <Link
+                  to="/auth"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
+                >
+                  Sign In
+                </Link>
+              )}
             </div>
 
+            {/* Mobile Menu Button */}
             <button
               className="md:hidden text-gray-600"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? (
+                <X className="w-6 h-6" />
+              ) : (
+                <Menu className="w-6 h-6" />
+              )}
             </button>
           </div>
 
+          {/* Mobile Navigation */}
           {mobileMenuOpen && (
             <div className="md:hidden py-4 border-t border-gray-100">
               <div className="flex flex-col gap-4">
@@ -77,12 +114,29 @@ function Layout() {
                   Offer a Ride
                 </Link>
                 <Link
-                  to="/auth"
+                  to="/business"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Sign In
+                  For Businesses
                 </Link>
+
+                {isSignedIn ? (
+                  <button
+                    onClick={handleSignOut}
+                    className="text-left text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                ) : (
+                  <Link
+                    to="/auth"
+                    className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    Sign In
+                  </Link>
+                )}
               </div>
             </div>
           )}
@@ -104,31 +158,70 @@ function Layout() {
                 <span className="font-bold text-blue-600">Barka</span>
               </div>
               <p className="text-sm text-gray-600">
-                Connecting captains and passengers across the beautiful Adriatic coast.
+                Connecting captains and passengers across the beautiful Adriatic
+                coast.
               </p>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">About</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-blue-600 transition-colors">How it works</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Safety</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Trust & Safety</a></li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    How it works
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Safety
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Trust & Safety
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Help Center</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Contact Us</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Terms of Service</a></li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Help Center
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Contact Us
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Terms of Service
+                  </a>
+                </li>
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Popular Routes</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">
+                Popular Routes
+              </h3>
               <ul className="space-y-2 text-sm text-gray-600">
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Split → Hvar</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Dubrovnik → Korčula</a></li>
-                <li><a href="#" className="hover:text-blue-600 transition-colors">Zadar → Pag</a></li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Split → Hvar
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Dubrovnik → Korčula
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    Zadar → Pag
+                  </a>
+                </li>
               </ul>
             </div>
           </div>

@@ -1,5 +1,10 @@
 import { useMemo, useState } from "react";
-import { demandByRange, traffic, RANGE_LABELS, darkTooltip } from "../data/mockData";
+import {
+  demandByRange,
+  traffic,
+  RANGE_LABELS,
+  darkTooltip,
+} from "../data/mockData";
 import {
   Area,
   AreaChart,
@@ -16,7 +21,7 @@ import Map from "../components/Map";
 function BusinessDashboard() {
   const [range, setRange] = useState("Danas");
   const [activePort, setActivePort] = useState(
-    traffic.find((p) => p.name === "Split") ?? traffic[0]
+    traffic.find((p) => p.name === "Split") ?? traffic[0],
   );
 
   const data = useMemo(() => demandByRange[range], [range]);
@@ -33,7 +38,6 @@ function BusinessDashboard() {
       <div className="pointer-events-none absolute bottom-[-10%] right-[-10%] h-[40%] w-[40%] rounded-full bg-[#0d848a] opacity-20 blur-[100px]" />
 
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-12">
-
         {/* Hero */}
         <section className="mb-12 max-w-3xl">
           <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[#53d8fb]">
@@ -69,9 +73,15 @@ function BusinessDashboard() {
                 </h2>
               </div>
               <div className="flex items-center gap-3 text-xs text-[#c5dfe0]">
-                <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-[#53d8fb]" /> moderate</span>
-                <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-[#ffbf69]" /> high</span>
-                <span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-[#ff735c]" /> peak</span>
+                <span className="flex items-center gap-1.5">
+                  <i className="h-2 w-2 rounded-full bg-[#53d8fb]" /> moderate
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <i className="h-2 w-2 rounded-full bg-[#ffbf69]" /> high
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <i className="h-2 w-2 rounded-full bg-[#ff735c]" /> peak
+                </span>
               </div>
             </div>
 
@@ -82,7 +92,10 @@ function BusinessDashboard() {
                 </p>
                 <p className="mt-1 text-lg font-bold">{activePort.name}</p>
                 <p className="mt-1 text-sm text-[#cfdfdf]">
-                  <span className="font-semibold" style={{ color: activePort.color }}>
+                  <span
+                    className="font-semibold"
+                    style={{ color: activePort.color }}
+                  >
                     {activePort.boats} boats
                   </span>
                 </p>
@@ -123,19 +136,55 @@ function BusinessDashboard() {
 
           <div className="mt-6 h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={data} margin={{ top: 10, right: 0, left: -20, bottom: 0 }}>
+              <AreaChart
+                data={data}
+                margin={{ top: 10, right: 0, left: -20, bottom: 0 }}
+              >
                 <defs>
                   <linearGradient id="fill-actual" x1="0" x2="0" y1="0" y2="1">
                     <stop offset="0%" stopColor="#53d8fb" stopOpacity=".5" />
                     <stop offset="100%" stopColor="#53d8fb" stopOpacity="0" />
                   </linearGradient>
                 </defs>
-                <CartesianGrid vertical={false} stroke="#ffffff" strokeOpacity={0.05} strokeDasharray="3 4" />
-                <XAxis dataKey="time" axisLine={false} tickLine={false} tick={{ fill: "#8dced2", fontSize: 12 }} dy={10} />
-                <YAxis axisLine={false} tickLine={false} tick={{ fill: "#8dced2", fontSize: 12 }} />
-                <Tooltip contentStyle={darkTooltip} itemStyle={{ color: "#53d8fb" }} />
-                <Area type="monotone" dataKey="forecast" stroke="#ffbf69" strokeDasharray="5 5" strokeWidth={2} fill="none" name="Forecast" />
-                <Area type="monotone" dataKey="actual" stroke="#53d8fb" strokeWidth={3} fill="url(#fill-actual)" name="Actual" />
+                <CartesianGrid
+                  vertical={false}
+                  stroke="#ffffff"
+                  strokeOpacity={0.05}
+                  strokeDasharray="3 4"
+                />
+                <XAxis
+                  dataKey="time"
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#8dced2", fontSize: 12 }}
+                  dy={10}
+                />
+                <YAxis
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "#8dced2", fontSize: 12 }}
+                />
+                <Tooltip
+                  contentStyle={darkTooltip}
+                  itemStyle={{ color: "#53d8fb" }}
+                />
+                <Area
+                  type="monotone"
+                  dataKey="forecast"
+                  stroke="#ffbf69"
+                  strokeDasharray="5 5"
+                  strokeWidth={2}
+                  fill="none"
+                  name="Forecast"
+                />
+                <Area
+                  type="monotone"
+                  dataKey="actual"
+                  stroke="#53d8fb"
+                  strokeWidth={3}
+                  fill="url(#fill-actual)"
+                  name="Actual"
+                />
               </AreaChart>
             </ResponsiveContainer>
           </div>

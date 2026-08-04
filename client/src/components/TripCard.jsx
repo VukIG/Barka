@@ -10,12 +10,11 @@ function TripCard({ trip }) {
       minute: "2-digit",
     });
 
-    
   const departure = new Date(trip.date);
   const arrival = new Date(trip.expected_arrival);
   let durationHours = ((arrival - departure) / (1000 * 60 * 60)).toFixed(1);
-  if (durationHours<0){
-    durationHours*=-1
+  if (durationHours < 0) {
+    durationHours *= -1;
   }
   return (
     <div
@@ -36,9 +35,11 @@ function TripCard({ trip }) {
                 {trip.first_name} {trip.last_name}
               </h3>
               <h3>
-                {
-                new Date(trip.date).toLocaleDateString("en-GB", {day: "numeric",month: "long", year:"numeric"})
-                }
+                {new Date(trip.date).toLocaleDateString("en-GB", {
+                  day: "numeric",
+                  month: "long",
+                  year: "numeric",
+                })}
               </h3>
               {/* Rating comes from the review table — not joined yet, placeholder for now */}
               <div className="flex items-center gap-1 text-sm text-gray-400">
@@ -50,7 +51,9 @@ function TripCard({ trip }) {
 
           {/* Price — ticket_cost */}
           <div className="text-right">
-            <div className="text-2xl font-bold text-blue-600">€{trip.ticket_cost}</div>
+            <div className="text-2xl font-bold text-blue-600">
+              €{trip.ticket_cost}
+            </div>
             <div className="text-sm text-gray-500">per person</div>
           </div>
         </div>
@@ -70,7 +73,9 @@ function TripCard({ trip }) {
           <div className="flex-1 text-right">
             <div className="text-sm text-gray-500 mb-1">Arrival</div>
             <div className="font-semibold text-gray-900">{trip.toPort}</div>
-            <div className="text-sm text-gray-600">{formatTime(trip.expected_arrival)}</div>
+            <div className="text-sm text-gray-600">
+              {formatTime(trip.expected_arrival)}
+            </div>
           </div>
         </div>
 
@@ -78,11 +83,12 @@ function TripCard({ trip }) {
         <div className="flex items-center gap-6 text-sm text-gray-600 mb-4">
           <div className="flex items-center gap-1">
             <Anchor className="w-4 h-4" />
-            <span>{trip.type}</span>          {/* boat type: "motorboat" */}
+            <span>{trip.type}</span> {/* boat type: "motorboat" */}
           </div>
           <div className="flex items-center gap-1">
             <Users className="w-4 h-4" />
-            <span>{trip.seats} seats</span>   {/* total seats; availability needs bookings */}
+            <span>{trip.seats} seats</span>{" "}
+            {/* total seats; availability needs bookings */}
           </div>
         </div>
 
