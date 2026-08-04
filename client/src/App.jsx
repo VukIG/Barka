@@ -20,7 +20,7 @@ export default function App() {
           <Route path="offer" element={<OfferRide />} />
           <Route path="auth" element={<AuthPage />} />
           <Route path="buissnes" element={<BuissnesDashboard />} />
-          <Route path="profile/" element={<Profile />} />
+          <Route path="profile/:id" element={<Profile />} />
         </Route>
       </Routes>
     </BrowserRouter>

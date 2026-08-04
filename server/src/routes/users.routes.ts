@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { authUser, createUser } from "../db/database.js";
+import { authUser, createUser, getUserProfile } from "../db/database.js";
 
 const router = Router();
 
@@ -153,6 +153,24 @@ const logoutUser = (
   });
 };
 
+const getCurrentUser = async (
+  req: Request,
+  res: Response
+) => {
+  if (!req.session.user) {
+    res.status(200).json({
+      loggedIn: false,
+      user: null,
+    });
+    return;
+  }
+
+  const userId = req.session.user.id;
+  const queryResult = await getUserProfile(userId);
+  res.status(200).json(queryResult)
+};
+
+router.get("/me",getCurrentUser);
 router.post("/logout", logoutUser);
 router.post("/logIn", loginUser);
 router.post("/signUp", signUpUser);

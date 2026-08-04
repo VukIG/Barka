@@ -128,3 +128,45 @@ export const createUser = async (
 
   return result;
 };
+
+export const getUserProfile = async (userId: any) => {
+  const [userRows]: any = await pool.query(
+    `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created,
+            COUNT(DISTINCT rv.id) AS review_count,
+            ROUND(AVG(rv.rating), 1) AS average_rating
+     FROM user u
+     LEFT JOIN review rv ON rv.reviewee_id = u.id
+     WHERE u.id = ?
+     GROUP BY u.id`,
+    [userId]
+  );
+
+  const [trips]: any = await pool.query(
+    `SELECT r.id, sp.name AS from_port, ep.name AS to_port, r.date, r.expected_arrival, r.ticket_cost, r.status, b.type AS boat_type, b.seats AS boat_seats
+     FROM ride r
+     JOIN port sp ON r.start_port_id = sp.id
+     JOIN port ep ON r.end_port_id = ep.id
+     JOIN boats b ON r.boat_id = b.id
+     WHERE r.owner_id = ?
+     ORDER BY r.date DESC`,
+    [userId]
+  );
+
+  const [userReviews]: any = await pool.query(
+    `SELECT rv.id, rv.rating, rv.description, rv.date, reviewer.user_name AS reviewer_name, sp.name AS from_port, ep.name AS to_port
+     FROM review rv
+     JOIN user reviewer ON rv.reviewer_id = reviewer.id
+     JOIN ride r ON rv.ride_id = r.id
+     JOIN port sp ON r.start_port_id = sp.id
+     JOIN port ep ON r.end_port_id = ep.id
+     WHERE rv.reviewee_id = ?
+     ORDER BY rv.date DESC`,
+    [userId]
+  );
+
+  return {
+    user: userRows[0] || null,
+    trips: trips,
+    reviews: userReviews,
+  };
+};

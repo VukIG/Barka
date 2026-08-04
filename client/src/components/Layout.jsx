@@ -6,8 +6,16 @@ function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const isSignedIn = Boolean(localStorage.getItem("user"));
   const API_URL = "http://localhost:5000";
+  const [user, setUser] = useState(undefined);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("user");
+    console.log(stored)
+    if (stored) {
+      setUser(JSON.parse(stored)); 
+    }
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -65,13 +73,24 @@ function Layout() {
                 For Businesses
               </Link>
 
-              {isSignedIn ? (
+              {user ? (
+                <>
                 <button
                   onClick={handleSignOut}
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
                 >
                   Sign Out
                 </button>
+                <div 
+                onClick={()=>{
+                  navigate(`/profile/${user.id}`)
+                }}
+                className="w-12 h-12 cursor-pointer rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700">
+                  {user.username[0]}
+                  {user.username[1]}
+                </div>
+                </>
+                
               ) : (
                 <Link
                   to="/auth"
@@ -121,7 +140,7 @@ function Layout() {
                   For Businesses
                 </Link>
 
-                {isSignedIn ? (
+                {user ? (
                   <button
                     onClick={handleSignOut}
                     className="text-left text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
