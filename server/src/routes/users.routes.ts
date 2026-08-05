@@ -3,11 +3,7 @@ import { authUser, createUser, getUserProfile } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
 const router = Router();
 
-const loginUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const loginUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body as {
       email?: string;
@@ -62,12 +58,7 @@ const loginUser = async (
   }
 };
 
-
-const signUpUser = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
       username,
@@ -83,7 +74,7 @@ const signUpUser = async (
       username?: string;
       firstName?: string;
       lastName?: string;
-      age?: string;         
+      age?: string;
       gender?: string;
       nationality?: string;
       role?: string;
@@ -91,7 +82,16 @@ const signUpUser = async (
       password?: string;
     };
 
-    if (!username || !firstName || !lastName || !age || !nationality || !role || !email || !password) {
+    if (
+      !username ||
+      !firstName ||
+      !lastName ||
+      !age ||
+      !nationality ||
+      !role ||
+      !email ||
+      !password
+    ) {
       res.status(400).json({
         success: false,
         message: "All fields except gender are required.",
@@ -103,12 +103,12 @@ const signUpUser = async (
       username,
       firstName,
       lastName,
-      Number(age),           
-      gender ?? null,        
+      Number(age),
+      gender ?? null,
       nationality,
       role,
       email,
-      password
+      password,
     );
 
     if (queryResult.affectedRows !== 1) {
@@ -138,11 +138,7 @@ const signUpUser = async (
     next(error);
   }
 };
-const logoutUser = (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const logoutUser = (req: Request, res: Response, next: NextFunction) => {
   req.session.destroy((error) => {
     if (error) {
       next(error);
@@ -153,10 +149,7 @@ const logoutUser = (
   });
 };
 
-const getCurrentUser = async (
-  req: Request,
-  res: Response
-) => {
+const getCurrentUser = async (req: Request, res: Response) => {
   if (!req.session.user) {
     res.status(200).json({
       loggedIn: false,
@@ -167,11 +160,11 @@ const getCurrentUser = async (
 
   const userId = req.session.user.id;
   const queryResult = await getUserProfile(userId);
-  res.status(200).json(queryResult)
+  res.status(200).json(queryResult);
 };
 
-router.get("/me",requireLogin, getCurrentUser);
-router.post("/logout",requireLogin, logoutUser);
+router.get("/me", requireLogin, getCurrentUser);
+router.post("/logout", requireLogin, logoutUser);
 router.post("/logIn", loginUser);
 router.post("/signUp", signUpUser);
 

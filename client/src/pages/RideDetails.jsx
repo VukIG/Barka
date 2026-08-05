@@ -1,7 +1,6 @@
 import { useParams, useNavigate } from "react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
-  MapPin,
   Clock,
   Anchor,
   Users,
@@ -11,7 +10,7 @@ import {
   ArrowLeft,
   Check,
 } from "lucide-react";
-import { mockTrips, reviews } from "../data/mockData";
+import { API_URL } from "../config/api";
 
 function renderStars(rating) {
   const stars = [];
@@ -35,15 +34,49 @@ function renderSeatOptions(maxSeats) {
   return options;
 }
 
-function TripDetails() {
+function formatDate(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+  });
+}
+
+function formatTime(iso) {
+  if (!iso) return "";
+  return new Date(iso).toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+function formatDuration(startIso, endIso) {
+  if (!startIso || !endIso) return "";
+  const ms = new Date(endIso) - new Date(startIso);
+  if (ms <= 0) return "";
+  const totalMinutes = Math.round(ms / 60000);
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `${hours}h ${minutes}m`;
+}
+
+function RideDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [rideData, setRideData] = useState();
   const [selectedSeats, setSelectedSeats] = useState(1);
   const [showBookingConfirm, setShowBookingConfirm] = useState(false);
 
-  const trip = mockTrips.find((t) => t.id === id);
+  useEffect(() => {
+    fetch(`${API_URL}/rides/${id}`)
+      .then((response) => response.json())
+      .then((data) => setRideData(data))
+      .catch((err) => console.log("Error loading rides:", err));
+  }, [id]);
 
-  if (!trip) {
+  if (!rideData || !rideData.ride) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
@@ -61,8 +94,17 @@ function TripDetails() {
     );
   }
 
-  const tripReviews = reviews.filter((r) => r.userId !== trip.captain.id);
-  const totalPrice = trip.price * selectedSeats;
+  const ride = rideData.ride;
+  const reviewList = rideData.reviews || [];
+
+  const totalSeats = Number(ride.total_seats);
+  const seatsTaken = Number(ride.seats_taken);
+  const availableSeats = totalSeats - seatsTaken;
+  const percentTaken = totalSeats > 0
+    ? Math.round((seatsTaken / totalSeats) * 100)
+    : 0;
+
+  const totalPrice = (ride.price * selectedSeats).toFixed(2);
 
   const handleBooking = () => {
     setShowBookingConfirm(true);
@@ -100,7 +142,7 @@ function TripDetails() {
             {/* Trip Info */}
             <div className="bg-white rounded-lg shadow-md p-6">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
-                {trip.from} → {trip.to}
+                {ride.start_port} → {ride.end_port}
               </h1>
 
               {/* Route Details */}
@@ -108,28 +150,28 @@ function TripDetails() {
                 <div>
                   <div className="text-sm text-gray-600 mb-1">Departure</div>
                   <div className="font-semibold text-gray-900 mb-1">
-                    {trip.from}
+                    {ride.start_port}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {trip.pickupPoint}
+                    {ride.departure_site || "Meeting point shared after booking"}
                   </div>
                   <div className="flex items-center gap-1 text-sm text-blue-600 mt-2">
                     <Clock className="w-4 h-4" />
                     <span>
-                      {trip.date} at {trip.time}
+                      {formatDate(ride.date)} at {formatTime(ride.date)}
                     </span>
                   </div>
                 </div>
                 <div className="text-left md:text-right">
                   <div className="text-sm text-gray-600 mb-1">Arrival</div>
                   <div className="font-semibold text-gray-900 mb-1">
-                    {trip.to}
+                    {ride.end_port}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {trip.dropoffPoint}
+                    {ride.arrival_site || "Drop-off shared after booking"}
                   </div>
                   <div className="text-sm text-gray-600 mt-2">
-                    Duration: {trip.duration}
+                    Duration: {formatDuration(ride.date, ride.expected_arrival)}
                   </div>
                 </div>
               </div>
@@ -142,42 +184,27 @@ function TripDetails() {
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex items-center gap-2 text-gray-700">
                     <Anchor className="w-5 h-5 text-blue-600" />
-                    <span>{trip.boatType}</span>
+                    <span>
+                      {ride.boat_name} · {ride.boat_type.replace("_", " ")}
+                    </span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <Users className="w-5 h-5 text-blue-600" />
                     <span>
-                      {trip.seatsAvailable} of {trip.totalSeats} seats available
+                      {availableSeats} of {totalSeats} seats available
+                      <span className="text-gray-400"> ({percentTaken}% taken)</span>
                     </span>
                   </div>
-                </div>
-              </div>
-
-              {/* Amenities */}
-              <div className="mb-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  Amenities
-                </h2>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                  {trip.amenities.map((amenity) => (
-                    <div
-                      key={amenity}
-                      className="flex items-center gap-2 text-gray-700 bg-gray-50 px-3 py-2 rounded-lg"
-                    >
-                      <Check className="w-4 h-4 text-green-600" />
-                      <span className="text-sm">{amenity}</span>
-                    </div>
-                  ))}
                 </div>
               </div>
 
               {/* Description */}
               <div>
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  About this trip
+                  About this ride
                 </h2>
                 <p className="text-gray-700 leading-relaxed">
-                  {trip.description}
+                  {ride.description}
                 </p>
               </div>
             </div>
@@ -188,17 +215,16 @@ function TripDetails() {
                 Your Captain
               </h2>
               <div className="flex items-start gap-4">
-                <img
-                  src={trip.captain.avatar}
-                  alt={trip.captain.name}
-                  className="w-20 h-20 rounded-full object-cover"
-                />
+                {/* No avatar in the data — show the first initial in a circle. */}
+                <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold">
+                  {ride.captain_name.charAt(0).toUpperCase()}
+                </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2 mb-2">
                     <h3 className="text-lg font-semibold text-gray-900">
-                      {trip.captain.name}
+                      {ride.captain_name}
                     </h3>
-                    {trip.captain.verified && (
+                    {ride.captain_verified === 1 && (
                       <div className="flex items-center gap-1 text-sm text-blue-600">
                         <Shield className="w-4 h-4" />
                         <span>Verified</span>
@@ -206,14 +232,7 @@ function TripDetails() {
                     )}
                   </div>
                   <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-                    <div className="flex items-center gap-1">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                      <span>
-                        {trip.captain.rating} ({trip.captain.reviewCount}{" "}
-                        reviews)
-                      </span>
-                    </div>
-                    <span>Member since {trip.captain.memberSince}</span>
+                    <span>Member since {formatDate(ride.member_since)}</span>
                   </div>
                   <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
                     <MessageCircle className="w-4 h-4" />
@@ -224,39 +243,40 @@ function TripDetails() {
             </div>
 
             {/* Reviews */}
-            {tripReviews.length > 0 && (
+            {reviewList.length > 0 && (
               <div className="bg-white rounded-lg shadow-md p-6">
                 <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                  Reviews
+                  Reviews ({reviewList.length})
                 </h2>
                 <div className="space-y-4">
-                  {tripReviews.map((review) => (
+                  {reviewList.map((review) => (
                     <div
-                      key={review.id}
+                      key={review.review_id}
                       className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
                     >
                       <div className="flex items-start gap-3">
-                        <img
-                          src={review.userAvatar}
-                          alt={review.userName}
-                          className="w-10 h-10 rounded-full object-cover"
-                        />
+                        <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-semibold">
+                          {review.reviewer_name.charAt(0).toUpperCase()}
+                        </div>
                         <div className="flex-1">
                           <div className="flex items-center gap-2 mb-1">
                             <span className="font-semibold text-gray-900">
-                              {review.userName}
+                              {review.reviewer_name}
                             </span>
                             <div className="flex items-center gap-1">
                               {renderStars(review.rating)}
                             </div>
                           </div>
-                          <p className="text-sm text-gray-700 mb-1">
-                            {review.comment}
-                          </p>
+                          {/* description can be null — only render when present. */}
+                          {review.description && (
+                            <p className="text-sm text-gray-700 mb-1">
+                              {review.description}
+                            </p>
+                          )}
                           <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <span>{review.route}</span>
+                            <span>{review.from_port} → {review.to_port}</span>
                             <span>•</span>
-                            <span>{review.date}</span>
+                            <span>{formatDate(review.date)}</span>
                           </div>
                         </div>
                       </div>
@@ -272,12 +292,12 @@ function TripDetails() {
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
               <div className="text-center mb-6">
                 <div className="text-4xl font-bold text-blue-600 mb-1">
-                  €{trip.price}
+                  €{ride.price}
                 </div>
                 <div className="text-sm text-gray-500">per person</div>
               </div>
 
-              {/* Seat Selection */}
+              {/* Seat Selection — capped at seats actually free. */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Number of seats
@@ -287,7 +307,7 @@ function TripDetails() {
                   onChange={(e) => setSelectedSeats(Number(e.target.value))}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
-                  {renderSeatOptions(trip.seatsAvailable)}
+                  {renderSeatOptions(availableSeats)}
                 </select>
               </div>
 
@@ -295,7 +315,7 @@ function TripDetails() {
               <div className="mb-6 p-4 bg-gray-50 rounded-lg">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
                   <span>
-                    €{trip.price} × {selectedSeats}{" "}
+                    €{ride.price} × {selectedSeats}{" "}
                     {selectedSeats === 1 ? "seat" : "seats"}
                   </span>
                   <span>€{totalPrice}</span>
@@ -335,4 +355,4 @@ function TripDetails() {
   );
 }
 
-export default TripDetails;
+export default RideDetails;

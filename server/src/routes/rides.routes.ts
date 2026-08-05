@@ -1,15 +1,14 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { createRideItem, filteredRides, getSpecificRide } from "../db/database.js";
+import {
+  createRideItem,
+  filteredRides,
+  getSpecificRide,
+} from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
-
 
 const router = Router();
 
-const addrideItem = async (
-  req: Request,
-  res: Response,
-  next: NextFunction
-) => {
+const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
       ownerId,
@@ -21,7 +20,7 @@ const addrideItem = async (
       departureTime,
       arrivalTime,
     } = req.body as {
-      ownerId: number,
+      ownerId: number;
       boatType: string;
       description: string;
       from: string;
@@ -31,9 +30,10 @@ const addrideItem = async (
       arrivalTime: string;
     };
 
-    console.log(ownerId)
     if (!from || !to || !price || !departureTime || !arrivalTime) {
-      res.status(400).json({ success: false, message: "Missing required ride fields." });
+      res
+        .status(400)
+        .json({ success: false, message: "Missing required ride fields." });
       return;
     }
 
@@ -47,13 +47,13 @@ const addrideItem = async (
     }
 
     const queryResult = await createRideItem(
-      ownerId,             // ownerId (dummy for now)
-      1,              // boatId  (dummy for now)
-      from,           // -> start_port_id 
-      to,             // -> end_port_id
-      price,          // -> ticket_cost
-      departureTime,  // -> departure -> `date`
-      arrivalTime,    // -> arrival   -> expected_arrival
+      ownerId, // ownerId (dummy for now)
+      1, // boatId  (dummy for now)
+      from, // -> start_port_id
+      to, // -> end_port_id
+      price, // -> ticket_cost
+      departureTime, // -> departure -> `date`
+      arrivalTime, // -> arrival   -> expected_arrival
       description,
     );
 
@@ -62,7 +62,9 @@ const addrideItem = async (
       return;
     }
 
-    res.status(500).json({ success: false, message: "ride item was not added." });
+    res
+      .status(500)
+      .json({ success: false, message: "ride item was not added." });
   } catch (error) {
     next(error);
   }
@@ -71,7 +73,7 @@ const addrideItem = async (
 const getFilteredRides = async (
   req: Request,
   res: Response,
-  next: NextFunction
+  next: NextFunction,
 ) => {
   try {
     const from = req.query.from as string;
@@ -84,8 +86,39 @@ const getFilteredRides = async (
   }
 };
 
+const getRideDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { id } = req.params;
+
+    if (!/^\d+$/.test(id)) {
+      res.status(400).json({
+        success: false,
+        message: "Ride id must be a number.",
+      });
+      return;
+    }
+
+    const queryResult = await getSpecificRide(id);
+    if (!queryResult) {
+      res.status(404).json({
+        success: false,
+        message: "No ride found.",
+      });
+      return;
+    }
+
+    res.status(200).json(queryResult);
+  } catch (error) {
+    next(error);
+  }
+};
+
 router.get("/search", getFilteredRides);
-router.post("/add",requireLogin, addrideItem);
-router.get("/ride/:id", getSpecificRide)
+router.post("/add", requireLogin, addrideItem);
+router.get("/:id", getRideDetails);
 
 export default router;

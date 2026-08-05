@@ -8,10 +8,12 @@ import session from "express-session";
 const app = express();
 const port = Number(process.env.PORT) || 5000;
 
-app.use(cors({
-  origin: "http://localhost:5173", 
-  credentials: true,
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  }),
+);
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "temporary-development-secret",
@@ -23,7 +25,7 @@ app.use(
       secure: false,
       maxAge: 1000 * 60 * 60,
     },
-  })
+  }),
 );
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

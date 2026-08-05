@@ -2,7 +2,7 @@ import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import { Anchor, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
 import { getCurrentSession, logoutUser } from "../api/session";
-
+import {OrbitProgress} from "react-loading-indicators"
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -40,7 +40,9 @@ function Layout() {
   }, [location.pathname]);
 
   if (isLoading) {
-    return <div>LOADING PAGE...</div>;
+    return <div className="absolute top-1/2 left-1/2">
+      <OrbitProgress color="#318dcc" size="medium" text="" textColor="#ffffff" />
+    </div>;
   }
 
   return (

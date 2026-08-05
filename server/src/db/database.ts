@@ -12,8 +12,8 @@ const pool = mysql.createPool({
 });
 
 export interface RideItem extends RowDataPacket {
-  first_name: string,
-  last_name: string,
+  first_name: string;
+  last_name: string;
   id: number;
   ticket_cost: number;
   date: string;
@@ -34,7 +34,7 @@ export interface UserLogin extends RowDataPacket {
 export const filteredRides = async (
   from: string,
   to: string,
-  date: string
+  date: string,
 ): Promise<RideItem[]> => {
   const [rows] = await pool.query<RideItem[]>(
     `
@@ -54,19 +54,19 @@ export const filteredRides = async (
       AND end_port.name = ?
       AND DATE(ride.date) > ?
     `,
-    [from, to, date]
+    [from, to, date],
   );
   return rows;
 };
 
 export const createRideItem = async (
-  ownerId: number,         
-  boatId: number,        
-  from: string,    
-  to: string,   
-  price: string,          
-  departure: string,     
-  arrival: string,        
+  ownerId: number,
+  boatId: number,
+  from: string,
+  to: string,
+  price: string,
+  departure: string,
+  arrival: string,
   description: string,
 ): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
@@ -89,13 +89,13 @@ export const createRideItem = async (
     [
       Number(ownerId),
       boatId,
-      from,          
-      to,         
-      Number(price),        
+      from,
+      to,
+      Number(price),
       arrival,
       departure,
       description,
-    ]
+    ],
   );
 
   return result;
@@ -104,7 +104,7 @@ export const createRideItem = async (
 export const authUser = async (email: string): Promise<UserLogin[]> => {
   const [rows] = await pool.query<UserLogin[]>(
     "SELECT * FROM user WHERE user.email = ?",
-    [email]
+    [email],
   );
   return rows;
 };
@@ -118,13 +118,23 @@ export const createUser = async (
   nationality: string,
   role: string,
   email: string,
-  password: string
+  password: string,
 ): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO user
        (user_name, first_name, last_name, age, gender, nationality, role, email, password)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-    [username, firstName, lastName, age, gender, nationality, role, email, password]
+    [
+      username,
+      firstName,
+      lastName,
+      age,
+      gender,
+      nationality,
+      role,
+      email,
+      password,
+    ],
   );
 
   return result;
@@ -139,7 +149,7 @@ export const getUserProfile = async (userId: number) => {
      LEFT JOIN review rv ON rv.reviewee_id = u.id
      WHERE u.id = ?
      GROUP BY u.id`,
-    [userId]
+    [userId],
   );
 
   const [trips]: any = await pool.query(
@@ -150,7 +160,7 @@ export const getUserProfile = async (userId: number) => {
      JOIN boats b ON r.boat_id = b.id
      WHERE r.owner_id = ?
      ORDER BY r.date DESC`,
-    [userId]
+    [userId],
   );
 
   const [userReviews]: any = await pool.query(
@@ -162,7 +172,7 @@ export const getUserProfile = async (userId: number) => {
      JOIN port ep ON r.end_port_id = ep.id
      WHERE rv.reviewee_id = ?
      ORDER BY rv.date DESC`,
-    [userId]
+    [userId],
   );
 
   return {
@@ -172,9 +182,72 @@ export const getUserProfile = async (userId: number) => {
   };
 };
 
-export const getSpecificRide = async (rideId: number) => {
-  const [rideData]:any = await pool.query(
-    `SELECT * FROM ride WHERE ride.id = ?`,
-    [rideId]
-  )
-}
+export const getSpecificRide = async (rideId: string) => {
+  const id = Number(rideId);
+
+  const [rideRows]: any = await pool.query(
+    `SELECT
+       ride.id               AS ride_id,
+       ride.ticket_cost      AS price,
+       ride.description      AS description,
+       ride.date             AS date,
+       ride.expected_arrival AS expected_arrival,
+       ride.status           AS status,
+
+      sp.name               AS start_port,
+     ep.name               AS end_port,
+     ride.departure_site   AS departure_site,   -- specific pier, not the city
+     ride.arrival_site     AS arrival_site,
+
+     boats.name            AS boat_name,
+     boats.type            AS boat_type,
+     boats.seats           AS total_seats,
+
+     (SELECT COALESCE(SUM(number_of_tickets), 0)
+      FROM booking
+      WHERE booking.ride_id = ride.id
+        AND booking.status_confirmed = TRUE)  AS seats_taken,
+
+       owner.id              AS captain_id,
+       owner.user_name       AS captain_name,
+       owner.verified        AS captain_verified,
+       owner.created         AS member_since
+     FROM ride
+     JOIN port  sp    ON ride.start_port_id = sp.id
+     JOIN port  ep    ON ride.end_port_id   = ep.id
+     JOIN user  owner ON ride.owner_id      = owner.id
+     JOIN boats       ON ride.boat_id       = boats.id
+     WHERE ride.id = ?`,
+    [id],
+  );
+
+  const ride = rideRows[0];
+
+  if (!ride) {
+    return {};
+  }
+
+  const [reviewRows]: any = await pool.query(
+    `SELECT
+       rv.id              AS review_id,
+       rv.rating          AS rating,
+       rv.description     AS description,
+       rv.date            AS date,
+       reviewer.user_name AS reviewer_name,
+       sp.name            AS from_port,
+       ep.name            AS to_port
+     FROM review rv
+     JOIN user  reviewer ON rv.reviewer_id  = reviewer.id
+     JOIN ride  r        ON rv.ride_id       = r.id
+     JOIN port  sp       ON r.start_port_id  = sp.id
+     JOIN port  ep       ON r.end_port_id    = ep.id
+     WHERE rv.reviewee_id = ?
+     ORDER BY rv.date DESC`,
+    [ride.captain_id],
+  );
+
+  return {
+    ride,
+    reviews: reviewRows,
+  };
+};
