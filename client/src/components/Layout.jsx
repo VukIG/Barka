@@ -32,6 +32,8 @@ function Layout() {
     await logoutUser();
     setUser(null);
     setMobileMenuOpen(false);
+    localStorage.clear();
+    sessionStorage.clear();
     navigate("/auth");
   };
 

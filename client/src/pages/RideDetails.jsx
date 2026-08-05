@@ -11,6 +11,7 @@ import {
   Check,
 } from "lucide-react";
 import { API_URL } from "../config/api";
+import { getCurrentSession } from "../api/session";
 
 function renderStars(rating) {
   const stars = [];
@@ -100,18 +101,22 @@ function RideDetails() {
   const totalSeats = Number(ride.total_seats);
   const seatsTaken = Number(ride.seats_taken);
   const availableSeats = totalSeats - seatsTaken;
-  const percentTaken = totalSeats > 0
-    ? Math.round((seatsTaken / totalSeats) * 100)
-    : 0;
-
   const totalPrice = (ride.price * selectedSeats).toFixed(2);
 
+  const user = JSON.parse(localStorage.getItem("user"))
+
   const handleBooking = () => {
-    setShowBookingConfirm(true);
-    setTimeout(() => {
-      setShowBookingConfirm(false);
-    }, 3000);
+    if(user){
+      setShowBookingConfirm(true);
+      setTimeout(() => {
+        setShowBookingConfirm(false);
+      }, 3000);
+    }else{
+      navigate("/auth")
+    }
+    
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -192,7 +197,6 @@ function RideDetails() {
                     <Users className="w-5 h-5 text-blue-600" />
                     <span>
                       {availableSeats} of {totalSeats} seats available
-                      <span className="text-gray-400"> ({percentTaken}% taken)</span>
                     </span>
                   </div>
                 </div>
