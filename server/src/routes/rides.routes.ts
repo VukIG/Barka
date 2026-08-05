@@ -117,10 +117,8 @@ const getRideDetails = async (
   }
 };
 
-router.get("/:id", getRideDetails);
-
-router.get("/:id", getRideDetails);
 router.get("/search", getFilteredRides);
 router.post("/add", requireLogin, addrideItem);
+router.get("/:id", getRideDetails);
 
 export default router;

@@ -18,7 +18,7 @@ function TripCard({ ride }) {
   }
   return (
     <div
-      onClick={() => navigate(`/ride/${ride.id}`)}
+      onClick={() => navigate(`/rides/${ride.id}`)}
       className="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow cursor-pointer overflow-hidden"
     >
       <div className="p-6">
