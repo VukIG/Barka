@@ -76,7 +76,7 @@ function TripCard({ ride }) {
         <div className="flex items-center gap-6 text-sm text-gray-600 mb-4">
           <div className="flex items-center gap-1">
             <Anchor className="w-4 h-4" />
-            <span>{ride.type}</span> 
+            <span>{ride.type}</span>
           </div>
           <div className="flex items-center gap-1">
             <Users className="w-4 h-4" />

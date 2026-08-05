@@ -188,6 +188,7 @@ export const getSpecificRide = async (rideId: string) => {
 
   const [rideRows]: any = await pool.query(
     `SELECT
+      ride.image_path        AS image,
        ride.id               AS ride_id,
        ride.ticket_cost      AS price,
        ride.description      AS description,

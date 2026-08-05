@@ -5,9 +5,17 @@ import {
   RANGE_LABELS,
   darkTooltip,
 } from "../data/mockData";
-import { Anchor, ArrowRight, Sparkles, Utensils, CalendarClock, Target, Landmark } from "lucide-react";
+import {
+  Anchor,
+  ArrowRight,
+  Sparkles,
+  Utensils,
+  CalendarClock,
+  Target,
+  Landmark,
+} from "lucide-react";
 import Map from "../components/Map";
-import {RankViz,BarsViz, DonutViz, GaugeViz} from "../utils/Visualisations"
+import { RankViz, BarsViz, DonutViz, GaugeViz } from "../utils/Visualisations";
 
 function BusinessDashboard() {
   const [range, setRange] = useState("Danas");
@@ -35,7 +43,6 @@ function BusinessDashboard() {
       <div className="relative z-10 mx-auto max-w-5xl px-4 py-12">
         {/* Hero */}
         <section className="mb-12 max-w-3xl">
-        
           <h2 className="text-4xl font-black leading-[1.1] tracking-tight sm:text-5xl">
             Turn boat traffic into{" "}
             <span className="bg-gradient-to-r from-[#53d8fb] to-[#ffbf69] bg-clip-text text-transparent">
@@ -46,110 +53,124 @@ function BusinessDashboard() {
             Live, GDPR-compliant signals on arrivals and demand. Ready for
             restaurants, port authorities, and tourist agencies.
           </p>
-          
         </section>
 
+        {/* Who it's for */}
+        <section className="fade-up mb-6">
+          <div className="mt-8 grid gap-5 md:grid-cols-2">
+            {/* Restaurants */}
+            <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#53d8fb]/10 text-[#53d8fb]">
+                  <Utensils className="h-5 w-5" />
+                </span>
+                <h3 className="text-lg font-bold">Restaurants</h3>
+              </div>
+              <p className="mt-3 text-sm text-[#8dced2]">
+                Know when the crowds land. See arrival surges near your tables
+                and push an offer the moment boats dock.
+              </p>
+              <div className="mt-5">
+                <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#6f9aa2]">
+                  Arrivals by hour
+                </p>
+                <BarsViz
+                  peakIndex={4}
+                  data={[
+                    { label: "10", value: 22 },
+                    { label: "12", value: 40 },
+                    { label: "14", value: 33 },
+                    { label: "16", value: 48 },
+                    { label: "18", value: 68 },
+                    { label: "20", value: 54 },
+                  ]}
+                />
+              </div>
+            </article>
 
-      {/* Who it's for */}
-<section className="fade-up mb-6">
+            {/* Tourist agencies */}
+            <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#ffbf69]/10 text-[#ffbf69]">
+                  <CalendarClock className="h-5 w-5" />
+                </span>
+                <h3 className="text-lg font-bold">Tourist agencies</h3>
+              </div>
+              <p className="mt-3 text-sm text-[#8dced2]">
+                Schedule smarter than the competition. Build efficient
+                timetables and see which routes are heating up.
+              </p>
+              <div className="mt-5">
+                <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#6f9aa2]">
+                  Top routes by demand
+                </p>
+                <RankViz
+                  data={[
+                    { label: "Split → Hvar", value: 92 },
+                    { label: "Dubrovnik → Kotor", value: 74 },
+                    { label: "Zadar → Pag", value: 58 },
+                    { label: "Pula → Rovinj", value: 41 },
+                  ]}
+                />
+              </div>
+            </article>
 
-  <div className="mt-8 grid gap-5 md:grid-cols-2">
-    {/* Restaurants */}
-    <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
-      <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#53d8fb]/10 text-[#53d8fb]">
-          <Utensils className="h-5 w-5" />
-        </span>
-        <h3 className="text-lg font-bold">Restaurants</h3>
-      </div>
-      <p className="mt-3 text-sm text-[#8dced2]">
-        Know when the crowds land. See arrival surges near your tables and push an offer the moment boats dock.
-      </p>
-      <div className="mt-5">
-        <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#6f9aa2]">Arrivals by hour</p>
-        <BarsViz
-          peakIndex={4}
-          data={[
-            { label: "10", value: 22 }, { label: "12", value: 40 },
-            { label: "14", value: 33 }, { label: "16", value: 48 },
-            { label: "18", value: 68 }, { label: "20", value: 54 },
-          ]}
-        />
-      </div>
-    </article>
+            {/* Tech companies */}
+            <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#a78bfa]/10 text-[#a78bfa]">
+                  <Target className="h-5 w-5" />
+                </span>
+                <h3 className="text-lg font-bold">Tech &amp; ad platforms</h3>
+              </div>
+              <p className="mt-3 text-sm text-[#8dced2]">
+                Ads that read the tide. Feed live visitor signals into your
+                stack for sharper, GDPR-safe personalization.
+              </p>
+              <div className="mt-5">
+                <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#6f9aa2]">
+                  Visitor segments
+                </p>
+                <DonutViz
+                  segments={[
+                    { label: "Day-trippers", value: 44, color: "#53d8fb" },
+                    { label: "Overnight", value: 33, color: "#ffbf69" },
+                    { label: "Luxury charter", value: 23, color: "#ff735c" },
+                  ]}
+                />
+              </div>
+            </article>
 
-    {/* Tourist agencies */}
-    <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
-      <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#ffbf69]/10 text-[#ffbf69]">
-          <CalendarClock className="h-5 w-5" />
-        </span>
-        <h3 className="text-lg font-bold">Tourist agencies</h3>
-      </div>
-      <p className="mt-3 text-sm text-[#8dced2]">
-        Schedule smarter than the competition. Build efficient timetables and see which routes are heating up.
-      </p>
-      <div className="mt-5">
-        <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#6f9aa2]">Top routes by demand</p>
-        <RankViz
-          data={[
-            { label: "Split → Hvar", value: 92 },
-            { label: "Dubrovnik → Kotor", value: 74 },
-            { label: "Zadar → Pag", value: 58 },
-            { label: "Pula → Rovinj", value: 41 },
-          ]}
-        />
-      </div>
-    </article>
-
-    {/* Tech companies */}
-    <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
-      <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#a78bfa]/10 text-[#a78bfa]">
-          <Target className="h-5 w-5" />
-        </span>
-        <h3 className="text-lg font-bold">Tech &amp; ad platforms</h3>
-      </div>
-      <p className="mt-3 text-sm text-[#8dced2]">
-        Ads that read the tide. Feed live visitor signals into your stack for sharper, GDPR-safe personalization.
-      </p>
-      <div className="mt-5">
-        <p className="mb-2 text-[10px] uppercase tracking-[0.14em] text-[#6f9aa2]">Visitor segments</p>
-        <DonutViz
-          segments={[
-            { label: "Day-trippers", value: 44, color: "#53d8fb" },
-            { label: "Overnight", value: 33, color: "#ffbf69" },
-            { label: "Luxury charter", value: 23, color: "#ff735c" },
-          ]}
-        />
-      </div>
-    </article>
-
-      {/* Government / port authorities */}
-      <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
-        <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#ff735c]/10 text-[#ff735c]">
-            <Landmark className="h-5 w-5" />
-          </span>
-          <h3 className="text-lg font-bold">Government &amp; port authorities</h3>
-        </div>
-        <p className="mt-3 text-sm text-[#8dced2]">
-          Oversee the coast in real time. Track congestion, cross-border flows, and capacity from one live view.
-        </p>
-        <div className="mt-5 flex items-center justify-between gap-4">
-          <GaugeViz value={78} label="Peak port capacity" />
-          <div className="text-right">
-            <p className="text-2xl font-black text-white">1,240</p>
-            <p className="text-[11px] text-[#8dced2]">cross-border trips / week</p>
+            {/* Government / port authorities */}
+            <article className="group rounded-3xl border border-white/10 bg-white/5 p-6 backdrop-blur-md transition-colors hover:border-[#53d8fb]/40">
+              <div className="flex items-center gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#ff735c]/10 text-[#ff735c]">
+                  <Landmark className="h-5 w-5" />
+                </span>
+                <h3 className="text-lg font-bold">
+                  Government &amp; port authorities
+                </h3>
+              </div>
+              <p className="mt-3 text-sm text-[#8dced2]">
+                Oversee the coast in real time. Track congestion, cross-border
+                flows, and capacity from one live view.
+              </p>
+              <div className="mt-5 flex items-center justify-between gap-4">
+                <GaugeViz value={78} label="Peak port capacity" />
+                <div className="text-right">
+                  <p className="text-2xl font-black text-white">1,240</p>
+                  <p className="text-[11px] text-[#8dced2]">
+                    cross-border trips / week
+                  </p>
+                </div>
+              </div>
+            </article>
           </div>
-        </div>
-      </article>
-    </div>
-  </section>
-  
+        </section>
+
         {/* Map */}
         <section className="fade-up mb-6">
-         <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-md">
+          <div className="overflow-hidden rounded-3xl border border-white/10 bg-white/5 shadow-2xl backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-white/10 px-6 py-5">
               <div>
                 <h2 className="mt-1 text-xl font-bold tracking-[-0.02em]">
@@ -184,7 +205,6 @@ function BusinessDashboard() {
                 </p>
               </div>
               <Map ports={traffic} onPortSelect={setActivePort} />
-
             </div>
           </div>
         </section>
@@ -201,8 +221,6 @@ function BusinessDashboard() {
             Contact us
           </button>
         </section>
-
-        
       </div>
     </div>
   );

@@ -13,20 +13,17 @@ import { mockTrips, reviews } from "../data/mockData";
 import { useEffect, useState } from "react";
 import { API_URL } from "../config/api";
 
-
 export default function Profile({}) {
-
-  const [profileData, setProfileData ] = useState()
-  useEffect(()=>{
-    fetch(`${API_URL}/users/me`, {credentials: "include"})
+  const [profileData, setProfileData] = useState();
+  useEffect(() => {
+    fetch(`${API_URL}/users/me`, { credentials: "include" })
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
         setProfileData(data);
       })
       .catch((err) => console.log("Error loading rides:", err));
-      
-  },[])
+  }, []);
 
   const navigate = useNavigate();
   const userTrips = mockTrips;
@@ -76,26 +73,31 @@ export default function Profile({}) {
               <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
                 <div className="flex items-center gap-1">
                   <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
-                  <span className="font-semibold">{profileData.user.average_rating}</span>
+                  <span className="font-semibold">
+                    {profileData.user.average_rating}
+                  </span>
                   <span className="text-gray-600">
                     ({profileData.user.reviewCount} reviews)
                   </span>
                 </div>
                 <span className="text-gray-400">•</span>
                 <span className="text-gray-600">
-                  Member since: {
-                  new Date(profileData.user.created).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}
+                  Member since:{" "}
+                  {new Date(profileData.user.created).toLocaleDateString(
+                    "en-GB",
+                    {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    },
+                  )}
                 </span>
               </div>
               <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                  <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                    <Edit className="w-4 h-4" />
-                    <span>Edit Profile</span>
-                  </button>
+                <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                  <Edit className="w-4 h-4" />
+                  <span>Edit Profile</span>
+                </button>
               </div>
             </div>
           </div>
@@ -172,7 +174,9 @@ export default function Profile({}) {
                               day: "numeric",
                               month: "long",
                               year: "numeric",
-                            })} at {new Date(trip.date).toLocaleTimeString("en-GB", {
+                            })}{" "}
+                            at{" "}
+                            {new Date(trip.date).toLocaleTimeString("en-GB", {
                               hour: "2-digit",
                               minute: "2-digit",
                             })}
@@ -225,11 +229,16 @@ export default function Profile({}) {
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span>{review.route}</span>
                             <span>•</span>
-                            <span>{new Date(review.date).toLocaleDateString("en-GB", {
-                              day: "numeric",
-                              month: "long",
-                              year: "numeric",
-                            })}</span>
+                            <span>
+                              {new Date(review.date).toLocaleDateString(
+                                "en-GB",
+                                {
+                                  day: "numeric",
+                                  month: "long",
+                                  year: "numeric",
+                                },
+                              )}
+                            </span>
                           </div>
                         </div>
                         <div className="flex items-center gap-1">

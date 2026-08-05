@@ -23,6 +23,7 @@ Retrieved 2026-08-05, License - CC BY-SA 4.0
 */
 app.use(helmet());
 
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "temporary-development-secret",
@@ -45,8 +46,14 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.use("/rides", ridesRouter);
 app.use("/users", usersRouter);
-app.use("/uploads", express.static("src/uploads"));
-
+app.use(
+  "/uploads",
+  (_req, res, next) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    next();
+  },
+  express.static("src/uploads"),
+);
 app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
   console.error(error);
 

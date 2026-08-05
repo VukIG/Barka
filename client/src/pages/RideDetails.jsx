@@ -1,4 +1,4 @@
-import { useParams, useNavigate } from "react-router";
+import { useParams, useNavigate, data } from "react-router";
 import { useEffect, useState } from "react";
 import {
   Clock,
@@ -75,6 +75,7 @@ function RideDetails() {
       .then((response) => response.json())
       .then((data) => setRideData(data))
       .catch((err) => console.log("Error loading rides:", err));
+    console.log(data);
   }, [id]);
 
   if (!rideData || !rideData.ride) {
@@ -103,20 +104,18 @@ function RideDetails() {
   const availableSeats = totalSeats - seatsTaken;
   const totalPrice = (ride.price * selectedSeats).toFixed(2);
 
-  const user = JSON.parse(localStorage.getItem("user"))
+  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleBooking = () => {
-    if(user){
+    if (user) {
       setShowBookingConfirm(true);
       setTimeout(() => {
         setShowBookingConfirm(false);
       }, 3000);
-    }else{
-      navigate("/auth")
+    } else {
+      navigate("/auth");
     }
-    
   };
-
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -137,8 +136,12 @@ function RideDetails() {
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="h-64 md:h-96">
                 <img
-                  src="https://images.unsplash.com/photo-1741197728497-236c57cc880e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzcGVlZGJvYXQlMjB3YXRlciUyMHRyYW5zcG9ydGF0aW9ufGVufDF8fHx8MTc3NDYxNjYwNXww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-                  alt="Boat"
+                  src={
+                    rideData.ride.image
+                      ? `${API_URL}/${rideData.ride.image}`
+                      : "https://images.unsplash.com/photo-1741197728497-236c57cc880e?..."
+                  }
+                  alt={`${ride.start_port} to ${ride.end_port}`}
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -158,7 +161,8 @@ function RideDetails() {
                     {ride.start_port}
                   </div>
                   <div className="text-sm text-gray-600">
-                    {ride.departure_site || "Meeting point shared after booking"}
+                    {ride.departure_site ||
+                      "Meeting point shared after booking"}
                   </div>
                   <div className="flex items-center gap-1 text-sm text-blue-600 mt-2">
                     <Clock className="w-4 h-4" />
@@ -271,14 +275,15 @@ function RideDetails() {
                               {renderStars(review.rating)}
                             </div>
                           </div>
-                          {/* description can be null — only render when present. */}
                           {review.description && (
                             <p className="text-sm text-gray-700 mb-1">
                               {review.description}
                             </p>
                           )}
                           <div className="flex items-center gap-2 text-xs text-gray-500">
-                            <span>{review.from_port} → {review.to_port}</span>
+                            <span>
+                              {review.from_port} → {review.to_port}
+                            </span>
                             <span>•</span>
                             <span>{formatDate(review.date)}</span>
                           </div>
@@ -301,7 +306,6 @@ function RideDetails() {
                 <div className="text-sm text-gray-500">per person</div>
               </div>
 
-              {/* Seat Selection — capped at seats actually free. */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Number of seats
@@ -315,7 +319,6 @@ function RideDetails() {
                 </select>
               </div>
 
-              {/* Price Breakdown */}
               <div className="mb-6 p-4 bg-gray-50 rounded-lg">
                 <div className="flex justify-between text-sm text-gray-600 mb-2">
                   <span>

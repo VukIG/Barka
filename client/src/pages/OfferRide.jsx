@@ -14,6 +14,8 @@ import { croatianLocations, boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 import { format } from "date-fns";
 import { API_URL } from "../config/api";
+import ImageUpload from "../components/ImageUpload";
+
 function OfferRide() {
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
@@ -21,9 +23,11 @@ function OfferRide() {
   const [newAmenity, setNewAmenity] = useState("");
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [user, setUser] = useState(undefined);
+  const [imageFile, setImageFile] = useState(null);
   useEffect(() => {
     setUser(JSON.parse(localStorage.getItem("user")));
   }, []);
+
   const [formData, setFormData] = useState({
     from: "",
     to: "",
@@ -65,12 +69,21 @@ function OfferRide() {
       arrivalTime: arrivalTime,
     };
 
-    console.log("sending:", payload);
+    const body = new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      body.append(key, value);
+    });
+
+    if (imageFile) {
+      body.append("image", imageFile);
+    }
+
+    console.log("sending:", payload, imageFile);
 
     const response = await fetch(`${API_URL}/rides/add`, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
+      credentials: "include",
+      body: body,
     });
 
     if (!response.ok) {
@@ -414,7 +427,16 @@ function OfferRide() {
               Average price for similar routes: €25-45
             </p>
           </div>
-
+          <div>
+            <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              Upload banner picture of the ride
+            </h2>
+            <p className="text-sm text-gray-500 mt-5 mb-5">
+              {" "}
+              It can be your boat, the landscape or anything related
+            </p>
+            <ImageUpload onFileSelect={setImageFile} />
+          </div>
           {/* Description */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
