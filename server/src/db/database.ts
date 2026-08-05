@@ -60,6 +60,7 @@ export const filteredRides = async (
 };
 
 export const createRideItem = async (
+  imagePath: string | null,
   ownerId: number,
   boatId: number,
   from: string,
@@ -70,30 +71,30 @@ export const createRideItem = async (
   description: string,
 ): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
-    `
-    INSERT INTO ride
-      (owner_id, boat_id, start_port_id, end_port_id, ticket_cost,
-       expected_arrival, \`date\`, description)
-    VALUES
-      (
-        ?,                                          -- owner_id
-        ?,                                          -- boat_id
-        (SELECT id FROM port WHERE name = ?),       -- start_port_id, looked up by name
-        (SELECT id FROM port WHERE name = ?),       -- end_port_id, looked up by name
-        ?,                                          -- ticket_cost
-        ?,                                          -- expected_arrival
-        ?,                                          -- date (departure)
-        ?                                           -- description
-      )
-    `,
+    `INSERT INTO ride
+       (image_path, owner_id, boat_id, start_port_id, end_port_id,
+        ticket_cost, \`date\`, expected_arrival, description)
+     VALUES
+       (
+         ?,                                     -- image_path
+         ?,                                     -- owner_id
+         ?,                                     -- boat_id
+         (SELECT id FROM port WHERE name = ?),  -- start_port_id (looked up by name)
+         (SELECT id FROM port WHERE name = ?),  -- end_port_id   (looked up by name)
+         ?,                                     -- ticket_cost
+         ?,                                     -- date (departure)
+         ?,                                     -- expected_arrival
+         ?                                      -- description
+       )`,
     [
+      imagePath,
       Number(ownerId),
       boatId,
-      from,
-      to,
+      from,          // -> start_port_id lookup
+      to,            // -> end_port_id lookup
       Number(price),
-      arrival,
-      departure,
+      departure,     // -> date
+      arrival,       // -> expected_arrival
       description,
     ],
   );

@@ -4,6 +4,7 @@ import ridesRouter from "./routes/rides.routes.js";
 import usersRouter from "./routes/users.routes.js";
 import cors from "cors";
 import session from "express-session";
+import helmet from "helmet";
 
 const app = express();
 const port = Number(process.env.PORT) || 5000;
@@ -14,6 +15,14 @@ app.use(
     credentials: true,
   }),
 );
+
+/*
+Source - https://stackoverflow.com/a/76119981
+Posted by Jenish Mor
+Retrieved 2026-08-05, License - CC BY-SA 4.0
+*/
+app.use(helmet());
+
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "temporary-development-secret",
@@ -36,6 +45,7 @@ app.get("/", (_req: Request, res: Response) => {
 
 app.use("/rides", ridesRouter);
 app.use("/users", usersRouter);
+app.use("/uploads", express.static("src/uploads"));
 
 app.use((error: unknown, _req: Request, res: Response, _next: NextFunction) => {
   console.error(error);

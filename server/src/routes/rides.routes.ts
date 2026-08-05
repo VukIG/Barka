@@ -5,6 +5,23 @@ import {
   getSpecificRide,
 } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
+import multer from "multer";
+import path from "node:path";
+
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, callback) => {
+    callback(null, "src/uploads/rides");
+  },
+  filename: (_req, file, callback) => {
+    const uniquePrefix = Date.now();
+    const safeOriginalName = file.originalname.replaceAll(" ", "-");
+
+    callback(null, `${uniquePrefix}-${safeOriginalName}`);
+  },
+});
+
+const upload = multer({ storage });
 
 const router = Router();
 
@@ -45,8 +62,23 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
       });
       return;
     }
+    if (new Date(arrivalTime) <= new Date(departureTime)) {
+        res.status(400).json({
+          success: false,
+          message: "arrivalTime must be after departureTime.",
+        });
+        return;
+      }
+    
+    const imagePath = req.file
+      ? path.posix.join("uploads", "rides", req.file.filename)
+      : null;
+
+
+      
 
     const queryResult = await createRideItem(
+      imagePath,
       ownerId, // ownerId (dummy for now)
       1, // boatId  (dummy for now)
       from, // -> start_port_id
@@ -69,6 +101,7 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
+router.post("/add", requireLogin, upload.single("image"), addrideItem);
 
 const getFilteredRides = async (
   req: Request,
@@ -118,7 +151,7 @@ const getRideDetails = async (
 };
 
 router.get("/search", getFilteredRides);
-router.post("/add", requireLogin, addrideItem);
+router.post("/add", requireLogin, upload.single("image"), addrideItem);
 router.get("/:id", getRideDetails);
 
 export default router;
