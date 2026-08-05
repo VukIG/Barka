@@ -1,6 +1,8 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { createRideItem, filteredRides } from "../db/database.js";
+import { createRideItem, filteredRides, getSpecificRide } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
+
+
 const router = Router();
 
 const addrideItem = async (
@@ -84,5 +86,6 @@ const getFilteredRides = async (
 
 router.get("/search", getFilteredRides);
 router.post("/add",requireLogin, addrideItem);
+router.get("/ride/:id", getSpecificRide)
 
 export default router;

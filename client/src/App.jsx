@@ -16,7 +16,7 @@ export default function App() {
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="search" element={<SearchResults />} />
-          <Route path="trip/:id" element={<TripDetails />} />
+          <Route path="ride/:id" element={<TripDetails />} />
           <Route path="offer" element={<OfferRide />} />
           <Route path="auth" element={<AuthPage />} />
           <Route path="buissnes" element={<BuissnesDashboard />} />

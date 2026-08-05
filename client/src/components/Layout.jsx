@@ -1,35 +1,47 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import { Anchor, Menu, X } from "lucide-react";
 import { useState, useEffect } from "react";
+import { getCurrentSession, logoutUser } from "../api/session";
 
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const API_URL = "http://localhost:5000";
-  const [user, setUser] = useState(undefined);
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const loadSession = async () => {
+    setIsLoading(true);
+    try {
+      const session = await getCurrentSession();
+      if (session) {
+        setUser(session.user);
+      } else {
+        setUser(null);
+      }
+    } catch (error) {
+      console.error("Failed to load session:", error);
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogout = async () => {
+    await logoutUser();
+    setUser(null);
+    setMobileMenuOpen(false);
+    navigate("/auth");
+  };
 
   useEffect(() => {
-    const stored = localStorage.getItem("user");
-    console.log(stored)
-    if (stored) {
-      setUser(JSON.parse(stored)); 
-    }
-  }, []);
+    loadSession();
+  }, [location.pathname]);
 
-  const handleSignOut = async () => {
-    try {
-      await fetch(`${API_URL}/users/logout`, {
-        method: "POST",
-        credentials: "include",
-      });
-    } catch (err) {
-      console.error("Logout request failed:", err);
-    }
-    localStorage.removeItem("user");
-    setMobileMenuOpen(false);
-    navigate("/");
-  };
+  if (isLoading) {
+    return <div>LOADING PAGE...</div>;
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
@@ -53,16 +65,6 @@ function Layout() {
             {/* Desktop Navigation */}
             <div className="hidden md:flex items-center gap-6">
               <Link
-                to="/offer"
-                className={`text-sm transition-colors ${
-                  location.pathname === "/offer"
-                    ? "text-blue-600 font-medium"
-                    : "text-gray-600 hover:text-blue-600"
-                }`}
-              >
-                Offer ride
-              </Link>
-              <Link
                 to="/buissnes"
                 className={`text-sm transition-colors ${
                   location.pathname === "/buissnes"
@@ -75,22 +77,32 @@ function Layout() {
 
               {user ? (
                 <>
-                <button
-                  onClick={handleSignOut}
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
-                >
-                  Sign Out
-                </button>
-                <div 
-                onClick={()=>{
-                  navigate(`/profile/${user.id}`)
-                }}
-                className="w-12 h-12 cursor-pointer rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700">
-                  {user.username[0]}
-                  {user.username[1]}
-                </div>
+                  <Link
+                    to="/offer"
+                    className={`text-sm transition-colors ${
+                      location.pathname === "/offer"
+                        ? "text-blue-600 font-medium"
+                        : "text-gray-600 hover:text-blue-600"
+                    }`}
+                  >
+                    Offer ride
+                  </Link>
+                  <button
+                    onClick={handleLogout}
+                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
+                  >
+                    Sign Out
+                  </button>
+                  <div
+                    onClick={() => {
+                      navigate(`/profile/${user.id}`);
+                    }}
+                    className="w-12 h-12 cursor-pointer rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700"
+                  >
+                    {user.user_name[0]}
+                    {user.user_name[1]}
+                  </div>
                 </>
-                
               ) : (
                 <Link
                   to="/auth"
@@ -142,7 +154,7 @@ function Layout() {
 
                 {user ? (
                   <button
-                    onClick={handleSignOut}
+                    onClick={handleLogout}
                     className="text-left text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
                   >
                     Sign Out

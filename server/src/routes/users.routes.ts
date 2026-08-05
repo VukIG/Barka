@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction, Router } from "express";
 import { authUser, createUser, getUserProfile } from "../db/database.js";
-
+import { requireLogin } from "../middleware/require-login.js";
 const router = Router();
 
 const loginUser = async (
@@ -170,8 +170,8 @@ const getCurrentUser = async (
   res.status(200).json(queryResult)
 };
 
-router.get("/me",getCurrentUser);
-router.post("/logout", logoutUser);
+router.get("/me",requireLogin, getCurrentUser);
+router.post("/logout",requireLogin, logoutUser);
 router.post("/logIn", loginUser);
 router.post("/signUp", signUpUser);
 

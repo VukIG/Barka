@@ -132,8 +132,8 @@ function SearchResults() {
                 </button>
               </div>
             ) : (
-              filteredTrips.map((trip) => (
-                <TripCard key={trip.id} trip={trip} />
+              filteredTrips.map((ride) => (
+                <TripCard key={ride.id} ride={ride} />
               ))
             )}
           </div>

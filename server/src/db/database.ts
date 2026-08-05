@@ -2,6 +2,7 @@ import mysql, { ResultSetHeader, RowDataPacket } from "mysql2/promise";
 
 const pool = mysql.createPool({
   host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT) || 3306,
   user: process.env.DB_USER,
   password: process.env.DB_PASS,
   database: process.env.DB_DATABASE,
@@ -129,7 +130,7 @@ export const createUser = async (
   return result;
 };
 
-export const getUserProfile = async (userId: any) => {
+export const getUserProfile = async (userId: number) => {
   const [userRows]: any = await pool.query(
     `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created,
             COUNT(DISTINCT rv.id) AS review_count,
@@ -170,3 +171,10 @@ export const getUserProfile = async (userId: any) => {
     reviews: userReviews,
   };
 };
+
+export const getSpecificRide = async (rideId: number) => {
+  const [rideData]:any = await pool.query(
+    `SELECT * FROM ride WHERE ride.id = ?`,
+    [rideId]
+  )
+}
