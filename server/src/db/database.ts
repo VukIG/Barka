@@ -111,6 +111,7 @@ export const authUser = async (email: string): Promise<UserLogin[]> => {
 };
 
 export const createUser = async (
+  imagePath: string | null,
   username: string,
   firstName: string,
   lastName: string,
@@ -120,12 +121,22 @@ export const createUser = async (
   role: string,
   email: string,
   password: string,
-): Promise<ResultSetHeader> => {
+): Promise<ResultSetHeader | null> => {
+
+  const [existing]: any = await pool.query(
+    "SELECT user_name, email FROM user WHERE user_name = ? OR email = ?",
+    [username, email],
+  );
+
+  if(existing.length > 0){
+    return null;
+  }
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO user
-       (user_name, first_name, last_name, age, gender, nationality, role, email, password)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (image_path, user_name, first_name, last_name, age, gender, nationality, role, email, password)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
+      imagePath,
       username,
       firstName,
       lastName,
@@ -143,7 +154,7 @@ export const createUser = async (
 
 export const getUserProfile = async (userId: number) => {
   const [userRows]: any = await pool.query(
-    `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created,
+    `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created, u.image_path,
             COUNT(DISTINCT rv.id) AS review_count,
             ROUND(AVG(rv.rating), 1) AS average_rating
      FROM user u

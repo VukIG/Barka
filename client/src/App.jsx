@@ -13,12 +13,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="auth" element={<AuthPage />} />
         <Route element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="search" element={<SearchResults />} />
           <Route path="rides/:id" element={<RideDetails />} />
           <Route path="offer" element={<OfferRide />} />
-          <Route path="auth" element={<AuthPage />} />
           <Route path="buissnes" element={<BuissnesDashboard />} />
           <Route path="profile/:id" element={<Profile />} />
         </Route>

@@ -1,6 +1,24 @@
 import { Request, Response, NextFunction, Router } from "express";
 import { authUser, createUser, getUserProfile } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
+import multer from "multer";
+import path from "node:path";
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, callback) => {
+    callback(null, "src/uploads/users");
+  },
+  filename: (_req, file, callback) => {
+    const uniquePrefix = Date.now();
+    const safeOriginalName = file.originalname.replaceAll(" ", "-");
+
+    callback(null, `${uniquePrefix}-${safeOriginalName}`);
+  },
+});
+
+const upload = multer({ storage });
+
+
 const router = Router();
 
 const loginUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -99,7 +117,13 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
+      const imagePath = req.file
+          ? path.posix.join("uploads", "users", req.file.filename)
+          : null;
+    
+
     const queryResult = await createUser(
+      imagePath,
       username,
       firstName,
       lastName,
@@ -110,6 +134,14 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       email,
       password,
     );
+
+    if (queryResult === null) {
+      res.status(409).json({
+        success: false,
+        message: "Username or email already exists.",
+      });
+      return;
+    }
 
     if (queryResult.affectedRows !== 1) {
       res.status(500).json({
@@ -166,6 +198,6 @@ const getCurrentUser = async (req: Request, res: Response) => {
 router.get("/me", requireLogin, getCurrentUser);
 router.post("/logout", requireLogin, logoutUser);
 router.post("/logIn", loginUser);
-router.post("/signUp", signUpUser);
+router.post("/signUp",  upload.single("image"), signUpUser);
 
 export default router;

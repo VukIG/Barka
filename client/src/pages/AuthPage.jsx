@@ -2,42 +2,21 @@ import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Anchor, Mail, Lock, User, Eye, EyeOff, Waves } from "lucide-react";
 import { API_URL } from "../config/api";
+import ImageUpload from "../components/ImageUpload";
+import {nationalities, EMPTY_FORM } from "../data/mockData"
 function AuthPage() {
-  const nationalities = [
-    { code: "HR", name: "Croatia" },
-    { code: "SI", name: "Slovenia" },
-    { code: "ME", name: "Montenegro" },
-    { code: "IT", name: "Italy" },
-    { code: "DE", name: "Germany" },
-    { code: "AT", name: "Austria" },
-    { code: "GB", name: "United Kingdom" },
-    { code: "FR", name: "France" },
-    { code: "US", name: "United States" },
-  ];
-
-  const EMPTY_FORM = {
-    name: "",
-    firstname: "",
-    lastname: "",
-    age: "",
-    gender: "",
-    nationality: "",
-    role: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  };
-
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
-
+  const [imageFile, setImageFile ] = useState(null)
   const API_URL = "http://localhost:5000";
+  const [submitting, setSubmitting] = useState(false);
 
   async function handleSubmit(e) {
     e.preventDefault();
-
+    if (submitting) return;       // guard against double-fire
+    setSubmitting(true)
     if (isSignUp && formData.password !== formData.confirmPassword) {
       alert("Passwords do not match.");
       return;
@@ -58,26 +37,32 @@ function AuthPage() {
         }
       : { email: formData.email, password: formData.password };
 
-    console.log("sending:", payload);
+
+    const body = new FormData();
+    Object.entries(payload).forEach(([key, value]) => {
+      body.append(key, value);
+    });
+
+    if (imageFile) {
+      body.append("image", imageFile);
+    }
 
     try {
       const response = await fetch(url, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify(payload),
+        body: body,
       });
 
-      const data = await response.json();
-      console.log("server said:", data);
-
+      const result = await response.json();
+      console.log(result);
+      setSubmitting(false)
+      localStorage.setItem("user", JSON.stringify(response.user));
+      window.location.href = "/";
       if (!response.ok) {
-        alert(data.message || (isSignUp ? "Sign up failed." : "Login failed."));
+        alert(response.message || (isSignUp ? "Sign up failed." : "Login failed."));
         return;
       }
-
-      localStorage.setItem("user", JSON.stringify(data.user));
-      window.location.href = "/";
     } catch (err) {
       console.error("Request failed:", err);
       alert("Could not reach the server.");
@@ -94,7 +79,7 @@ function AuthPage() {
                 <Anchor className="w-8 h-8 text-white" />
               </div>
               <span className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
-                Brodić
+                Barka
               </span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
@@ -338,6 +323,17 @@ function AuthPage() {
                     placeholder="Confirm your password"
                     required={isSignUp}
                   />
+                </div>
+                <div>
+                  <br />
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
+                    Upload your profile picture
+                  </h2>
+                  <p className="text-sm text-gray-500 mt-5 mb-5">
+                    {" "}
+                    Upload an image of your headshot.
+                  </p>
+                  <ImageUpload onFileSelect={setImageFile} />
                 </div>
               </div>
             )}

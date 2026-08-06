@@ -54,7 +54,7 @@ export default function Profile({}) {
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
             <img
-              src={profileData.user.avatar}
+              src={`${API_URL}/${profileData.user.image_path}`}
               alt={profileData.user.user_name}
               className="w-32 h-32 rounded-full object-cover shadow-lg"
             />
