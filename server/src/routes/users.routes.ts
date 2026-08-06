@@ -36,7 +36,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const queryResult = await authUser(email);
-
+    
     if (queryResult.length === 0) {
       res.status(401).json({
         success: false,

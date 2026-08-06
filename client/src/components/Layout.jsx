@@ -104,15 +104,15 @@ function Layout() {
                   >
                     Sign Out
                   </button>
-                  <div
+                  <img
+                    src={`${API_URL}/${user.image_path}`}
+                    alt={user.user_name}
+                    className="w-32 h-32 rounded-full object-cover shadow-lg"
                     onClick={() => {
                       navigate(`/profile/${user.id}`);
                     }}
                     className="w-12 h-12 cursor-pointer rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700"
-                  >
-                    {user.user_name[0]}
-                    {user.user_name[1]}
-                  </div>
+                  />
                 </>
               ) : (
                 <Link
