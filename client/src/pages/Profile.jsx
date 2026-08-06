@@ -142,7 +142,7 @@ export default function Profile({}) {
               {profileData.trips.map((trip) => (
                 <div
                   key={trip.id}
-                  onClick={() => navigate(`/trip/${trip.id}`)}
+                  onClick={() => navigate(`/rides/${trip.id}`)}
                   className="border border-gray-200 rounded-lg p-6 hover:border-blue-300 hover:shadow-md transition-all cursor-pointer"
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">

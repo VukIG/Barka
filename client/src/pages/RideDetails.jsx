@@ -75,7 +75,6 @@ function RideDetails() {
       .then((response) => response.json())
       .then((data) => setRideData(data))
       .catch((err) => console.log("Error loading rides:", err));
-    console.log(rideData);
   }, [id]);
 
   if (!rideData || !rideData.ride) {
