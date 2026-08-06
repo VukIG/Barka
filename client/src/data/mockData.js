@@ -1,30 +1,29 @@
 import { Radar, Sparkles, Flame, ShieldCheck } from "lucide-react";
 
-  export const nationalities = [
-    { code: "HR", name: "Croatia" },
-    { code: "SI", name: "Slovenia" },
-    { code: "ME", name: "Montenegro" },
-    { code: "IT", name: "Italy" },
-    { code: "DE", name: "Germany" },
-    { code: "AT", name: "Austria" },
-    { code: "GB", name: "United Kingdom" },
-    { code: "FR", name: "France" },
-    { code: "US", name: "United States" },
-  ];
+export const nationalities = [
+  { code: "HR", name: "Croatia" },
+  { code: "SI", name: "Slovenia" },
+  { code: "ME", name: "Montenegro" },
+  { code: "IT", name: "Italy" },
+  { code: "DE", name: "Germany" },
+  { code: "AT", name: "Austria" },
+  { code: "GB", name: "United Kingdom" },
+  { code: "FR", name: "France" },
+  { code: "US", name: "United States" },
+];
 
-  export const EMPTY_FORM = {
-    name: "",
-    firstname: "",
-    lastname: "",
-    age: "",
-    gender: "",
-    nationality: "",
-    role: "",
-    email: "",
-    password: "",
-    confirmPassword: "",
-  };
-
+export const EMPTY_FORM = {
+  name: "",
+  firstname: "",
+  lastname: "",
+  age: "",
+  gender: "",
+  nationality: "",
+  role: "",
+  email: "",
+  password: "",
+  confirmPassword: "",
+};
 
 export const croatianLocations = [
   "Dubrovnik",
@@ -200,7 +199,7 @@ export const mockTrips = [
 
 export const boatTypes = [
   "All Boat Types",
-  "Speedboat",
+  "Motorboat",
   "Yacht",
   "Passenger Boat",
   "Catamaran",

@@ -2,7 +2,6 @@ import TripCard from "../components/TripCard";
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useNavigate, data } from "react-router";
 import { Calendar, Filter, Anchor } from "lucide-react";
-import { mockTrips, boatTypes } from "../data/mockData";
 
 function SearchResults() {
   const [searchParams] = useSearchParams();
@@ -11,10 +10,17 @@ function SearchResults() {
   const to = searchParams.get("to") || "";
   const date = searchParams.get("date") || "";
   const [selectedBoatType, setSelectedBoatType] = useState("All Boat Types");
-  const [maxPrice, setMaxPrice] = useState(100);
+  const [maxPrice, setMaxPrice] = useState(500);
   const [minSeats, setMinSeats] = useState(1);
-  const [filteredTrips, setFilteredTrips] = useState([]);
+  const [allRides, setAllRides] = useState([]);
   const API_URL = "http://localhost:5000";
+  const boatTypes = [...new Set(allRides.map(ride => ride.boatType))]
+  .filter(Boolean)
+  .map(type => 
+    type
+      .replace(/_/g, ' ')
+      .replace(/\b\w/g, char => char.toUpperCase())
+  );
 
   const params = new URLSearchParams({ from, to, date });
   useEffect(() => {
@@ -22,11 +28,19 @@ function SearchResults() {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setFilteredTrips(data);
+        setAllRides(data);
       })
       .catch((err) => console.log("Error loading rides:", err));
   }, [from, to, date]);
 
+  const filteredRides = allRides.filter((ride) => {
+    const priceFiltered = ride.ticket_cost <= maxPrice;
+    const boatTypeFiltered =
+      selectedBoatType === "All Boat Types" ||
+      ride.boatType === selectedBoatType?.toLowerCase();
+
+    return priceFiltered && boatTypeFiltered;
+  });
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -41,7 +55,7 @@ function SearchResults() {
               <span>{date || "Any date"}</span>
             </div>
             <span>•</span>
-            <span>{filteredTrips.length} rides found</span>
+            <span>{filteredRides.length} rides found</span>
           </div>
         </div>
 
@@ -86,9 +100,11 @@ function SearchResults() {
                 <input
                   type="range"
                   min="10"
-                  max="100"
+                  max="500"
                   value={maxPrice}
-                  onChange={(e) => setMaxPrice(Number(e.target.value))}
+                  onChange={(e) => {
+                    setMaxPrice(Number(e.target.value));
+                  }}
                   className="w-full accent-blue-600"
                 />
               </div>
@@ -115,7 +131,7 @@ function SearchResults() {
 
           {/* Results */}
           <div className="lg:col-span-3 space-y-4">
-            {filteredTrips.length === 0 || filteredTrips.success === false ? (
+            {filteredRides.length === 0 || filteredRides.success === false ? (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <Anchor className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
@@ -132,7 +148,7 @@ function SearchResults() {
                 </button>
               </div>
             ) : (
-              filteredTrips.map((ride) => (
+              filteredRides.map((ride) => (
                 <TripCard key={ride.id} ride={ride} />
               ))
             )}

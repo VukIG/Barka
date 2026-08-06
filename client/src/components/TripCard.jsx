@@ -80,7 +80,9 @@ function TripCard({ ride }) {
           </div>
           <div className="flex items-center gap-1">
             <Users className="w-4 h-4" />
-            <span>{ride.seats} seats</span>{" "}
+            <span>
+              {ride.seats_taken} out of {ride.totalSeats} seats taken
+            </span>{" "}
           </div>
         </div>
 

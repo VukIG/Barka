@@ -9,7 +9,6 @@ import {
   Mail,
   Phone,
 } from "lucide-react";
-import { mockTrips, reviews } from "../data/mockData";
 import { useEffect, useState } from "react";
 import { API_URL } from "../config/api";
 
@@ -26,8 +25,6 @@ export default function Profile({}) {
   }, []);
 
   const navigate = useNavigate();
-  const userTrips = mockTrips;
-  const userReviews = reviews;
 
   if (!profileData) {
     return (
@@ -53,21 +50,30 @@ export default function Profile({}) {
         {/* Profile Header */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            <img
-              src={`${API_URL}/${profileData.user.image_path}`}
-              alt={profileData.user.user_name}
-              className="w-32 h-32 rounded-full object-cover shadow-lg"
-            />
+            {profileData.user.image_path ? (
+              <img
+                src={`${API_URL}/${profileData.user.image_path}`}
+                alt={profileData.user.user_name}
+                className="w-32 h-32 rounded-full object-cover shadow-lg"
+              />
+            ) : (
+              <div className="w-32 h-32 rounded-full shadow-lg bg-blue-600 flex items-center justify-center text-white text-4xl font-semibold uppercase">
+                {profileData.user.user_name[0]}
+                {profileData.user.user_name[1]}
+              </div>
+            )}
             <div className="flex-1 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-gray-900">
                   {profileData.user.first_name}
                 </h1>
-                {profileData.user.verified && (
+                {profileData.user.verified ? (
                   <div className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
                     <Shield className="w-4 h-4" />
                     <span>Verified</span>
                   </div>
+                ) : (
+                  <p>Unverified</p>
                 )}
               </div>
               <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
@@ -120,7 +126,6 @@ export default function Profile({}) {
               </div>
               <div className="text-sm text-gray-600">Reviews</div>
             </div>
-           
           </div>
         </div>
 
@@ -194,7 +199,7 @@ export default function Profile({}) {
         {profileData.reviews.length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Reviews ({userReviews.length})
+              Reviews ({profileData.reviews.length})
             </h2>
             <div className="space-y-6">
               {profileData.reviews.map((review) => (
@@ -203,20 +208,28 @@ export default function Profile({}) {
                   className="border-b border-gray-200 last:border-0 pb-6 last:pb-0"
                 >
                   <div className="flex items-start gap-4">
-                    <img
-                      src={review.userAvatar}
-                      alt={review.userName}
-                      className="w-12 h-12 rounded-full object-cover"
-                    />
+                    {review.reviewer_image ? (
+                      <img
+                        src={`${API_URL}/${review.reviewer_image}`}
+                        alt={review.reviewer_name}
+                        className="w-10 h-10 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold uppercase">
+                        {(
+                          review.reviewer_name[0] +
+                          (review.reviewer_name[1] ?? "")
+                        ).toUpperCase()}
+                      </div>
+                    )}
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <div>
                           <h3 className="font-semibold text-gray-900">
-                            {review.userName}
+                            {review.reviewer_name}
                           </h3>
                           <div className="flex items-center gap-2 text-sm text-gray-600">
                             <span>{review.route}</span>
-                            <span>•</span>
                             <span>
                               {new Date(review.date).toLocaleDateString(
                                 "en-GB",
