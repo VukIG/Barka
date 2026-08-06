@@ -1,4 +1,4 @@
-import { useParams, useNavigate, data } from "react-router";
+import { useParams, useNavigate } from "react-router";
 import { useEffect, useState } from "react";
 import {
   Clock,
@@ -75,7 +75,7 @@ function RideDetails() {
       .then((response) => response.json())
       .then((data) => setRideData(data))
       .catch((err) => console.log("Error loading rides:", err));
-    console.log(data);
+    console.log(rideData);
   }, [id]);
 
   if (!rideData || !rideData.ride) {

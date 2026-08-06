@@ -56,15 +56,15 @@ function AuthPage() {
       });
 
       const result = await response.json();
-      console.log(result);
       setSubmitting(false);
-      localStorage.setItem("user", JSON.stringify(response.user));
-      window.location.href = "/";
       if (!response.ok) {
         alert(
           response.message || (isSignUp ? "Sign up failed." : "Login failed."),
         );
         return;
+      }else{
+        localStorage.setItem("user", JSON.stringify(result.user));
+        window.location.href = "/";
       }
     } catch (err) {
       console.error("Request failed:", err);
