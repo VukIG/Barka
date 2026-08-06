@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "dev:tunnel": "concurrently -k -n tunnel,server \"ssh -N -o ExitOnForwardFailure=yes -L 3307:localhost:3306 89241202@88.200.63.148\" \"npm:dev\""
   },
   "keywords": [],
   "author": "",
@@ -27,6 +28,7 @@
     "@types/express-session": "^1.19.0",
     "@types/multer": "^2.2.0",
     "@types/node": "^26.1.2",
+    "concurrently": "^9.2.4",
     "tsx": "^4.23.4",
     "typescript": "^7.0.2"
   }
