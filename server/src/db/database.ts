@@ -121,6 +121,7 @@ export const createUser = async (
   role: string,
   email: string,
   password: string,
+  description: string,
 ): Promise<ResultSetHeader | null> => {
 
   const [existing]: any = await pool.query(
@@ -133,8 +134,8 @@ export const createUser = async (
   }
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO user
-       (image_path, user_name, first_name, last_name, age, gender, nationality, role, email, password)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+       (image_path, user_name, first_name, last_name, age, gender, nationality, role, email, password, description)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       imagePath,
       username,
@@ -146,6 +147,7 @@ export const createUser = async (
       role,
       email,
       password,
+      description
     ],
   );
 
@@ -154,7 +156,7 @@ export const createUser = async (
 
 export const getUserProfile = async (userId: number) => {
   const [userRows]: any = await pool.query(
-    `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created, u.image_path,
+    `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created, u.image_path, u.description,
             COUNT(DISTINCT rv.id) AS review_count,
             ROUND(AVG(rv.rating), 1) AS average_rating
      FROM user u

@@ -74,7 +74,11 @@ export default function Profile({}) {
                 <div className="flex items-center gap-1">
                   <Star className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                   <span className="font-semibold">
-                    {profileData.user.average_rating}
+                    {profileData?.user?.average_rating != null ? (
+                      <div>{profileData.user.average_rating}</div>
+                    ) : (
+                      0
+                    )}
                   </span>
                   <span className="text-gray-600">
                     ({profileData.user.reviewCount} reviews)
@@ -116,16 +120,7 @@ export default function Profile({}) {
               </div>
               <div className="text-sm text-gray-600">Reviews</div>
             </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-3xl font-bold text-blue-600 mb-1">
-                {profileData.user.average_rating}
-              </div>
-              <div className="text-sm text-gray-600">Rating</div>
-            </div>
-            <div className="text-center p-4 bg-gray-50 rounded-lg">
-              <div className="text-3xl font-bold text-blue-600 mb-1">98%</div>
-              <div className="text-sm text-gray-600">Response Rate</div>
-            </div>
+           
           </div>
         </div>
 
@@ -133,14 +128,7 @@ export default function Profile({}) {
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-4">About</h2>
           <p className="text-gray-700 leading-relaxed mb-4">
-            Hi! I'm {profileData.user.first_name} and I've been captaining boats
-            along the Croatian coast for over 5 years. I love sharing the beauty
-            of the Adriatic with passengers and making every trip memorable.
-          </p>
-          <p className="text-gray-700 leading-relaxed">
-            My boat is well-maintained, comfortable, and equipped with all
-            necessary safety equipment. I pride myself on punctuality and
-            ensuring every passenger has a great experience.
+            {profileData.user.description}
           </p>
         </div>
 

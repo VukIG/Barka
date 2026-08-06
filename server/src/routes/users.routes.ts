@@ -27,7 +27,6 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
       email?: string;
       password?: string;
     };
-
     if (!email || !password) {
       res.status(400).json({
         success: false,
@@ -88,6 +87,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       role,
       email,
       password,
+      description
     } = req.body as {
       username?: string;
       firstName?: string;
@@ -98,6 +98,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       role?: string;
       email?: string;
       password?: string;
+      description?: string;
     };
 
     if (
@@ -133,6 +134,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       role,
       email,
       password,
+      description
     );
 
     if (queryResult === null) {
@@ -197,7 +199,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
 
 router.get("/me", requireLogin, getCurrentUser);
 router.post("/logout", requireLogin, logoutUser);
-router.post("/logIn", loginUser);
+router.post("/logIn",upload.none(), loginUser);
 router.post("/signUp",  upload.single("image"), signUpUser);
 
 export default router;

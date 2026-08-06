@@ -3,24 +3,25 @@ import { useNavigate } from "react-router";
 import { Anchor, Mail, Lock, User, Eye, EyeOff, Waves } from "lucide-react";
 import { API_URL } from "../config/api";
 import ImageUpload from "../components/ImageUpload";
-import {nationalities, EMPTY_FORM } from "../data/mockData"
+import { nationalities, EMPTY_FORM } from "../data/mockData";
 function AuthPage() {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
-  const [imageFile, setImageFile ] = useState(null)
+  const [imageFile, setImageFile] = useState(null);
   const API_URL = "http://localhost:5000";
   const [submitting, setSubmitting] = useState(false);
+  const [description, setDescription] = useState("");
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (submitting) return;       // guard against double-fire
-    setSubmitting(true)
+    if (submitting) return; // guard against double-fire
+    setSubmitting(true);
     if (isSignUp && formData.password !== formData.confirmPassword) {
       alert("Passwords do not match.");
       return;
-    }
+    } 
 
     const url = isSignUp ? `${API_URL}/users/signUp` : `${API_URL}/users/logIn`;
     const payload = isSignUp
@@ -34,9 +35,9 @@ function AuthPage() {
           role: formData.role,
           email: formData.email,
           password: formData.password,
+          description: description
         }
       : { email: formData.email, password: formData.password };
-
 
     const body = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
@@ -56,11 +57,13 @@ function AuthPage() {
 
       const result = await response.json();
       console.log(result);
-      setSubmitting(false)
+      setSubmitting(false);
       localStorage.setItem("user", JSON.stringify(response.user));
       window.location.href = "/";
       if (!response.ok) {
-        alert(response.message || (isSignUp ? "Sign up failed." : "Login failed."));
+        alert(
+          response.message || (isSignUp ? "Sign up failed." : "Login failed."),
+        );
         return;
       }
     } catch (err) {
@@ -334,6 +337,22 @@ function AuthPage() {
                     Upload an image of your headshot.
                   </p>
                   <ImageUpload onFileSelect={setImageFile} />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    About you
+                  </label>
+                  <textarea
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}
+                    placeholder="Tell other users a bit about yourself — where you travel, your boat, what to expect on a ride..."
+                    rows={4}
+                    maxLength={1000}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">
+                    {description.length}/1000 characters
+                  </p>
                 </div>
               </div>
             )}
