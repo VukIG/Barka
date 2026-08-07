@@ -8,7 +8,7 @@ import AuthPage from "./pages/AuthPage";
 import BuissnesDashboard from "./pages/BuissnessDashboard";
 import Layout from "./components/Layout";
 import RideDetails from "./pages/RideDetails";
-
+import Chat from "./pages/Chat";
 export default function App() {
   return (
     <BrowserRouter>
@@ -21,6 +21,7 @@ export default function App() {
           <Route path="offer" element={<OfferRide />} />
           <Route path="buissnes" element={<BuissnesDashboard />} />
           <Route path="profile/:id" element={<Profile />} />
+          <Route path="chat/:rideId" element={<Chat />} />
         </Route>
       </Routes>
     </BrowserRouter>

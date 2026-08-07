@@ -97,7 +97,7 @@ function RideDetails() {
 
   const ride = rideData.ride;
   const reviewList = rideData.reviews || [];
-
+  const chatId = 1;
   const totalSeats = Number(ride.total_seats);
   const seatsTaken = Number(ride.seats_taken);
   const availableSeats = totalSeats - seatsTaken;
@@ -333,14 +333,15 @@ function RideDetails() {
                   </div>
                 </div>
               </div>
-
               <button
-                onClick={handleBooking}
-                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl"
+                onClick={()=>{
+                  navigate(`/chat/${chatId}`);
+                }}
+                className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
               >
+                <MessageCircle className="w-5 h-5" />
                 Book Now
               </button>
-
               {showBookingConfirm && (
                 <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
                   <div className="flex items-center gap-2 text-green-700">
