@@ -4,71 +4,44 @@ import { Anchor, Mail, Lock, User, Eye, EyeOff, Waves } from "lucide-react";
 import { API_URL } from "../config/api";
 import ImageUpload from "../components/ImageUpload";
 import { nationalities, EMPTY_FORM } from "../data/mockData";
+import { useAuth } from "../context/AuthContext";
 function AuthPage() {
-  const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
   const [imageFile, setImageFile] = useState(null);
-  const API_URL = "http://localhost:5000";
   const [submitting, setSubmitting] = useState(false);
   const [description, setDescription] = useState("");
+  const { submitAuth } = useAuth();
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    if (submitting) return; // guard against double-fire
-    setSubmitting(true);
+    if (submitting) return;
     if (isSignUp && formData.password !== formData.confirmPassword) {
       alert("Passwords do not match.");
-      return;
+      return;   // note: you currently forget to reset submitting here
     }
+    setSubmitting(true);
 
     const url = isSignUp ? `${API_URL}/users/signUp` : `${API_URL}/users/logIn`;
     const payload = isSignUp
-      ? {
-          username: formData.name,
-          firstName: formData.firstname,
-          lastName: formData.lastname,
-          age: formData.age,
-          gender: formData.gender,
-          nationality: formData.nationality,
-          role: formData.role,
-          email: formData.email,
-          password: formData.password,
-          description: description,
-        }
+      ? { username: formData.name, firstName: formData.firstname, lastName: formData.lastname,
+          age: formData.age, gender: formData.gender, nationality: formData.nationality,
+          role: formData.role, email: formData.email, password: formData.password, description }
       : { email: formData.email, password: formData.password };
 
     const body = new FormData();
-    Object.entries(payload).forEach(([key, value]) => {
-      body.append(key, value);
-    });
-
-    if (imageFile) {
-      body.append("image", imageFile);
-    }
+    Object.entries(payload).forEach(([k, v]) => body.append(k, v));
+    if (imageFile) body.append("image", imageFile);
 
     try {
-      const response = await fetch(url, {
-        method: "POST",
-        credentials: "include",
-        body: body,
-      });
-
-      const result = await response.json();
-      setSubmitting(false);
-      if (!response.ok) {
-        alert(
-          response.message || (isSignUp ? "Sign up failed." : "Login failed."),
-        );
-        return;
-      } else {
-        localStorage.setItem("user", JSON.stringify(result.user));
-        window.location.href = "/";
-      }
+      await submitAuth(url, body);
+      navigate("/");            // no window.location.href, no reload
     } catch (err) {
-      console.error("Request failed:", err);
-      alert("Could not reach the server.");
+      alert(err.message);
+    } finally {
+      setSubmitting(false);     // always clears, even on the password-mismatch path
     }
   }
 

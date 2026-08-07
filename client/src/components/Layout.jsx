@@ -1,45 +1,20 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import { Anchor, Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { getCurrentSession, logoutUser } from "../api/session";
 import { OrbitProgress } from "react-loading-indicators";
+import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../config/api";
+
 function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const API_URL = "http://localhost:5000";
-  const [user, setUser] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-
-  const loadSession = async () => {
-    setIsLoading(true);
-    try {
-      const session = await getCurrentSession();
-      if (session) {
-        setUser(session.user);
-      } else {
-        setUser(null);
-      }
-    } catch (error) {
-      console.error("Failed to load session:", error);
-      setUser(null);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
+  const { user, isLoading, signOut } = useAuth();
   const handleLogout = async () => {
-    await logoutUser();
-    setUser(null);
-    setMobileMenuOpen(false);
-    localStorage.clear();
-    sessionStorage.clear();
+    await signOut();
     navigate("/auth");
   };
-
-  useEffect(() => {
-    loadSession();
-  }, [location.pathname]);
 
   if (isLoading) {
     return (
