@@ -44,7 +44,11 @@ export const filteredRides = async (
            boats.type AS boatType,
            boats.seats AS totalSeats,
            user.first_name,
-           user.last_name
+           user.last_name,
+    (SELECT COALESCE(SUM(number_of_tickets), 0)
+      FROM booking
+      WHERE booking.ride_id = ride.id
+        AND booking.status_confirmed = TRUE)  AS seats_taken
     FROM ride
     JOIN port AS start_port ON ride.start_port_id = start_port.id
     JOIN port AS end_port ON ride.end_port_id = end_port.id
@@ -178,7 +182,8 @@ export const getUserProfile = async (userId: number) => {
   );
 
   const [userReviews]: any = await pool.query(
-    `SELECT rv.id, rv.rating, rv.description, rv.date, reviewer.user_name AS reviewer_name, sp.name AS from_port, ep.name AS to_port
+    `SELECT rv.id, rv.rating, rv.description, rv.date, reviewer.user_name AS reviewer_name, sp.name AS from_port, ep.name AS to_port,
+     reviewer.image_path AS reviewer_image
      FROM review rv
      JOIN user reviewer ON rv.reviewer_id = reviewer.id
      JOIN ride r ON rv.ride_id = r.id

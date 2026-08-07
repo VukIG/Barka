@@ -21,7 +21,7 @@ function AuthPage() {
     if (isSignUp && formData.password !== formData.confirmPassword) {
       alert("Passwords do not match.");
       return;
-    } 
+    }
 
     const url = isSignUp ? `${API_URL}/users/signUp` : `${API_URL}/users/logIn`;
     const payload = isSignUp
@@ -35,7 +35,7 @@ function AuthPage() {
           role: formData.role,
           email: formData.email,
           password: formData.password,
-          description: description
+          description: description,
         }
       : { email: formData.email, password: formData.password };
 
@@ -62,7 +62,7 @@ function AuthPage() {
           response.message || (isSignUp ? "Sign up failed." : "Login failed."),
         );
         return;
-      }else{
+      } else {
         localStorage.setItem("user", JSON.stringify(result.user));
         window.location.href = "/";
       }
