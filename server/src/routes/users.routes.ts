@@ -3,6 +3,8 @@ import { authUser, createUser, getUserProfile } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
 import multer from "multer";
 import path from "node:path";
+import crypto from "node:crypto";
+import { sendVerificationEmail } from "../email/mailer.js";
 
 const storage = multer.diskStorage({
   destination: (_req, _file, callback) => {
@@ -123,7 +125,12 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
           : null;
     
 
+    const token = crypto.randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+
     const queryResult = await createUser(
+      token,
+      expires,
       imagePath,
       username,
       firstName,
@@ -152,6 +159,9 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       });
       return;
     }
+
+    await sendVerificationEmail(email, token);
+
 
     req.session.user = {
       id: queryResult.insertId,
@@ -197,6 +207,26 @@ const getCurrentUser = async (req: Request, res: Response) => {
   res.status(200).json(queryResult);
 };
 
+const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const token = req.query.token as string | undefined;
+    if (!token) {
+      res.redirect(`${process.env.FRONTEND_URL}/verify?status=missing`);
+      return;
+    }
+
+    const result = await verifyUserByToken(token);
+    if (result.affectedRows === 1) {
+      res.redirect(`${process.env.FRONTEND_URL}/verify?status=success`);
+    } else {
+      res.redirect(`${process.env.FRONTEND_URL}/verify?status=invalid`);
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.get("/verify",requireLogin, verifyEmail);
 router.get("/me", requireLogin, getCurrentUser);
 router.post("/logout", requireLogin, logoutUser);
 router.post("/logIn",upload.none(), loginUser);

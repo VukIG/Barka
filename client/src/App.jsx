@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from "react-router";
-
 import Home from "./pages/Home";
 import SearchResults from "./pages/SearchResults";
 import OfferRide from "./pages/OfferRide";
@@ -10,6 +9,7 @@ import Layout from "./components/Layout";
 import RideDetails from "./pages/RideDetails";
 import Chat from "./pages/Chat";
 import { AuthProvider } from "./context/AuthContext";
+import Verify from "./pages/Verify";
 
 export default function   App() {
   return (
@@ -25,6 +25,7 @@ export default function   App() {
             <Route path="buissnes" element={<BuissnesDashboard />} />
             <Route path="profile/:id" element={<Profile />} />
             <Route path="chat/:rideId" element={<Chat />} />
+            <Route path="verify" element={<Verify />} />
           </Route>
         </Routes>
       </BrowserRouter>

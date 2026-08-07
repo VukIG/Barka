@@ -106,6 +106,19 @@ export const createRideItem = async (
   return result;
 };
 
+
+export const verifyUserByToken = async (token: string): Promise<ResultSetHeader> => {
+  const [result] = await pool.query<ResultSetHeader>(
+    `UPDATE user
+       SET email_verified = TRUE,
+           verification_token = NULL,
+           verification_expires = NULL
+     WHERE verification_token = ? AND verification_expires > NOW()`,
+    [token]
+  );
+  return result;
+};
+
 export const authUser = async (email: string): Promise<UserLogin[]> => {
   const [rows] = await pool.query<UserLogin[]>(
     "SELECT * FROM user WHERE user.email = ?",
@@ -115,6 +128,8 @@ export const authUser = async (email: string): Promise<UserLogin[]> => {
 };
 
 export const createUser = async (
+  token: string,
+  expires: Date,
   imagePath: string | null,
   username: string,
   firstName: string,
@@ -139,8 +154,10 @@ export const createUser = async (
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO user
        (image_path, user_name, first_name, last_name, age, gender, nationality, role, email, password, description)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+     VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
+      token,
+      expires,
       imagePath,
       username,
       firstName,

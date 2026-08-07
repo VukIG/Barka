@@ -37,7 +37,7 @@ function AuthPage() {
 
     try {
       await submitAuth(url, body);
-      navigate("/");            // no window.location.href, no reload
+      navigate("/verify");            // no window.location.href, no reload
     } catch (err) {
       alert(err.message);
     } finally {
