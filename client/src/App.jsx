@@ -11,9 +11,9 @@ import Chat from "./pages/Chat";
 import { AuthProvider } from "./context/AuthContext";
 import Verify from "./pages/Verify";
 
-export default function   App() {
+export default function App() {
   return (
-    <AuthProvider >
+    <AuthProvider>
       <BrowserRouter>
         <Routes>
           <Route path="auth" element={<AuthPage />} />
@@ -30,6 +30,5 @@ export default function   App() {
         </Routes>
       </BrowserRouter>
     </AuthProvider>
-
   );
 }

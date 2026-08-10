@@ -14,13 +14,11 @@ function SearchResults() {
   const [minSeats, setMinSeats] = useState(1);
   const [allRides, setAllRides] = useState([]);
   const API_URL = "http://localhost:5000";
-  const boatTypes = [...new Set(allRides.map(ride => ride.boatType))]
-  .filter(Boolean)
-  .map(type => 
-    type
-      .replace(/_/g, ' ')
-      .replace(/\b\w/g, char => char.toUpperCase())
-  );
+  const boatTypes = [...new Set(allRides.map((ride) => ride.boatType))]
+    .filter(Boolean)
+    .map((type) =>
+      type.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase()),
+    );
 
   const params = new URLSearchParams({ from, to, date });
   useEffect(() => {

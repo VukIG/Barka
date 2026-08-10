@@ -334,7 +334,7 @@ function RideDetails() {
                 </div>
               </div>
               <button
-                onClick={()=>{
+                onClick={() => {
                   navigate(`/chat/${chatId}`);
                 }}
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"

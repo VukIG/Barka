@@ -10,7 +10,12 @@ export default function Chat() {
 
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState([
-    { id: 1, senderId: "captain", text: "Hello! How can I help you?", timestamp: "10:30 AM" },
+    {
+      id: 1,
+      senderId: "captain",
+      text: "Hello! How can I help you?",
+      timestamp: "10:30 AM",
+    },
   ]);
   const [bookingStatus, setBookingStatus] = useState("pending");
   const [touristConfirmed, setTouristConfirmed] = useState(false);
@@ -21,7 +26,9 @@ export default function Chat() {
   if (!trip) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <button onClick={() => navigate("/")} className="text-blue-600">Back to Home</button>
+        <button onClick={() => navigate("/")} className="text-blue-600">
+          Back to Home
+        </button>
       </div>
     );
   }
@@ -34,7 +41,10 @@ export default function Chat() {
         id: messages.length + 1,
         senderId: "user",
         text: message,
-        timestamp: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+        timestamp: new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       },
     ]);
     setMessage("");
@@ -43,7 +53,10 @@ export default function Chat() {
   return (
     <div className="min-h-screen bg-gray-50 max-w-4xl mx-auto px-4 py-8">
       {/* Header */}
-      <button onClick={() => navigate(`/trip/${tripId}`)} className="flex items-center gap-2 text-blue-600 mb-4">
+      <button
+        onClick={() => navigate(`/trip/${tripId}`)}
+        className="flex items-center gap-2 text-blue-600 mb-4"
+      >
         <ArrowLeft className="w-5 h-5" /> Back to trip
       </button>
 
@@ -59,8 +72,13 @@ export default function Chat() {
         {/* Messages Feed */}
         <div className="h-[400px] overflow-y-auto p-6 space-y-4">
           {messages.map((msg) => (
-            <div key={msg.id} className={`flex ${msg.senderId === "captain" ? "justify-start" : "justify-end"}`}>
-              <div className={`px-4 py-2 rounded-lg text-sm max-w-md ${msg.senderId === "captain" ? "bg-gray-100" : "bg-blue-600 text-white"}`}>
+            <div
+              key={msg.id}
+              className={`flex ${msg.senderId === "captain" ? "justify-start" : "justify-end"}`}
+            >
+              <div
+                className={`px-4 py-2 rounded-lg text-sm max-w-md ${msg.senderId === "captain" ? "bg-gray-100" : "bg-blue-600 text-white"}`}
+              >
                 {msg.text}
               </div>
             </div>
@@ -92,7 +110,10 @@ export default function Chat() {
             placeholder="Type your message..."
             className="flex-1 px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500"
           />
-          <button onClick={handleSendMessage} className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+          <button
+            onClick={handleSendMessage}
+            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+          >
             <Send className="w-4 h-4" />
           </button>
         </div>

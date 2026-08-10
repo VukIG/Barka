@@ -94,11 +94,11 @@ export const createRideItem = async (
       imagePath,
       Number(ownerId),
       boatId,
-      from,          // -> start_port_id lookup
-      to,            // -> end_port_id lookup
+      from, // -> start_port_id lookup
+      to, // -> end_port_id lookup
       Number(price),
-      departure,     // -> date
-      arrival,       // -> expected_arrival
+      departure, // -> date
+      arrival, // -> expected_arrival
       description,
     ],
   );
@@ -106,15 +106,17 @@ export const createRideItem = async (
   return result;
 };
 
-
-export const verifyUserByToken = async (token: string): Promise<ResultSetHeader> => {
+export const verifyUserByToken = async (
+  token: string,
+): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
     `UPDATE user
-       SET email_verified = TRUE,
+       SET
+           verified = TRUE,
            verification_token = NULL,
            verification_expires = NULL
      WHERE verification_token = ? AND verification_expires > NOW()`,
-    [token]
+    [token],
   );
   return result;
 };
@@ -142,18 +144,17 @@ export const createUser = async (
   password: string,
   description: string,
 ): Promise<ResultSetHeader | null> => {
-
   const [existing]: any = await pool.query(
     "SELECT user_name, email FROM user WHERE user_name = ? OR email = ?",
     [username, email],
   );
 
-  if(existing.length > 0){
+  if (existing.length > 0) {
     return null;
   }
   const [result] = await pool.query<ResultSetHeader>(
     `INSERT INTO user
-       (image_path, user_name, first_name, last_name, age, gender, nationality, role, email, password, description)
+       (verification_token , verification_expires, image_path, user_name, first_name, last_name, age, gender, nationality, role, email, password, description)
      VALUES (?,?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       token,
@@ -168,7 +169,7 @@ export const createUser = async (
       role,
       email,
       password,
-      description
+      description,
     ],
   );
 

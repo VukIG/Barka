@@ -20,15 +20,24 @@ function AuthPage() {
     if (submitting) return;
     if (isSignUp && formData.password !== formData.confirmPassword) {
       alert("Passwords do not match.");
-      return;   // note: you currently forget to reset submitting here
+      return; // note: you currently forget to reset submitting here
     }
     setSubmitting(true);
 
     const url = isSignUp ? `${API_URL}/users/signUp` : `${API_URL}/users/logIn`;
     const payload = isSignUp
-      ? { username: formData.name, firstName: formData.firstname, lastName: formData.lastname,
-          age: formData.age, gender: formData.gender, nationality: formData.nationality,
-          role: formData.role, email: formData.email, password: formData.password, description }
+      ? {
+          username: formData.name,
+          firstName: formData.firstname,
+          lastName: formData.lastname,
+          age: formData.age,
+          gender: formData.gender,
+          nationality: formData.nationality,
+          role: formData.role,
+          email: formData.email,
+          password: formData.password,
+          description,
+        }
       : { email: formData.email, password: formData.password };
 
     const body = new FormData();
@@ -37,11 +46,11 @@ function AuthPage() {
 
     try {
       await submitAuth(url, body);
-      navigate("/verify");            // no window.location.href, no reload
+      navigate("/verify"); // no window.location.href, no reload
     } catch (err) {
       alert(err.message);
     } finally {
-      setSubmitting(false);     // always clears, even on the password-mismatch path
+      setSubmitting(false); // always clears, even on the password-mismatch path
     }
   }
 

@@ -25,13 +25,13 @@ export function AuthProvider({ children }) {
     const res = await fetch(url, {
       method: "POST",
       credentials: "include",
-      body, 
+      body,
     });
     const result = await res.json().catch(() => ({}));
     if (!res.ok) {
       throw new Error(result.message || "Authentication failed");
     }
-    await refresh(); 
+    await refresh();
     return result;
   };
 
@@ -60,7 +60,7 @@ export function AuthProvider({ children }) {
         signIn,
         signOut,
         refresh,
-        submitAuth
+        submitAuth,
       }}
     >
       {children}

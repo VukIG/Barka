@@ -18,7 +18,9 @@ export function BookingStatusBanner({
               <Clock className="w-5 h-5" />
               <h3 className="font-semibold">Booking Request Pending</h3>
             </div>
-            <p className="text-sm text-yellow-700">Waiting for captain's response...</p>
+            <p className="text-sm text-yellow-700">
+              Waiting for captain's response...
+            </p>
             <div className="flex gap-2 mt-2">
               <button
                 onClick={onAccept}
@@ -45,9 +47,13 @@ export function BookingStatusBanner({
             <Check className="w-5 h-5" />
             <h3 className="font-semibold">Booking Confirmed!</h3>
           </div>
-          <p className="text-sm text-green-700 mb-3">Your ride has been confirmed by the captain.</p>
+          <p className="text-sm text-green-700 mb-3">
+            Your ride has been confirmed by the captain.
+          </p>
           <div className="border-t border-green-300 pt-3 mt-3">
-            <p className="text-sm font-medium text-gray-900 mb-2">Was this ride completed?</p>
+            <p className="text-sm font-medium text-gray-900 mb-2">
+              Was this ride completed?
+            </p>
             <div className="flex gap-2">
               <button
                 onClick={onConfirmTrip}
@@ -86,7 +92,9 @@ export function BookingStatusBanner({
             <X className="w-5 h-5" />
             <div>
               <h3 className="font-semibold">Booking Declined</h3>
-              <p className="text-sm">Unfortunately, this booking was not accepted.</p>
+              <p className="text-sm">
+                Unfortunately, this booking was not accepted.
+              </p>
             </div>
           </div>
         </div>

@@ -1,5 +1,10 @@
 import { Request, Response, NextFunction, Router } from "express";
-import { authUser, createUser, getUserProfile } from "../db/database.js";
+import {
+  authUser,
+  createUser,
+  getUserProfile,
+  verifyUserByToken,
+} from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
 import multer from "multer";
 import path from "node:path";
@@ -20,7 +25,6 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-
 const router = Router();
 
 const loginUser = async (req: Request, res: Response, next: NextFunction) => {
@@ -38,7 +42,7 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     const queryResult = await authUser(email);
-    
+
     if (queryResult.length === 0) {
       res.status(401).json({
         success: false,
@@ -89,7 +93,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       role,
       email,
       password,
-      description
+      description,
     } = req.body as {
       username?: string;
       firstName?: string;
@@ -120,10 +124,9 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-      const imagePath = req.file
-          ? path.posix.join("uploads", "users", req.file.filename)
-          : null;
-    
+    const imagePath = req.file
+      ? path.posix.join("uploads", "users", req.file.filename)
+      : null;
 
     const token = crypto.randomBytes(32).toString("hex");
     const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
@@ -141,7 +144,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       role,
       email,
       password,
-      description
+      description,
     );
 
     if (queryResult === null) {
@@ -161,7 +164,6 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
     }
 
     await sendVerificationEmail(email, token);
-
 
     req.session.user = {
       id: queryResult.insertId,
@@ -226,10 +228,10 @@ const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-router.get("/verify",requireLogin, verifyEmail);
+router.get("/verify", requireLogin, verifyEmail);
 router.get("/me", requireLogin, getCurrentUser);
 router.post("/logout", requireLogin, logoutUser);
-router.post("/logIn",upload.none(), loginUser);
-router.post("/signUp",  upload.single("image"), signUpUser);
+router.post("/logIn", upload.none(), loginUser);
+router.post("/signUp", upload.single("image"), signUpUser);
 
 export default router;

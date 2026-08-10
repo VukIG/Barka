@@ -28,7 +28,7 @@ export const logoutUser = async (): Promise<void> => {
 
 export const loginUser = async (
   username: string,
-  password: string
+  password: string,
 ): Promise<SessionResponse> => {
   const res = await fetch(`${API_URL}/users/login`, {
     method: "POST",

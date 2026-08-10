@@ -8,7 +8,6 @@ import { requireLogin } from "../middleware/require-login.js";
 import multer from "multer";
 import path from "node:path";
 
-
 const storage = multer.diskStorage({
   destination: (_req, _file, callback) => {
     callback(null, "src/uploads/rides");
@@ -63,19 +62,16 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
     if (new Date(arrivalTime) <= new Date(departureTime)) {
-        res.status(400).json({
-          success: false,
-          message: "arrivalTime must be after departureTime.",
-        });
-        return;
-      }
-    
+      res.status(400).json({
+        success: false,
+        message: "arrivalTime must be after departureTime.",
+      });
+      return;
+    }
+
     const imagePath = req.file
       ? path.posix.join("uploads", "rides", req.file.filename)
       : null;
-
-
-      
 
     const queryResult = await createRideItem(
       imagePath,
