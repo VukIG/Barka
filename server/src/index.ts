@@ -9,20 +9,26 @@ import helmet from "helmet";
 const app = express();
 const port = Number(process.env.PORT) || 5000;
 
+const allowedOrigins = ["http://localhost:5173", "http://localhost:5174"];
+
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
-
 /*
 Source - https://stackoverflow.com/a/76119981
 Posted by Jenish Mor
 Retrieved 2026-08-05, License - CC BY-SA 4.0
 */
 app.use(helmet());
-
 
 app.use(
   session({
