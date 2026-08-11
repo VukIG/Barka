@@ -221,7 +221,7 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-router.post("/updateRide",upload.single("image"), updateRide)
+router.post("/updateRide",requireLogin, upload.single("image"), updateRide)
 router.get("/search", getFilteredRides);
 router.post("/add", requireLogin, upload.single("image"), addrideItem);
 router.get("/:id", getRideDetails);

@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import { API_URL } from "../config/api";
 import { getCurrentSession } from "../api/session";
-
+import { useAuth } from "../context/AuthContext";
 function renderStars(rating) {
   const stars = [];
   for (let i = 0; i < rating; i++) {
@@ -64,6 +64,7 @@ function formatDuration(startIso, endIso) {
 }
 
 function RideDetails() {
+  const { user } = useAuth();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -94,8 +95,8 @@ function RideDetails() {
         </div>
       </div>
     );
-  }
 
+  }
   const ride = rideData.ride;
   const reviewList = rideData.reviews || [];
   const chatId = 1;
@@ -103,8 +104,6 @@ function RideDetails() {
   const seatsTaken = Number(ride.seats_taken);
   const availableSeats = totalSeats - seatsTaken;
   const totalPrice = (ride.price * selectedSeats).toFixed(2);
-
-  const user = JSON.parse(localStorage.getItem("user"));
 
   const handleBooking = () => {
     if (user) {
@@ -152,6 +151,7 @@ function RideDetails() {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
                 {ride.start_port} → {ride.end_port}
               </h1>
+              {user?.id === rideData.ride.captain_id && (
               <div className="flex flex-wrap gap-3 justify-center md:justify-start my-5">
                 <button
                   onClick={() =>
@@ -162,7 +162,7 @@ function RideDetails() {
                   <Edit className="w-4 h-4" />
                   <span>Edit Ride</span>
                 </button>
-              </div>
+              </div>)}
               {/* Route Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-blue-50 rounded-lg">
                 <div>

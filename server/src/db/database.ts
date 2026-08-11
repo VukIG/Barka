@@ -45,6 +45,7 @@ export const filteredRides = async (
            boats.seats AS totalSeats,
            user.first_name,
            user.last_name,
+           user.id AS owner_id,
     (SELECT COALESCE(SUM(number_of_tickets), 0)
       FROM booking
       WHERE booking.ride_id = ride.id
@@ -189,7 +190,7 @@ export const getUserProfile = async (userId: number) => {
   );
 
   const [trips]: any = await pool.query(
-    `SELECT r.id, sp.name AS from_port, ep.name AS to_port, r.date, r.expected_arrival, r.ticket_cost, r.status, b.type AS boat_type, b.seats AS boat_seats
+    `SELECT r.id, r.owner_id, sp.name AS from_port, ep.name AS to_port, r.date, r.expected_arrival, r.ticket_cost, r.status, b.type AS boat_type, b.seats AS boat_seats
      FROM ride r
      JOIN port sp ON r.start_port_id = sp.id
      JOIN port ep ON r.end_port_id = ep.id
