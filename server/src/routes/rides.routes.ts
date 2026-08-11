@@ -152,7 +152,6 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
       rideId,
-      ownerId,
       boatType,
       description,
       from,
@@ -199,10 +198,17 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
     const imagePath = req.file
       ? path.posix.join("uploads", "rides", req.file.filename)
       : null;   // note: null will wipe an existing image — see below
-
-    const result = await updateRideItem(rideId, {
-      boatType, description, from, to, price, departureTime, arrivalTime, imagePath,
-    });
+    console.log(rideId)
+    const result = await updateRideItem({
+        rideId,
+        description,
+        from,
+        to,
+        price,
+        departureTime,
+        arrivalTime,
+        imagePath,
+      });
 
     if (result.affectedRows === 0) {
       res.status(500).json({ success: false, message: "Ride was not updated." });
@@ -215,7 +221,7 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-router.post("/update", updateRide)
+router.post("/updateRide",upload.single("image"), updateRide)
 router.get("/search", getFilteredRides);
 router.post("/add", requireLogin, upload.single("image"), addrideItem);
 router.get("/:id", getRideDetails);

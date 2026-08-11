@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router";
 import {
   MapPin,
@@ -22,12 +23,8 @@ function ChangeRide() {
   const [amenities, setAmenities] = useState([]);
   const [newAmenity, setNewAmenity] = useState("");
   const [selectedDate, setSelectedDate] = useState(undefined);
-  const [user, setUser] = useState(undefined);
   const [imageFile, setImageFile] = useState(null);
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, []);
-
+  const { user } = useAuth();
   const [formData, setFormData] = useState({
     from: "",
     to: "",
@@ -40,13 +37,13 @@ function ChangeRide() {
     pickupPoint: "",
     dropoffPoint: "",
     description: "",
-    ride_id:""
+    rideId: "",
   });
 
   const location = useLocation();
 
   useEffect(() => {
-    const ride = location.state?.ride?.ride; 
+    const ride = location.state?.ride?.ride;
     if (!ride) return;
 
     const dep = ride.date ? new Date(ride.date) : null;
@@ -64,19 +61,17 @@ function ChangeRide() {
       selectedDate: "",
       price: ride.price ?? "",
       totalSeats: ride.total_seats ?? "",
-      boatType: ride.boat_type ?? "",
-      pickupPoint: ride.departure_site ?? "", 
-      dropoffPoint: ride.arrival_site ?? "", 
+      boatType: "",
+      pickupPoint: ride.departure_site ?? "",
+      dropoffPoint: ride.arrival_site ?? "",
       description: ride.description ?? "",
-      ride_id: ride.ride_id
+      rideId: ride.ride_id,
     });
-
-    if (dep) setSelectedDate(dep); 
+    if (dep) setSelectedDate(dep);
   }, [location.state]);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    console.log(user)
     if (!user) {
       alert("There was an error and your log in session was terminated");
       //navigate("/auth");
@@ -91,27 +86,21 @@ function ChangeRide() {
     const departureTime = `${format(selectedDate, "yyyy-MM-dd")} ${formData.departureTime}:00`;
     const arrivalTime = `${format(selectedDate, "yyyy-MM-dd")} ${formData.arrivalTime}:00`;
 
-    const payload = {
-      ownerId: user.id,
-      boatType: formData.boatType,
-      description: formData.description,
-      from: formData.from,
-      to: formData.to,
-      price: formData.price,
-      departureTime: departureTime,
-      arrivalTime: arrivalTime,
-    };
-
     const body = new FormData();
-    Object.entries(payload).forEach(([key, value]) => {
+    Object.entries(formData).forEach(([key, value]) => {
       body.append(key, value);
     });
+
+
+    // overwrite the time-only values with the full datetime the backend expects
+    body.set("departureTime", departureTime);
+    body.set("arrivalTime", arrivalTime);
 
     if (imageFile) {
       body.append("image", imageFile);
     }
-    console.log("sending:", payload, imageFile);
-
+    console.log("sending:", formData, imageFile);
+    console.log("selectedDate:", selectedDate, "dep:", formData.departureTime);
     const response = await fetch(`${API_URL}/rides/updateRide`, {
       method: "POST",
       credentials: "include",
@@ -119,6 +108,8 @@ function ChangeRide() {
     });
 
     if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      console.log("server said:", err); // ← the exact reason
       throw new Error(`HTTP error status: ${response.status}`);
     }
 

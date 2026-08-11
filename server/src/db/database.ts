@@ -227,23 +227,28 @@ export const findRide = async(rideId:string) => {
   return rideRows[0];
 }
 
-export const updateRideItem = async (
-  imagePath: string | null,
-  ownerId: number,
-  boatId: number,
-  from: string,
-  to: string,
-  price: string,
-  departure: string,
-  arrival: string,
-  description: string,
-  rideId: string
-): Promise<ResultSetHeader> => {
+export const updateRideItem = async ({
+  imagePath,
+  from,
+  to,
+  price,
+  departureTime,
+  arrivalTime,
+  description,
+  rideId,
+}: {
+  imagePath: string | null;
+  from: string;
+  to: string;
+  price: string;
+  departureTime: string;
+  arrivalTime: string;
+  description: string;
+  rideId: string;
+}): Promise<ResultSetHeader> => {
   const [result] = await pool.query<ResultSetHeader>(
     `UPDATE ride
-        SET owner_id         = ?,
-            boat_id          = ?,
-            start_port_id    = (SELECT id FROM port WHERE name = ?),
+        SET start_port_id    = (SELECT id FROM port WHERE name = ?),
             end_port_id      = (SELECT id FROM port WHERE name = ?),
             ticket_cost      = ?,
             \`date\`         = ?,
@@ -252,15 +257,13 @@ export const updateRideItem = async (
             image_path       = ?
       WHERE id = ?`,
     [
-      Number(ownerId),
-      boatId,
       from,
       to,
       Number(price),
-      departure,
-      arrival,
+      departureTime,
+      arrivalTime,
       description,
-      imagePath,        
+      imagePath,
       Number(rideId),
     ]
   );
@@ -283,7 +286,7 @@ export const getSpecificRide = async (rideId: string) => {
 
       sp.name               AS start_port,
      ep.name               AS end_port,
-     ride.departure_site   AS departure_site,   -- specific pier, not the city
+     ride.departure_site   AS departure_site,   -- specific street, not the city
      ride.arrival_site     AS arrival_site,
 
      boats.name            AS boat_name,
