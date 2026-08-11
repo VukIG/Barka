@@ -3,6 +3,8 @@ import {
   createRideItem,
   filteredRides,
   getSpecificRide,
+  findRide,
+  updateRideItem
 } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
 import multer from "multer";
@@ -146,6 +148,74 @@ const getRideDetails = async (
   }
 };
 
+const updateRide = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {
+      rideId,
+      ownerId,
+      boatType,
+      description,
+      from,
+      to,
+      price,
+      departureTime,
+      arrivalTime,
+    } = req.body as {
+      rideId: string;
+      ownerId: number;
+      boatType: string;
+      description: string;
+      from: string;
+      to: string;
+      price: string;
+      departureTime: string;
+      arrivalTime: string;
+    };
+
+    if (!rideId || !from || !to || !price || !departureTime || !arrivalTime) {
+      res.status(400).json({ success: false, message: "Missing required ride fields." });
+      return;
+    }
+
+    const DATETIME = /^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/;
+    if (!DATETIME.test(departureTime) || !DATETIME.test(arrivalTime)) {
+      res.status(400).json({
+        success: false,
+        message: "departureTime and arrivalTime must be 'YYYY-MM-DD HH:MM:SS'.",
+      });
+      return;
+    }
+    if (new Date(arrivalTime) <= new Date(departureTime)) {
+      res.status(400).json({ success: false, message: "arrivalTime must be after departureTime." });
+      return;
+    }
+
+    const existingRide = await findRide(rideId);
+    if (!existingRide) {
+      res.status(404).json({ success: false, message: "Ride not found." });
+      return;
+    }
+
+    const imagePath = req.file
+      ? path.posix.join("uploads", "rides", req.file.filename)
+      : null;   // note: null will wipe an existing image — see below
+
+    const result = await updateRideItem(rideId, {
+      boatType, description, from, to, price, departureTime, arrivalTime, imagePath,
+    });
+
+    if (result.affectedRows === 0) {
+      res.status(500).json({ success: false, message: "Ride was not updated." });
+      return;
+    }
+
+    res.status(200).json({ success: true, message: "Ride updated." });
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.post("/update", updateRide)
 router.get("/search", getFilteredRides);
 router.post("/add", requireLogin, upload.single("image"), addrideItem);
 router.get("/:id", getRideDetails);

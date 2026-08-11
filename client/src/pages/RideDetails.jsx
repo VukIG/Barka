@@ -9,6 +9,7 @@ import {
   MessageCircle,
   ArrowLeft,
   Check,
+  Edit,
 } from "lucide-react";
 import { API_URL } from "../config/api";
 import { getCurrentSession } from "../api/session";
@@ -151,7 +152,17 @@ function RideDetails() {
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
                 {ride.start_port} → {ride.end_port}
               </h1>
-
+              <div className="flex flex-wrap gap-3 justify-center md:justify-start my-5">
+                <button
+                  onClick={() =>
+                    navigate(`/updateRide/${id}`, { state: { ride: rideData } })
+                  }
+                  className="flex items-center gap-2 px-2 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                >
+                  <Edit className="w-4 h-4" />
+                  <span>Edit Ride</span>
+                </button>
+              </div>
               {/* Route Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-blue-50 rounded-lg">
                 <div>
@@ -241,10 +252,6 @@ function RideDetails() {
                   <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
                     <span>Member since {formatDate(ride.member_since)}</span>
                   </div>
-                  <button className="flex items-center gap-2 text-blue-600 hover:text-blue-700 font-medium">
-                    <MessageCircle className="w-4 h-4" />
-                    <span>Contact Captain</span>
-                  </button>
                 </div>
               </div>
             </div>

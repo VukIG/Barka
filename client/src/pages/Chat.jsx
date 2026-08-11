@@ -9,14 +9,7 @@ export default function Chat() {
   const navigate = useNavigate();
 
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState([
-    {
-      id: 1,
-      senderId: "captain",
-      text: "Hello! How can I help you?",
-      timestamp: "10:30 AM",
-    },
-  ]);
+  const [messages, setMessages] = useState([]);
   const [bookingStatus, setBookingStatus] = useState("pending");
   const [touristConfirmed, setTouristConfirmed] = useState(false);
   const [ownerConfirmed, setOwnerConfirmed] = useState(false);

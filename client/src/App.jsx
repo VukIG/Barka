@@ -10,6 +10,7 @@ import RideDetails from "./pages/RideDetails";
 import Chat from "./pages/Chat";
 import { AuthProvider } from "./context/AuthContext";
 import Verify from "./pages/Verify";
+import ChangeRide from "./pages/ChangeRide";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="auth" element={<AuthPage />} />
           <Route element={<Layout />}>
             <Route index element={<Home />} />
+            <Route path="updateRide/:id" element={<ChangeRide />} />
             <Route path="search" element={<SearchResults />} />
             <Route path="rides/:id" element={<RideDetails />} />
             <Route path="offer" element={<OfferRide />} />

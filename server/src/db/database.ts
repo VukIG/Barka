@@ -219,6 +219,55 @@ export const getUserProfile = async (userId: number) => {
   };
 };
 
+export const findRide = async(rideId:string) => {
+  const id = Number(rideId);
+  const [rideRows]:any = await pool.query(
+    `SELECT * FROM ride WHERE ride.id = ?`, [id]
+  )
+  return rideRows[0];
+}
+
+export const updateRideItem = async (
+  imagePath: string | null,
+  ownerId: number,
+  boatId: number,
+  from: string,
+  to: string,
+  price: string,
+  departure: string,
+  arrival: string,
+  description: string,
+  rideId: string
+): Promise<ResultSetHeader> => {
+  const [result] = await pool.query<ResultSetHeader>(
+    `UPDATE ride
+        SET owner_id         = ?,
+            boat_id          = ?,
+            start_port_id    = (SELECT id FROM port WHERE name = ?),
+            end_port_id      = (SELECT id FROM port WHERE name = ?),
+            ticket_cost      = ?,
+            \`date\`         = ?,
+            expected_arrival = ?,
+            description      = ?,
+            image_path       = ?
+      WHERE id = ?`,
+    [
+      Number(ownerId),
+      boatId,
+      from,
+      to,
+      Number(price),
+      departure,
+      arrival,
+      description,
+      imagePath,        
+      Number(rideId),
+    ]
+  );
+
+  return result;
+};
+
 export const getSpecificRide = async (rideId: string) => {
   const id = Number(rideId);
 
