@@ -342,3 +342,8 @@ export const getSpecificRide = async (rideId: string) => {
     reviews: reviewRows,
   };
 };
+
+export const getAllLocations = async () => {
+  const [locationRows]: any = await pool.query(`SELECT * FROM port`);
+  return locationRows;  
+};

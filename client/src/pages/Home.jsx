@@ -1,7 +1,7 @@
 import RouteCard from "../components/RouteCard";
 import DatePicker from "../components/DatePicker";
 import LocationSelect from "../components/LocationSelect";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import {
   Search,
@@ -11,9 +11,8 @@ import {
   Anchor,
   TrendingUp,
 } from "lucide-react";
-import { croatianLocations } from "../data/mockData";
 import { format } from "date-fns";
-
+import { API_URL } from "../config/api";
 function Home() {
   const navigate = useNavigate();
   const [date, setDate] = useState(undefined);
@@ -21,8 +20,16 @@ function Home() {
   const [openDropdown, setOpenDropdown] = useState(null); // "from" | "to" | null
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
+  const [locations, setLocations] = useState([]);
   const toggle = (name) =>
     setOpenDropdown((prev) => (prev === name ? null : name));
+
+  useEffect(() => {
+    fetch(`${API_URL}/locations`)
+      .then((r) => r.json())
+      .then((rows) => setLocations(rows.map((p) => p.name)))  
+      .catch(() => setLocations([]));
+  }, []);
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -67,7 +74,7 @@ function Home() {
                 label="From"
                 value={from}
                 placeholder="Select departure"
-                options={croatianLocations}
+                options={locations}
                 isOpen={openDropdown === "from"}
                 onToggle={() => toggle("from")}
                 onSelect={(loc) => {
@@ -80,7 +87,7 @@ function Home() {
                 label="To"
                 value={to}
                 placeholder="Select destination"
-                options={croatianLocations}
+                options={locations}
                 isOpen={openDropdown === "to"}
                 onToggle={() => toggle("to")}
                 onSelect={(loc) => {

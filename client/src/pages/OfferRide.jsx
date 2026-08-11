@@ -10,23 +10,31 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { croatianLocations, boatTypes } from "../data/mockData";
+import { boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 import { format } from "date-fns";
 import { API_URL } from "../config/api";
 import ImageUpload from "../components/ImageUpload";
+import { useAuth } from "../context/AuthContext";
 
 function OfferRide() {
+
+  const [locations, setLocations] = useState();
+   useEffect(() => {
+    fetch(`${API_URL}/locations`)
+      .then((r) => r.json())
+      .then((rows) => setLocations(rows.map((p) => p.name)))  
+      .catch(() => setLocations([]));
+  }, []);
+
+
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
   const [amenities, setAmenities] = useState([]);
   const [newAmenity, setNewAmenity] = useState("");
   const [selectedDate, setSelectedDate] = useState(undefined);
-  const [user, setUser] = useState(undefined);
   const [imageFile, setImageFile] = useState(null);
-  useEffect(() => {
-    setUser(JSON.parse(localStorage.getItem("user")));
-  }, []);
+  const { user } = useAuth();  
 
   const [formData, setFormData] = useState({
     from: "",
@@ -158,7 +166,7 @@ function OfferRide() {
                   required
                 >
                   <option value="">Select departure</option>
-                  {croatianLocations.map((location) => (
+                  {locations.map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>
@@ -178,7 +186,7 @@ function OfferRide() {
                   required
                 >
                   <option value="">Select destination</option>
-                  {croatianLocations.map((location) => (
+                  {locations.map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>
