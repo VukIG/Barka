@@ -25,24 +25,6 @@ export const EMPTY_FORM = {
   confirmPassword: "",
 };
 
-export const croatianLocations = [
-  "Dubrovnik",
-  "Split",
-  "Zadar",
-  "Rijeka",
-  "Pula",
-  "Rovinj",
-  "Hvar",
-  "Korčula",
-  "Brač",
-  "Vis",
-  "Šibenik",
-  "Trogir",
-  "Makarska",
-  "Cavtat",
-  "Omiš",
-];
-
 export const mockUsers = [
   {
     id: "1",

@@ -347,3 +347,8 @@ export const getAllLocations = async () => {
   const [locationRows]: any = await pool.query(`SELECT * FROM port`);
   return locationRows;  
 };
+
+export const deleteRide = async (rideId: string, ownerId: number) => {
+  const [rides]:any = await pool.query(`DELETE FROM ride WHERE ride.id = ? AND ride.owner_id = ?`, [rideId, ownerId]);
+  return rides;
+}

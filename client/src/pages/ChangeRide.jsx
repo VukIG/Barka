@@ -11,7 +11,7 @@ import {
   Plus,
   X,
 } from "lucide-react";
-import { croatianLocations, boatTypes } from "../data/mockData";
+import { boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 import { format } from "date-fns";
 import { API_URL } from "../config/api";
@@ -40,10 +40,17 @@ function ChangeRide() {
     rideId: "",
   });
 
-  const location = useLocation();
+  const [locations, setLocations] = useState();
+   useEffect(() => {
+    fetch(`${API_URL}/locations`)
+      .then((r) => r.json())
+      .then((rows) => { setLocations(rows.map((p) => p.name))})  
+      .catch(() => setLocations([]));
+  }, []);
 
+  const urlLocation = useLocation();
   useEffect(() => {
-    const ride = location.state?.ride?.ride;
+    const ride = urlLocation.state?.ride?.ride;
     if (!ride) return;
 
     const dep = ride.date ? new Date(ride.date) : null;
@@ -68,7 +75,7 @@ function ChangeRide() {
       rideId: ride.ride_id,
     });
     if (dep) setSelectedDate(dep);
-  }, [location.state]);
+  }, [urlLocation.state]);
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -91,16 +98,12 @@ function ChangeRide() {
       body.append(key, value);
     });
 
-
-    // overwrite the time-only values with the full datetime the backend expects
     body.set("departureTime", departureTime);
     body.set("arrivalTime", arrivalTime);
 
     if (imageFile) {
       body.append("image", imageFile);
     }
-    console.log("sending:", formData, imageFile);
-    console.log("selectedDate:", selectedDate, "dep:", formData.departureTime);
     const response = await fetch(`${API_URL}/rides/updateRide`, {
       method: "POST",
       credentials: "include",
@@ -114,7 +117,6 @@ function ChangeRide() {
     }
 
     const result = await response.json();
-    console.log(result);
     setShowSuccess(true);
     setTimeout(() => {
       navigate("/");
@@ -127,7 +129,6 @@ function ChangeRide() {
       setNewAmenity("");
     }
   };
-
   const removeAmenity = (amenity) => {
     setAmenities(amenities.filter((a) => a !== amenity));
   };
@@ -149,10 +150,10 @@ function ChangeRide() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Offer a Boat Ride
+            Update Ride details
           </h1>
           <p className="text-lg text-gray-600">
-            Share your boat trip and earn money while connecting with passengers
+            Update your boat trip and make sure your passangers get the latest changes.
           </p>
         </div>
 
@@ -181,7 +182,7 @@ function ChangeRide() {
                   required
                 >
                   <option value="">Select departure</option>
-                  {croatianLocations.map((location) => (
+                  {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>
@@ -201,7 +202,7 @@ function ChangeRide() {
                   required
                 >
                   <option value="">Select destination</option>
-                  {croatianLocations.map((location) => (
+                  {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>

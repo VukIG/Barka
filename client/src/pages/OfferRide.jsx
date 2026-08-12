@@ -27,7 +27,6 @@ function OfferRide() {
       .catch(() => setLocations([]));
   }, []);
 
-
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
   const [amenities, setAmenities] = useState([]);
