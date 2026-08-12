@@ -41,10 +41,12 @@ function ChangeRide() {
   });
 
   const [locations, setLocations] = useState();
-   useEffect(() => {
+  useEffect(() => {
     fetch(`${API_URL}/locations`)
       .then((r) => r.json())
-      .then((rows) => { setLocations(rows.map((p) => p.name))})  
+      .then((rows) => {
+        setLocations(rows.map((p) => p.name));
+      })
       .catch(() => setLocations([]));
   }, []);
 
@@ -153,7 +155,8 @@ function ChangeRide() {
             Update Ride details
           </h1>
           <p className="text-lg text-gray-600">
-            Update your boat trip and make sure your passangers get the latest changes.
+            Update your boat trip and make sure your passangers get the latest
+            changes.
           </p>
         </div>
 

@@ -27,7 +27,7 @@ function Home() {
   useEffect(() => {
     fetch(`${API_URL}/locations`)
       .then((r) => r.json())
-      .then((rows) => setLocations(rows.map((p) => p.name)))  
+      .then((rows) => setLocations(rows.map((p) => p.name)))
       .catch(() => setLocations([]));
   }, []);
 

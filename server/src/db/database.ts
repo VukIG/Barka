@@ -220,13 +220,14 @@ export const getUserProfile = async (userId: number) => {
   };
 };
 
-export const findRide = async(rideId:string) => {
+export const findRide = async (rideId: string) => {
   const id = Number(rideId);
-  const [rideRows]:any = await pool.query(
-    `SELECT * FROM ride WHERE ride.id = ?`, [id]
-  )
+  const [rideRows]: any = await pool.query(
+    `SELECT * FROM ride WHERE ride.id = ?`,
+    [id],
+  );
   return rideRows[0];
-}
+};
 
 export const updateRideItem = async ({
   imagePath,
@@ -266,7 +267,7 @@ export const updateRideItem = async ({
       description,
       imagePath,
       Number(rideId),
-    ]
+    ],
   );
 
   return result;
@@ -345,10 +346,13 @@ export const getSpecificRide = async (rideId: string) => {
 
 export const getAllLocations = async () => {
   const [locationRows]: any = await pool.query(`SELECT * FROM port`);
-  return locationRows;  
+  return locationRows;
 };
 
 export const deleteRide = async (rideId: string, ownerId: number) => {
-  const [rides]:any = await pool.query(`DELETE FROM ride WHERE ride.id = ? AND ride.owner_id = ?`, [rideId, ownerId]);
+  const [rides]: any = await pool.query(
+    `DELETE FROM ride WHERE ride.id = ? AND ride.owner_id = ?`,
+    [rideId, ownerId],
+  );
   return rides;
-}
+};

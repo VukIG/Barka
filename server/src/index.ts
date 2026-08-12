@@ -2,7 +2,7 @@ import "dotenv/config";
 import express, { Request, Response, NextFunction } from "express";
 import ridesRouter from "./routes/rides.routes.js";
 import usersRouter from "./routes/users.routes.js";
-import locationsRouter from "./routes/locations.routes.js"
+import locationsRouter from "./routes/locations.routes.js";
 import cors from "cors";
 import session from "express-session";
 import helmet from "helmet";
@@ -51,7 +51,7 @@ app.get("/", (_req: Request, res: Response) => {
   res.send("Hello from Express 5 and TypeScript");
 });
 
-app.use("/locations", locationsRouter)
+app.use("/locations", locationsRouter);
 app.use("/rides", ridesRouter);
 app.use("/users", usersRouter);
 app.use(
