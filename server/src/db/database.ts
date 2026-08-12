@@ -372,3 +372,44 @@ export const createBooking = async (
   );
   return result;
 };
+
+export const getRideBookings = async (rideId: string, ownerId: number) => {
+  const [bookings]: any = await pool.query(
+    `SELECT b.id, b.cost, b.number_of_tickets, b.status_confirmed,
+            t.first_name, t.last_name, t.image_path AS tourist_image
+     FROM booking b
+     JOIN ride r ON b.ride_id = r.id
+     JOIN user t ON b.tourist_id = t.id
+     WHERE b.ride_id = ? AND r.owner_id = ?
+     ORDER BY b.created_at DESC`,
+    [Number(rideId), ownerId],
+  );
+  return bookings;
+};
+
+export const acceptBooking = async (
+  bookingId: string,
+  ownerId: number,
+): Promise<ResultSetHeader> => {
+  const [result] = await pool.query<ResultSetHeader>(
+    `UPDATE booking b
+       JOIN ride r ON b.ride_id = r.id
+        SET b.status_confirmed = TRUE
+      WHERE b.id = ? AND r.owner_id = ?`,
+    [Number(bookingId), ownerId],
+  );
+  return result;
+};
+
+export const rejectBooking = async (
+  bookingId: string,
+  ownerId: number,
+): Promise<ResultSetHeader> => {
+  const [result] = await pool.query<ResultSetHeader>(
+    `DELETE b FROM booking b
+       JOIN ride r ON b.ride_id = r.id
+      WHERE b.id = ? AND r.owner_id = ?`,
+    [Number(bookingId), ownerId],
+  );
+  return result;
+};

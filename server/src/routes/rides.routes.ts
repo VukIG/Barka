@@ -6,7 +6,6 @@ import {
   findRide,
   updateRideItem,
   deleteRide,
-  createBooking,
 } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
 import multer from "multer";
@@ -246,27 +245,7 @@ const removeRide = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-const addBooking = async (req:Request, res: Response, next: NextFunction) => {
-  try {
-    const touristId = req.session.user!.id
-    const { rideId, numberOfTickets, cost } = req.body as {
-      rideId: string,
-      numberOfTickets: number,
-      cost: number,
-    }
-    const result  = await createBooking(rideId, touristId, numberOfTickets, cost)
-    if (result .affectedRows === 0){
-      res.status(500).json({success: false, message: "The booking was not created."})
-      return;
-  }
-    res.status(200).json({success: true, message: "Booking was created successfully!"})
-  } catch (error) {
-    next(error)
-  }
-}
 
-
-router.post("/createBooking", requireLogin, addBooking)
 router.post("/updateRide", requireLogin, upload.single("image"), updateRide);
 router.get("/search", getFilteredRides);
 router.post("/add", requireLogin, upload.single("image"), addrideItem);
