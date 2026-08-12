@@ -220,7 +220,7 @@ export const getUserProfile = async (userId: number) => {
   };
 };
 
-export const findRide = async (rideId: string, ownerId:number) => {
+export const findRide = async (rideId: string, ownerId: number) => {
   const id = Number(rideId);
   const [rideRows]: any = await pool.query(
     `SELECT * FROM ride WHERE ride.id = ? AND ride.owner_id = ?`,
@@ -355,4 +355,20 @@ export const deleteRide = async (rideId: string, ownerId: number) => {
     [rideId, ownerId],
   );
   return rides;
+};
+
+export const createBooking = async (
+  rideId: string,
+  touristId: number,
+  numberOfTickets: number,
+  cost: number,
+): Promise<ResultSetHeader> => {
+
+  const [result] = await pool.query<ResultSetHeader>(
+    `INSERT INTO booking
+       (ride_id, tourist_id, cost, number_of_tickets, status_confirmed, commission_charged)
+     VALUES (?, ?, ?, ?, FALSE, FALSE)`,
+    [Number(rideId), touristId, cost, Number(numberOfTickets)],
+  );
+  return result;
 };

@@ -104,6 +104,7 @@ function RideDetails() {
   const seatsTaken = Number(ride.seats_taken);
   const availableSeats = totalSeats - seatsTaken;
   const totalPrice = (ride.price * selectedSeats).toFixed(2);
+  console.log(rideData);
 
   const handleRemove = () => {
     fetch(`${API_URL}/rides/${id}`, {
@@ -119,14 +120,37 @@ function RideDetails() {
   };
 
   const handleBooking = () => {
-    if (user) {
-      setShowBookingConfirm(true);
-      setTimeout(() => {
-        setShowBookingConfirm(false);
-      }, 3000);
-    } else {
+    if (!user) {
+      alert("You must be logged in!");
       navigate("/auth");
+      return;
     }
+
+    fetch(`${API_URL}/rides/createBooking`, {
+      method: "POST",
+      credentials: "include",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        rideId: id,
+        numberOfTickets: selectedSeats,
+        cost: totalPrice,
+      }),
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (!data.success) {
+          alert(data.message || "Booking failed.");
+          return;
+        }
+        setShowBookingConfirm(true);
+        setTimeout(()=>{
+        navigate("/"); 
+        },3000)
+      })
+      .catch((err) => {
+        console.log("Booking error:", err);
+        alert("Something went wrong.");
+      });
   };
 
   return (
@@ -364,9 +388,7 @@ function RideDetails() {
                 </div>
               </div>
               <button
-                onClick={() => {
-                  navigate(`/chat/${chatId}`);
-                }}
+                onClick={handleBooking}
                 className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
               >
                 <MessageCircle className="w-5 h-5" />
