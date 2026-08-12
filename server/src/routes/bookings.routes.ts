@@ -83,7 +83,7 @@ const rejectBookingRequest = async (
 
 router.post("/createBooking", requireLogin, addBooking)
 router.get("/:id/bookings", requireLogin, getBookingsForRide);
-router.post("/bookings/:bookingId/accept", requireLogin, acceptBookingRequest);
-router.post("/bookings/:bookingId/reject", requireLogin, rejectBookingRequest);
+router.post("/:bookingId/accept", requireLogin, acceptBookingRequest);
+router.post("/:bookingId/reject", requireLogin, rejectBookingRequest);
 
 export default router;
