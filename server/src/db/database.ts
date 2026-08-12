@@ -220,11 +220,11 @@ export const getUserProfile = async (userId: number) => {
   };
 };
 
-export const findRide = async (rideId: string) => {
+export const findRide = async (rideId: string, ownerId:number) => {
   const id = Number(rideId);
   const [rideRows]: any = await pool.query(
-    `SELECT * FROM ride WHERE ride.id = ?`,
-    [id],
+    `SELECT * FROM ride WHERE ride.id = ? AND ride.owner_id = ?`,
+    [id, ownerId],
   );
   return rideRows[0];
 };

@@ -164,7 +164,7 @@ function OfferRide() {
                   required
                 >
                   <option value="">Select departure</option>
-                  {locations.map((location) => (
+                  {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>
@@ -184,7 +184,7 @@ function OfferRide() {
                   required
                 >
                   <option value="">Select destination</option>
-                  {locations.map((location) => (
+                  {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>

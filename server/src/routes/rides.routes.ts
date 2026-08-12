@@ -30,7 +30,6 @@ const router = Router();
 const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
-      ownerId,
       boatType,
       description,
       from,
@@ -39,7 +38,6 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
       departureTime,
       arrivalTime,
     } = req.body as {
-      ownerId: number;
       boatType: string;
       description: string;
       from: string;
@@ -48,7 +46,7 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
       departureTime: string;
       arrivalTime: string;
     };
-
+    const ownerId = req.session.user!.id;
     if (!from || !to || !price || !departureTime || !arrivalTime) {
       res
         .status(400)
@@ -100,7 +98,6 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-router.post("/add", requireLogin, upload.single("image"), addrideItem);
 
 const getFilteredRides = async (
   req: Request,
@@ -162,7 +159,6 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
       arrivalTime,
     } = req.body as {
       rideId: string;
-      ownerId: number;
       boatType: string;
       description: string;
       from: string;
@@ -197,7 +193,8 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    const existingRide = await findRide(rideId);
+    const ownerId = req.session.user!.id;
+    const existingRide = await findRide(rideId, ownerId);
     if (!existingRide) {
       res.status(404).json({ success: false, message: "Ride not found." });
       return;
@@ -205,8 +202,7 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
 
     const imagePath = req.file
       ? path.posix.join("uploads", "rides", req.file.filename)
-      : null; // note: null will wipe an existing image — see below
-    console.log(rideId);
+      : null; // BUG: null will wipe an existing image 
     const result = await updateRideItem({
       rideId,
       description,
@@ -248,8 +244,6 @@ const removeRide = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-
-router.delete("/:id", requireLogin, removeRide);
 
 router.post("/updateRide", requireLogin, upload.single("image"), updateRide);
 router.get("/search", getFilteredRides);
