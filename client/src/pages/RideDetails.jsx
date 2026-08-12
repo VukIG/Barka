@@ -10,6 +10,7 @@ import {
   ArrowLeft,
   Check,
   Edit,
+  Trash,
 } from "lucide-react";
 import { API_URL } from "../config/api";
 import { getCurrentSession } from "../api/session";
@@ -95,7 +96,6 @@ function RideDetails() {
         </div>
       </div>
     );
-
   }
   const ride = rideData.ride;
   const reviewList = rideData.reviews || [];
@@ -104,6 +104,19 @@ function RideDetails() {
   const seatsTaken = Number(ride.seats_taken);
   const availableSeats = totalSeats - seatsTaken;
   const totalPrice = (ride.price * selectedSeats).toFixed(2);
+
+  const handleRemove = () => {
+    fetch(`${API_URL}/rides/${id}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        navigate("/");
+      })
+      .catch((err) => console.log("Error loading rides:", err));
+  };
 
   const handleBooking = () => {
     if (user) {
@@ -152,17 +165,27 @@ function RideDetails() {
                 {ride.start_port} → {ride.end_port}
               </h1>
               {user?.id === rideData.ride.captain_id && (
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start my-5">
-                <button
-                  onClick={() =>
-                    navigate(`/updateRide/${id}`, { state: { ride: rideData } })
-                  }
-                  className="flex items-center gap-2 px-2 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                >
-                  <Edit className="w-4 h-4" />
-                  <span>Edit Ride</span>
-                </button>
-              </div>)}
+                <div className="flex flex-wrap gap-3 justify-center md:justify-start my-5">
+                  <button
+                    onClick={() =>
+                      navigate(`/updateRide/${id}`, {
+                        state: { ride: rideData },
+                      })
+                    }
+                    className="flex items-center gap-2 px-2 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <Edit className="w-4 h-4" />
+                    <span>Edit Ride</span>
+                  </button>
+                  <button
+                    onClick={handleRemove}
+                    className="flex items-center gap-2 px-2 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                  >
+                    <Trash className="w-4 h-4" />
+                    <span>Remove Ride</span>
+                  </button>
+                </div>
+              )}
               {/* Route Details */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6 p-4 bg-blue-50 rounded-lg">
                 <div>

@@ -46,10 +46,10 @@ function AuthPage() {
 
     try {
       await submitAuth(url, body);
-      if (isSignUp){
+      if (isSignUp) {
         navigate("/verify"); // no window.location.href, no reload
-      }else{
-        navigate("/")
+      } else {
+        navigate("/");
       }
     } catch (err) {
       alert(err.message);

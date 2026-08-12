@@ -18,15 +18,13 @@ import ImageUpload from "../components/ImageUpload";
 import { useAuth } from "../context/AuthContext";
 
 function OfferRide() {
-
   const [locations, setLocations] = useState();
-   useEffect(() => {
+  useEffect(() => {
     fetch(`${API_URL}/locations`)
       .then((r) => r.json())
-      .then((rows) => setLocations(rows.map((p) => p.name)))  
+      .then((rows) => setLocations(rows.map((p) => p.name)))
       .catch(() => setLocations([]));
   }, []);
-
 
   const navigate = useNavigate();
   const [showSuccess, setShowSuccess] = useState(false);
@@ -34,7 +32,7 @@ function OfferRide() {
   const [newAmenity, setNewAmenity] = useState("");
   const [selectedDate, setSelectedDate] = useState(undefined);
   const [imageFile, setImageFile] = useState(null);
-  const { user } = useAuth();  
+  const { user } = useAuth();
 
   const [formData, setFormData] = useState({
     from: "",
@@ -166,7 +164,7 @@ function OfferRide() {
                   required
                 >
                   <option value="">Select departure</option>
-                  {locations.map((location) => (
+                  {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>
@@ -186,7 +184,7 @@ function OfferRide() {
                   required
                 >
                   <option value="">Select destination</option>
-                  {locations.map((location) => (
+                  {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
                     </option>

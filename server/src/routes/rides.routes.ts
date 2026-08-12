@@ -4,7 +4,8 @@ import {
   filteredRides,
   getSpecificRide,
   findRide,
-  updateRideItem
+  updateRideItem,
+  deleteRide,
 } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
 import multer from "multer";
@@ -29,7 +30,6 @@ const router = Router();
 const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const {
-      ownerId,
       boatType,
       description,
       from,
@@ -38,7 +38,6 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
       departureTime,
       arrivalTime,
     } = req.body as {
-      ownerId: number;
       boatType: string;
       description: string;
       from: string;
@@ -47,7 +46,7 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
       departureTime: string;
       arrivalTime: string;
     };
-
+    const ownerId = req.session.user!.id;
     if (!from || !to || !price || !departureTime || !arrivalTime) {
       res
         .status(400)
@@ -99,7 +98,6 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
     next(error);
   }
 };
-router.post("/add", requireLogin, upload.single("image"), addrideItem);
 
 const getFilteredRides = async (
   req: Request,
@@ -161,7 +159,6 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
       arrivalTime,
     } = req.body as {
       rideId: string;
-      ownerId: number;
       boatType: string;
       description: string;
       from: string;
@@ -172,7 +169,9 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
     };
 
     if (!rideId || !from || !to || !price || !departureTime || !arrivalTime) {
-      res.status(400).json({ success: false, message: "Missing required ride fields." });
+      res
+        .status(400)
+        .json({ success: false, message: "Missing required ride fields." });
       return;
     }
 
@@ -185,11 +184,17 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
     if (new Date(arrivalTime) <= new Date(departureTime)) {
-      res.status(400).json({ success: false, message: "arrivalTime must be after departureTime." });
+      res
+        .status(400)
+        .json({
+          success: false,
+          message: "arrivalTime must be after departureTime.",
+        });
       return;
     }
 
-    const existingRide = await findRide(rideId);
+    const ownerId = req.session.user!.id;
+    const existingRide = await findRide(rideId, ownerId);
     if (!existingRide) {
       res.status(404).json({ success: false, message: "Ride not found." });
       return;
@@ -197,21 +202,22 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
 
     const imagePath = req.file
       ? path.posix.join("uploads", "rides", req.file.filename)
-      : null;   // note: null will wipe an existing image — see below
-    console.log(rideId)
+      : null; // BUG: null will wipe an existing image 
     const result = await updateRideItem({
-        rideId,
-        description,
-        from,
-        to,
-        price,
-        departureTime,
-        arrivalTime,
-        imagePath,
-      });
+      rideId,
+      description,
+      from,
+      to,
+      price,
+      departureTime,
+      arrivalTime,
+      imagePath,
+    });
 
     if (result.affectedRows === 0) {
-      res.status(500).json({ success: false, message: "Ride was not updated." });
+      res
+        .status(500)
+        .json({ success: false, message: "Ride was not updated." });
       return;
     }
 
@@ -221,9 +227,28 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
-router.post("/updateRide",requireLogin, upload.single("image"), updateRide)
+const removeRide = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const ownerId = req.session.user!.id;
+    const result = await deleteRide(req.params.id, ownerId);
+
+    if (result.affectedRows === 0) {
+      res
+        .status(404)
+        .json({ success: false, message: "Ride not found or not yours" });
+      return;
+    }
+
+    res.status(200).json({ success: true, message: "Ride deleted!" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+router.post("/updateRide", requireLogin, upload.single("image"), updateRide);
 router.get("/search", getFilteredRides);
 router.post("/add", requireLogin, upload.single("image"), addrideItem);
 router.get("/:id", getRideDetails);
+router.delete("/:id", requireLogin, removeRide);
 
 export default router;

@@ -3,7 +3,11 @@ import { getAllLocations } from "../db/database.js";
 
 const router = Router();
 
-const getLocations = async (req: Request, res: Response, next: NextFunction) => {
+const getLocations = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const locations = await getAllLocations();
     res.status(200).json(locations);
