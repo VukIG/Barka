@@ -27,14 +27,17 @@ export const logoutUser = async (): Promise<void> => {
 };
 
 export const loginUser = async (
-  username: string,
+  email: string,
   password: string,
 ): Promise<SessionResponse> => {
-  const res = await fetch(`${API_URL}/users/login`, {
+  const body = new FormData();
+  body.append("email", email);
+  body.append("password", password);
+
+  const res = await fetch(`${API_URL}/users/logIn`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
     credentials: "include",
-    body: JSON.stringify({ username, password }),
+    body,
   });
 
   if (!res.ok) {

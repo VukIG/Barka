@@ -35,8 +35,8 @@ export function AuthProvider({ children }) {
     return result;
   };
 
-  const signIn = async (username, password) => {
-    const session = await loginUser(username, password);
+  const signIn = async (email, password) => {
+    const session = await loginUser(email, password);
     setUser(session.loggedIn ? session.user : null);
   };
 

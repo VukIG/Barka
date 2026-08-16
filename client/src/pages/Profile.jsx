@@ -11,20 +11,21 @@ import {
 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { API_URL } from "../config/api";
+import { useAuth } from "../context/AuthContext";
 
-export default function Profile({}) {
+export default function Profile() {
+  const { id } = useParams();
+  const { user } = useAuth();
   const [profileData, setProfileData] = useState();
-  useEffect(() => {
-    fetch(`${API_URL}/users/me`, { credentials: "include" })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log(data);
-        setProfileData(data);
-      })
-      .catch((err) => console.log("Error loading rides:", err));
-  }, []);
-
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setProfileData(undefined);
+    fetch(`${API_URL}/users/${id}`)
+      .then((response) => response.json())
+      .then((data) => setProfileData(data.user ? data : null))
+      .catch((err) => console.log("Error loading profile:", err));
+  }, [id]);
 
   if (!profileData) {
     return (
@@ -43,6 +44,8 @@ export default function Profile({}) {
       </div>
     );
   }
+
+  const isOwnProfile = user?.id === profileData.user.id;
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">
@@ -103,12 +106,14 @@ export default function Profile({}) {
                   )}
                 </span>
               </div>
-              <div className="flex flex-wrap gap-3 justify-center md:justify-start">
-                <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
-                  <Edit className="w-4 h-4" />
-                  <span>Edit Profile</span>
-                </button>
-              </div>
+              {isOwnProfile && (
+                <div className="flex flex-wrap gap-3 justify-center md:justify-start">
+                  <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
+                    <Edit className="w-4 h-4" />
+                    <span>Edit Profile</span>
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 

@@ -209,6 +209,30 @@ const getCurrentUser = async (req: Request, res: Response) => {
   res.status(200).json(queryResult);
 };
 
+const getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+
+    if (!/^\d+$/.test(id)) {
+      res.status(400).json({
+        success: false,
+        message: "User id must be a number.",
+      });
+      return;
+    }
+
+    const profile = await getUserProfile(Number(id));
+    if (!profile.user) {
+      res.status(404).json({ success: false, message: "User not found." });
+      return;
+    }
+
+    res.status(200).json(profile);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const verifyEmail = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.query.token as string | undefined;
@@ -233,5 +257,6 @@ router.get("/me", requireLogin, getCurrentUser);
 router.post("/logout", requireLogin, logoutUser);
 router.post("/logIn", upload.none(), loginUser);
 router.post("/signUp", upload.single("image"), signUpUser);
+router.get("/:id", getUserById);
 
 export default router;

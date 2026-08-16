@@ -1,7 +1,12 @@
 import TripCard from "../components/TripCard";
 import { useState, useMemo, useEffect } from "react";
-import { useSearchParams, useNavigate, data } from "react-router";
+import { useSearchParams, useNavigate } from "react-router";
 import { Calendar, Filter, Anchor } from "lucide-react";
+import { API_URL } from "../config/api";
+
+function formatBoatType(type) {
+  return type.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase());
+}
 
 function SearchResults() {
   const [searchParams] = useSearchParams();
@@ -13,12 +18,9 @@ function SearchResults() {
   const [maxPrice, setMaxPrice] = useState(500);
   const [minSeats, setMinSeats] = useState(1);
   const [allRides, setAllRides] = useState([]);
-  const API_URL = "http://localhost:5000";
-  const boatTypes = [...new Set(allRides.map((ride) => ride.boatType))]
-    .filter(Boolean)
-    .map((type) =>
-      type.replace(/_/g, " ").replace(/\b\w/g, (char) => char.toUpperCase()),
-    );
+  const boatTypes = [...new Set(allRides.map((ride) => ride.boatType))].filter(
+    Boolean,
+  );
 
   const params = new URLSearchParams({ from, to, date });
   useEffect(() => {
@@ -35,9 +37,11 @@ function SearchResults() {
     const priceFiltered = ride.ticket_cost <= maxPrice;
     const boatTypeFiltered =
       selectedBoatType === "All Boat Types" ||
-      ride.boatType === selectedBoatType?.toLowerCase();
+      ride.boatType === selectedBoatType;
+    const availableSeats = ride.totalSeats - ride.seats_taken;
+    const seatsFiltered = availableSeats >= minSeats;
 
-    return priceFiltered && boatTypeFiltered;
+    return priceFiltered && boatTypeFiltered && seatsFiltered;
   });
   return (
     <div className="min-h-screen bg-gray-50">
@@ -84,7 +88,9 @@ function SearchResults() {
                         onChange={() => setSelectedBoatType(type)}
                         className="w-4 h-4 text-blue-600"
                       />
-                      <span className="text-sm text-gray-700">{type}</span>
+                      <span className="text-sm text-gray-700">
+                        {formatBoatType(type)}
+                      </span>
                     </label>
                   ))}
                 </div>
@@ -129,7 +135,7 @@ function SearchResults() {
 
           {/* Results */}
           <div className="lg:col-span-3 space-y-4">
-            {filteredRides.length === 0 || filteredRides.success === false ? (
+            {filteredRides.length === 0 ? (
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <Anchor className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">

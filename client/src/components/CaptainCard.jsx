@@ -1,8 +1,10 @@
+import { useNavigate } from "react-router";
 import { Shield } from "lucide-react";
 import { useRide } from "../context/RideContext";
 import { formatDate } from "../utils/dateFormat";
 
 function CaptainCard() {
+  const navigate = useNavigate();
   const { ride } = useRide();
 
   return (
@@ -10,14 +12,17 @@ function CaptainCard() {
       <h2 className="text-xl font-semibold text-gray-900 mb-4">
         Your Captain
       </h2>
-      <div className="flex items-start gap-4">
+      <div
+        onClick={() => navigate(`/profile/${ride.captain_id}`)}
+        className="flex items-start gap-4 cursor-pointer group"
+      >
         {/* No avatar in the data — show the first initial in a circle. */}
         <div className="w-16 h-16 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center text-2xl font-bold">
           {ride.captain_name.charAt(0).toUpperCase()}
         </div>
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <h3 className="text-lg font-semibold text-gray-900 group-hover:text-blue-600 transition-colors">
               {ride.captain_name}
             </h3>
             {ride.captain_verified === 1 && (
