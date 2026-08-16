@@ -217,10 +217,14 @@ export default function Profile() {
                       <img
                         src={`${API_URL}/${review.reviewer_image}`}
                         alt={review.reviewer_name}
-                        className="w-10 h-10 rounded-full object-cover"
+                        onClick={() => navigate(`/profile/${review.reviewer_id}`)}
+                        className="w-10 h-10 rounded-full object-cover cursor-pointer flex-shrink-0"
                       />
                     ) : (
-                      <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold uppercase">
+                      <div
+                        onClick={() => navigate(`/profile/${review.reviewer_id}`)}
+                        className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold uppercase cursor-pointer flex-shrink-0"
+                      >
                         {(
                           review.reviewer_name[0] +
                           (review.reviewer_name[1] ?? "")
@@ -230,7 +234,10 @@ export default function Profile() {
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <div>
-                          <h3 className="font-semibold text-gray-900">
+                          <h3
+                            onClick={() => navigate(`/profile/${review.reviewer_id}`)}
+                            className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors inline-block"
+                          >
                             {review.reviewer_name}
                           </h3>
                           <div className="flex items-center gap-2 text-sm text-gray-600">

@@ -24,12 +24,24 @@ function TripCard({ ride }) {
       <div className="p-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700">
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/profile/${ride.owner_id}`);
+              }}
+              className="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700 cursor-pointer flex-shrink-0"
+            >
               {ride.first_name?.[0]}
               {ride.last_name?.[0]}
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900">
+              <h3
+                onClick={(e) => {
+                  e.stopPropagation();
+                  navigate(`/profile/${ride.owner_id}`);
+                }}
+                className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors inline-block"
+              >
                 {ride.first_name} {ride.last_name}
               </h3>
               <h3>

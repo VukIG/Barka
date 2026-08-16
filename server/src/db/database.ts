@@ -201,7 +201,7 @@ export const getUserProfile = async (userId: number) => {
   );
 
   const [userReviews]: any = await pool.query(
-    `SELECT rv.id, rv.rating, rv.description, rv.date, reviewer.user_name AS reviewer_name, sp.name AS from_port, ep.name AS to_port,
+    `SELECT rv.id, rv.rating, rv.description, rv.date, reviewer.id AS reviewer_id, reviewer.user_name AS reviewer_name, sp.name AS from_port, ep.name AS to_port,
      reviewer.image_path AS reviewer_image
      FROM review rv
      JOIN user reviewer ON rv.reviewer_id = reviewer.id
@@ -325,6 +325,7 @@ export const getSpecificRide = async (rideId: string) => {
        rv.rating          AS rating,
        rv.description     AS description,
        rv.date            AS date,
+       reviewer.id        AS reviewer_id,
        reviewer.user_name AS reviewer_name,
        sp.name            AS from_port,
        ep.name            AS to_port
@@ -376,7 +377,7 @@ export const createBooking = async (
 export const getRideBookings = async (rideId: string, ownerId: number) => {
   const [bookings]: any = await pool.query(
     `SELECT b.id, b.cost, b.number_of_tickets, b.status_confirmed,
-            t.first_name, t.last_name, t.image_path AS tourist_image
+            t.id AS tourist_id, t.first_name, t.last_name, t.image_path AS tourist_image
      FROM booking b
      JOIN ride r ON b.ride_id = r.id
      JOIN user t ON b.tourist_id = t.id

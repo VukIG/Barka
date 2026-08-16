@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { Check, X, Users } from "lucide-react";
 import { useRide } from "../context/RideContext";
 import { API_URL } from "../config/api";
 
 function BookingRequestsList() {
+  const navigate = useNavigate();
   const { id } = useRide();
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -49,16 +51,23 @@ function BookingRequestsList() {
                 <img
                   src={`${API_URL}/${booking.tourist_image}`}
                   alt={`${booking.first_name} ${booking.last_name}`}
-                  className="w-10 h-10 rounded-full object-cover"
+                  onClick={() => navigate(`/profile/${booking.tourist_id}`)}
+                  className="w-10 h-10 rounded-full object-cover cursor-pointer flex-shrink-0"
                 />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-semibold">
+                <div
+                  onClick={() => navigate(`/profile/${booking.tourist_id}`)}
+                  className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-semibold cursor-pointer flex-shrink-0"
+                >
                   {booking.first_name.charAt(0).toUpperCase()}
                 </div>
               )}
               <div className="flex-1">
                 <div className="flex items-center justify-between gap-2 mb-1">
-                  <span className="font-semibold text-gray-900">
+                  <span
+                    onClick={() => navigate(`/profile/${booking.tourist_id}`)}
+                    className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors"
+                  >
                     {booking.first_name} {booking.last_name}
                   </span>
                   <span className="font-semibold text-blue-600">

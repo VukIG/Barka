@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router";
 import { Star } from "lucide-react";
 import { useRide } from "../context/RideContext";
 import { formatDate } from "../utils/dateFormat";
@@ -13,6 +14,7 @@ function renderStars(rating) {
 }
 
 function ReviewsList() {
+  const navigate = useNavigate();
   const { reviews } = useRide();
 
   if (reviews.length === 0) return null;
@@ -29,12 +31,18 @@ function ReviewsList() {
             className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-semibold">
+              <div
+                onClick={() => navigate(`/profile/${review.reviewer_id}`)}
+                className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-semibold cursor-pointer flex-shrink-0"
+              >
                 {review.reviewer_name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1">
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="font-semibold text-gray-900">
+                  <span
+                    onClick={() => navigate(`/profile/${review.reviewer_id}`)}
+                    className="font-semibold text-gray-900 cursor-pointer hover:text-blue-600 transition-colors"
+                  >
                     {review.reviewer_name}
                   </span>
                   <div className="flex items-center gap-1">
