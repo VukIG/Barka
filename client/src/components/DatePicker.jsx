@@ -3,14 +3,11 @@ import { DayPicker } from "react-day-picker";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import * as Popover from "@radix-ui/react-popover";
+import { useTranslation } from "react-i18next";
 import "react-day-picker/dist/style.css";
 
-function DatePicker({
-  selected,
-  onSelect,
-  placeholder = "Pick a date",
-  minDate,
-}) {
+function DatePicker({ selected, onSelect, placeholder, minDate }) {
+  const { t } = useTranslation();
   const [open, setOpen] = useState(false);
 
   return (
@@ -21,7 +18,7 @@ function DatePicker({
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white text-left flex items-center justify-between hover:border-gray-400 transition-colors"
         >
           <span className={selected ? "text-gray-900" : "text-gray-500"}>
-            {selected ? format(selected, "PPP") : placeholder}
+            {selected ? format(selected, "PPP") : (placeholder ?? t("datePicker.pickDate"))}
           </span>
           <CalendarIcon className="w-5 h-5 text-gray-400" />
         </button>

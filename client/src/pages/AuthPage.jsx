@@ -1,11 +1,13 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { Anchor, Mail, Lock, User, Eye, EyeOff, Waves } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { API_URL } from "../config/api";
 import ImageUpload from "../components/ImageUpload";
 import { nationalities, EMPTY_FORM } from "../data/mockData";
 import { useAuth } from "../context/AuthContext";
 function AuthPage() {
+  const { t } = useTranslation();
   const [isSignUp, setIsSignUp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState(EMPTY_FORM);
@@ -15,11 +17,21 @@ function AuthPage() {
   const { submitAuth } = useAuth();
   const navigate = useNavigate();
 
+  const genderLabels = {
+    male: t("auth.genderMale"),
+    female: t("auth.genderFemale"),
+  };
+  const roleLabels = {
+    tourist: t("auth.roleTourist"),
+    owner: t("auth.roleOwner"),
+    both: t("auth.roleBoth"),
+  };
+
   async function handleSubmit(e) {
     e.preventDefault();
     if (submitting) return;
     if (isSignUp && formData.password !== formData.confirmPassword) {
-      alert("Passwords do not match.");
+      alert(t("auth.passwordsDontMatch"));
       return; // note: you currently forget to reset submitting here
     }
     setSubmitting(true);
@@ -72,12 +84,10 @@ function AuthPage() {
               </span>
             </div>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">
-              {isSignUp ? "Create your account" : "Welcome back"}
+              {isSignUp ? t("auth.createAccountTitle") : t("auth.welcomeBackTitle")}
             </h1>
             <p className="text-gray-600">
-              {isSignUp
-                ? "Join the Adriatic boat sharing community"
-                : "Sign in to continue your journey"}
+              {isSignUp ? t("auth.joinCommunity") : t("auth.signInContinue")}
             </p>
           </div>
 
@@ -87,7 +97,7 @@ function AuthPage() {
                 {/* Username */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Username
+                    {t("auth.username")}
                   </label>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -98,7 +108,7 @@ function AuthPage() {
                         setFormData({ ...formData, name: e.target.value })
                       }
                       className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                      placeholder="Choose a username"
+                      placeholder={t("auth.chooseUsername")}
                       required={isSignUp}
                     />
                   </div>
@@ -108,7 +118,7 @@ function AuthPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      First name
+                      {t("auth.firstName")}
                     </label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -122,14 +132,14 @@ function AuthPage() {
                           })
                         }
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="First name"
+                        placeholder={t("auth.firstName")}
                         required={isSignUp}
                       />
                     </div>
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Last name
+                      {t("auth.lastName")}
                     </label>
                     <div className="relative">
                       <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -140,7 +150,7 @@ function AuthPage() {
                           setFormData({ ...formData, lastname: e.target.value })
                         }
                         className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        placeholder="Last name"
+                        placeholder={t("auth.lastName")}
                         required={isSignUp}
                       />
                     </div>
@@ -151,7 +161,7 @@ function AuthPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Age
+                      {t("auth.age")}
                     </label>
                     <input
                       type="number"
@@ -167,13 +177,13 @@ function AuthPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Gender
+                      {t("auth.gender")}
                     </label>
                     <div className="flex gap-3">
                       {["male", "female"].map((g) => (
                         <label
                           key={g}
-                          className={`flex-1 flex items-center justify-center px-4 py-3 border rounded-lg cursor-pointer capitalize transition-colors ${
+                          className={`flex-1 flex items-center justify-center px-4 py-3 border rounded-lg cursor-pointer transition-colors ${
                             formData.gender === g
                               ? "border-blue-500 bg-blue-50 text-blue-700"
                               : "border-gray-300 text-gray-700 hover:bg-gray-50"
@@ -188,7 +198,7 @@ function AuthPage() {
                               setFormData({ ...formData, gender: g })
                             }
                           />
-                          {g}
+                          {genderLabels[g]}
                         </label>
                       ))}
                     </div>
@@ -199,7 +209,7 @@ function AuthPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Nationality
+                      {t("auth.nationality")}
                     </label>
                     <select
                       value={formData.nationality}
@@ -212,7 +222,7 @@ function AuthPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required={isSignUp}
                     >
-                      <option value="">Select nationality</option>
+                      <option value="">{t("auth.selectNationality")}</option>
                       {nationalities.map((c) => (
                         <option key={c.code} value={c.code}>
                           {c.name}
@@ -222,7 +232,7 @@ function AuthPage() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Role
+                      {t("auth.role")}
                     </label>
                     <select
                       value={formData.role}
@@ -232,10 +242,10 @@ function AuthPage() {
                       className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       required={isSignUp}
                     >
-                      <option value="">Select role</option>
+                      <option value="">{t("auth.selectRole")}</option>
                       {["tourist", "owner", "both"].map((r) => (
-                        <option key={r} value={r} className="capitalize">
-                          {r}
+                        <option key={r} value={r}>
+                          {roleLabels[r]}
                         </option>
                       ))}
                     </select>
@@ -245,7 +255,7 @@ function AuthPage() {
             )}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                {t("auth.emailAddress")}
               </label>
               <div className="relative">
                 <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -256,7 +266,7 @@ function AuthPage() {
                     setFormData({ ...formData, email: e.target.value })
                   }
                   className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your email"
+                  placeholder={t("auth.enterEmail")}
                   required
                 />
               </div>
@@ -264,7 +274,7 @@ function AuthPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Password
+                {t("auth.password")}
               </label>
               <div className="relative">
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -275,7 +285,7 @@ function AuthPage() {
                     setFormData({ ...formData, password: e.target.value })
                   }
                   className="w-full pl-10 pr-12 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="Enter your password"
+                  placeholder={t("auth.enterPassword")}
                   required
                 />
                 <button
@@ -295,7 +305,7 @@ function AuthPage() {
             {isSignUp && (
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Confirm Password
+                  {t("auth.confirmPassword")}
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -309,35 +319,35 @@ function AuthPage() {
                       })
                     }
                     className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    placeholder="Confirm your password"
+                    placeholder={t("auth.confirmYourPassword")}
                     required={isSignUp}
                   />
                 </div>
                 <div>
                   <br />
                   <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-                    Upload your profile picture
+                    {t("auth.uploadProfilePicture")}
                   </h2>
                   <p className="text-sm text-gray-500 mt-5 mb-5">
                     {" "}
-                    Upload an image of your headshot.
+                    {t("auth.uploadHeadshot")}
                   </p>
                   <ImageUpload onFileSelect={setImageFile} />
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    About you
+                    {t("auth.aboutYou")}
                   </label>
                   <textarea
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    placeholder="Tell other users a bit about yourself — where you travel, your boat, what to expect on a ride..."
+                    placeholder={t("auth.aboutYouPlaceholder")}
                     rows={4}
                     maxLength={1000}
                     className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
                   />
                   <p className="text-xs text-gray-500 mt-1">
-                    {description.length}/1000 characters
+                    {t("auth.charactersCount", { count: description.length })}
                   </p>
                 </div>
               </div>
@@ -349,7 +359,7 @@ function AuthPage() {
                   type="button"
                   className="text-blue-600 hover:text-blue-700"
                 >
-                  Forgot password?
+                  {t("auth.forgotPassword")}
                 </button>
               </div>
             )}
@@ -358,14 +368,14 @@ function AuthPage() {
               type="submit"
               className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-3 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl"
             >
-              {isSignUp ? "Create Account" : "Sign In"}
+              {isSignUp ? t("auth.createAccountButton") : t("auth.signInButton")}
             </button>
           </form>
 
           {/* Toggle Sign In/Sign Up */}
           <div className="mt-6 text-center">
             <p className="text-gray-600">
-              {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+              {isSignUp ? t("auth.alreadyHaveAccount") : t("auth.dontHaveAccount")}{" "}
               <button
                 onClick={() => {
                   setIsSignUp(!isSignUp);
@@ -378,7 +388,7 @@ function AuthPage() {
                 }}
                 className="text-blue-600 hover:text-blue-700 font-semibold"
               >
-                {isSignUp ? "Sign In" : "Sign Up"}
+                {isSignUp ? t("auth.signInLink") : t("auth.signUpLink")}
               </button>
             </p>
           </div>
@@ -399,13 +409,8 @@ function AuthPage() {
         <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 via-blue-900/40 to-transparent" />
         <div className="absolute bottom-12 left-12 right-12 text-white">
           <Waves className="w-12 h-12 mb-4" />
-          <h2 className="text-4xl font-bold mb-4">
-            Explore the Adriatic Coast
-          </h2>
-          <p className="text-xl text-blue-100">
-            Connect with captains and passengers for unforgettable journeys
-            along the Adriatic Sea
-          </p>
+          <h2 className="text-4xl font-bold mb-4">{t("auth.exploreTitle")}</h2>
+          <p className="text-xl text-blue-100">{t("auth.exploreBody")}</p>
         </div>
       </div>
     </div>

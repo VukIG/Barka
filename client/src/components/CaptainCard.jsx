@@ -1,16 +1,18 @@
 import { useNavigate } from "react-router";
 import { Shield } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useRide } from "../context/RideContext";
 import { formatDate } from "../utils/dateFormat";
 
 function CaptainCard() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { ride } = useRide();
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        Your Captain
+        {t("rideDetails.yourCaptain")}
       </h2>
       <div
         onClick={() => navigate(`/profile/${ride.captain_id}`)}
@@ -28,12 +30,16 @@ function CaptainCard() {
             {ride.captain_verified === 1 && (
               <div className="flex items-center gap-1 text-sm text-blue-600">
                 <Shield className="w-4 h-4" />
-                <span>Verified</span>
+                <span>{t("rideDetails.verified")}</span>
               </div>
             )}
           </div>
           <div className="flex items-center gap-4 text-sm text-gray-600 mb-3">
-            <span>Member since {formatDate(ride.member_since)}</span>
+            <span>
+              {t("rideDetails.memberSince", {
+                date: formatDate(ride.member_since),
+              })}
+            </span>
           </div>
         </div>
       </div>

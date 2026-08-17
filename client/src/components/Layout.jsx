@@ -3,10 +3,13 @@ import { Anchor, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { getCurrentSession, logoutUser } from "../api/session";
 import { OrbitProgress } from "react-loading-indicators";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { API_URL } from "../config/api";
+import LanguageSwitcher from "./LanguageSwitcher";
 
 function Layout() {
+  const { t } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -42,9 +45,7 @@ function Layout() {
                 <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-blue-500 bg-clip-text text-transparent">
                   Barka
                 </span>
-                <div className="text-xs text-gray-500">
-                  Boat Sharing Adriatic
-                </div>
+                <div className="text-xs text-gray-500">{t("nav.tagline")}</div>
               </div>
             </Link>
 
@@ -58,7 +59,7 @@ function Layout() {
                     : "text-gray-600 hover:text-blue-600"
                 }`}
               >
-                For Businesses
+                {t("nav.forBusinesses")}
               </Link>
 
               {user ? (
@@ -71,13 +72,13 @@ function Layout() {
                         : "text-gray-600 hover:text-blue-600"
                     }`}
                   >
-                    Offer ride
+                    {t("nav.offerRide")}
                   </Link>
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
                   >
-                    Sign Out
+                    {t("nav.signOut")}
                   </button>
                   {user.image_path ? (
                     <img
@@ -105,9 +106,11 @@ function Layout() {
                   to="/auth"
                   className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium"
                 >
-                  Sign In
+                  {t("nav.signIn")}
                 </Link>
               )}
+
+              <LanguageSwitcher />
             </div>
 
             {/* Mobile Menu Button */}
@@ -132,21 +135,21 @@ function Layout() {
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Find a Ride
+                  {t("nav.findRide")}
                 </Link>
                 <Link
                   to="/offer"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  Offer a Ride
+                  {t("nav.offerARide")}
                 </Link>
                 <Link
                   to="/business"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  For Businesses
+                  {t("nav.forBusinesses")}
                 </Link>
 
                 {user ? (
@@ -154,7 +157,7 @@ function Layout() {
                     onClick={handleLogout}
                     className="text-left text-sm text-gray-600 hover:text-blue-600 transition-colors cursor-pointer"
                   >
-                    Sign Out
+                    {t("nav.signOut")}
                   </button>
                 ) : (
                   <Link
@@ -162,9 +165,11 @@ function Layout() {
                     className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
                     onClick={() => setMobileMenuOpen(false)}
                   >
-                    Sign In
+                    {t("nav.signIn")}
                   </Link>
                 )}
+
+                <LanguageSwitcher />
               </div>
             </div>
           )}
@@ -185,54 +190,55 @@ function Layout() {
                 </div>
                 <span className="font-bold text-blue-600">Barka</span>
               </div>
-              <p className="text-sm text-gray-600">
-                Connecting captains and passengers across the beautiful Adriatic
-                coast.
-              </p>
+              <p className="text-sm text-gray-600">{t("footer.tagline")}</p>
             </div>
             <div>
-              <h3 className="font-semibold text-gray-900 mb-4">About</h3>
+              <h3 className="font-semibold text-gray-900 mb-4">
+                {t("footer.aboutHeading")}
+              </h3>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li>
                   <a href="#" className="hover:text-blue-600 transition-colors">
-                    How it works
+                    {t("footer.howItWorks")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-blue-600 transition-colors">
-                    Safety
+                    {t("footer.safety")}
                   </a>
                 </li>
                 <li>
                   <a href="#" className="hover:text-blue-600 transition-colors">
-                    Trust & Safety
-                  </a>
-                </li>
-              </ul>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
-              <ul className="space-y-2 text-sm text-gray-600">
-                <li>
-                  <a href="#" className="hover:text-blue-600 transition-colors">
-                    Help Center
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-600 transition-colors">
-                    Contact Us
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="hover:text-blue-600 transition-colors">
-                    Terms of Service
+                    {t("footer.trustSafety")}
                   </a>
                 </li>
               </ul>
             </div>
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">
-                Popular Routes
+                {t("footer.supportHeading")}
+              </h3>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    {t("footer.helpCenter")}
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    {t("footer.contactUs")}
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-blue-600 transition-colors">
+                    {t("footer.termsOfService")}
+                  </a>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">
+                {t("footer.popularRoutesHeading")}
               </h3>
               <ul className="space-y-2 text-sm text-gray-600">
                 <li>
@@ -254,7 +260,7 @@ function Layout() {
             </div>
           </div>
           <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-500">
-            © 2026 Barka. All rights reserved.
+            {t("footer.copyright", { year: new Date().getFullYear() })}
           </div>
         </div>
       </footer>

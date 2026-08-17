@@ -10,6 +10,7 @@ import {
   Plus,
   X,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { boatTypes } from "../data/mockData";
 import DatePicker from "../components/DatePicker";
 import { format } from "date-fns";
@@ -17,7 +18,16 @@ import { API_URL } from "../config/api";
 import ImageUpload from "../components/ImageUpload";
 import { useAuth } from "../context/AuthContext";
 
+const BOAT_TYPE_KEYS = {
+  Motorboat: "boatType.motorboat",
+  Yacht: "boatType.yacht",
+  "Passenger Boat": "boatType.passengerBoat",
+  Catamaran: "boatType.catamaran",
+  Sailboat: "boatType.sailboat",
+};
+
 function OfferRide() {
+  const { t } = useTranslation();
   const [locations, setLocations] = useState();
   useEffect(() => {
     fetch(`${API_URL}/locations`)
@@ -51,13 +61,13 @@ function OfferRide() {
   async function handleSubmit(e) {
     e.preventDefault();
     if (!user) {
-      alert("You must be signed in to offer a ride.");
+      alert(t("rideForm.mustBeSignedIn"));
       navigate("/auth");
       return;
     }
 
     if (!selectedDate) {
-      alert("Please pick a date.");
+      alert(t("rideForm.pleasePickDate"));
       return;
     }
 
@@ -116,14 +126,14 @@ function OfferRide() {
   };
 
   const commonAmenities = [
-    "WiFi",
-    "Snacks",
-    "Drinks",
-    "Bathroom",
-    "Life Jackets",
-    "Waterproof Storage",
-    "Music",
-    "Sundeck",
+    t("rideForm.amenityWifi"),
+    t("rideForm.amenitySnacks"),
+    t("rideForm.amenityDrinks"),
+    t("rideForm.amenityBathroom"),
+    t("rideForm.amenityLifeJackets"),
+    t("rideForm.amenityWaterproofStorage"),
+    t("rideForm.amenityMusic"),
+    t("rideForm.amenitySundeck"),
   ];
 
   return (
@@ -132,11 +142,9 @@ function OfferRide() {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Offer a Boat Ride
+            {t("rideForm.offerTitle")}
           </h1>
-          <p className="text-lg text-gray-600">
-            Share your boat trip and earn money while connecting with passengers
-          </p>
+          <p className="text-lg text-gray-600">{t("rideForm.offerSubtitle")}</p>
         </div>
 
         {/* Form */}
@@ -148,12 +156,12 @@ function OfferRide() {
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-blue-600" />
-              Route Information
+              {t("rideForm.routeInfo")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Departure City
+                  {t("rideForm.departureCity")}
                 </label>
                 <select
                   value={formData.from}
@@ -163,7 +171,7 @@ function OfferRide() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
-                  <option value="">Select departure</option>
+                  <option value="">{t("rideForm.selectDeparture")}</option>
                   {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
@@ -173,7 +181,7 @@ function OfferRide() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Destination City
+                  {t("rideForm.destinationCity")}
                 </label>
                 <select
                   value={formData.to}
@@ -183,7 +191,7 @@ function OfferRide() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
-                  <option value="">Select destination</option>
+                  <option value="">{t("rideForm.selectDestination")}</option>
                   {(locations ?? []).map((location) => (
                     <option key={location} value={location}>
                       {location}
@@ -193,7 +201,7 @@ function OfferRide() {
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Pickup Point
+                  {t("rideForm.pickupPoint")}
                 </label>
                 <input
                   type="text"
@@ -201,14 +209,14 @@ function OfferRide() {
                   onChange={(e) =>
                     setFormData({ ...formData, pickupPoint: e.target.value })
                   }
-                  placeholder="e.g., Split Harbor, Pier 5"
+                  placeholder={t("rideForm.pickupPlaceholder")}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Dropoff Point
+                  {t("rideForm.dropoffPoint")}
                 </label>
                 <input
                   type="text"
@@ -216,7 +224,7 @@ function OfferRide() {
                   onChange={(e) =>
                     setFormData({ ...formData, dropoffPoint: e.target.value })
                   }
-                  placeholder="e.g., Hvar Town Marina"
+                  placeholder={t("rideForm.dropoffPlaceholder")}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 />
@@ -228,19 +236,19 @@ function OfferRide() {
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-blue-600" />
-              Date & Time
+              {t("rideForm.dateTime")}
             </h2>
 
             <div className="space-y-4">
               {/* Date on its own row */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date
+                  {t("rideForm.date")}
                 </label>
                 <DatePicker
                   selected={selectedDate}
                   onSelect={setSelectedDate}
-                  placeholder="Select date"
+                  placeholder={t("rideForm.selectDate")}
                   minDate={new Date()}
                 />
               </div>
@@ -249,7 +257,7 @@ function OfferRide() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Expected Departure Time
+                    {t("rideForm.expectedDeparture")}
                   </label>
                   <input
                     type="time"
@@ -266,7 +274,7 @@ function OfferRide() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
-                    Expected Arrival Time
+                    {t("rideForm.expectedArrival")}
                   </label>
                   <input
                     type="time"
@@ -286,12 +294,12 @@ function OfferRide() {
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Anchor className="w-5 h-5 text-blue-600" />
-              Boat Details
+              {t("rideForm.boatDetails")}
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Boat Type
+                  {t("rideForm.boatType")}
                 </label>
                 <select
                   value={formData.boatType}
@@ -301,19 +309,19 @@ function OfferRide() {
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   required
                 >
-                  <option value="">Select boat type</option>
+                  <option value="">{t("rideForm.selectBoatType")}</option>
                   {boatTypes
-                    .filter((t) => t !== "All Boat Types")
+                    .filter((bt) => bt !== "All Boat Types")
                     .map((type) => (
                       <option key={type} value={type}>
-                        {type}
+                        {t(BOAT_TYPE_KEYS[type] ?? type)}
                       </option>
                     ))}
                 </select>
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Total Seats Available
+                  {t("rideForm.totalSeats")}
                 </label>
                 <input
                   type="number"
@@ -333,12 +341,14 @@ function OfferRide() {
           {/* Amenities */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Amenities
+              {t("rideForm.amenities")}
             </h2>
 
             {/* Quick Add Common Amenities */}
             <div className="mb-4">
-              <p className="text-sm text-gray-600 mb-2">Quick add:</p>
+              <p className="text-sm text-gray-600 mb-2">
+                {t("rideForm.quickAdd")}
+              </p>
               <div className="flex flex-wrap gap-2">
                 {commonAmenities.map((amenity) => (
                   <button
@@ -371,7 +381,7 @@ function OfferRide() {
                 onKeyPress={(e) =>
                   e.key === "Enter" && (e.preventDefault(), addAmenity())
                 }
-                placeholder="Add custom amenity"
+                placeholder={t("rideForm.addCustomAmenity")}
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
               <button
@@ -380,7 +390,7 @@ function OfferRide() {
                 className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors flex items-center gap-2"
               >
                 <Plus className="w-4 h-4" />
-                Add
+                {t("rideForm.add")}
               </button>
             </div>
 
@@ -410,7 +420,7 @@ function OfferRide() {
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Euro className="w-5 h-5 text-blue-600" />
-              Price per Person
+              {t("rideForm.pricePerPerson")}
             </h2>
             <div className="relative">
               <span className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500">
@@ -430,23 +440,23 @@ function OfferRide() {
               />
             </div>
             <p className="text-sm text-gray-500 mt-2">
-              Average price for similar routes: €25-45
+              {t("rideForm.averagePrice")}
             </p>
           </div>
           <div>
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
-              Upload banner picture of the ride
+              {t("rideForm.uploadBanner")}
             </h2>
             <p className="text-sm text-gray-500 mt-5 mb-5">
               {" "}
-              It can be your boat, the landscape or anything related
+              {t("rideForm.uploadBannerHint")}
             </p>
             <ImageUpload onFileSelect={setImageFile} />
           </div>
           {/* Description */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
-              Trip Description
+              {t("rideForm.description")}
             </h2>
             <textarea
               value={formData.description}
@@ -455,7 +465,7 @@ function OfferRide() {
               }
               rows={4}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
-              placeholder="Tell passengers about your boat, experience, and what makes this trip special..."
+              placeholder={t("rideForm.descriptionPlaceholder")}
               required
             />
           </div>
@@ -467,13 +477,13 @@ function OfferRide() {
               onClick={() => navigate("/")}
               className="flex-1 px-6 py-4 border border-gray-300 text-gray-700 rounded-lg font-semibold hover:bg-gray-50 transition-colors"
             >
-              Cancel
+              {t("common.cancel")}
             </button>
             <button
               type="submit"
               className="flex-1 px-6 py-4 bg-gradient-to-r from-blue-600 to-blue-500 text-white rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl"
             >
-              Publish Ride
+              {t("rideForm.publish")}
             </button>
           </div>
         </form>
@@ -498,12 +508,9 @@ function OfferRide() {
                 </svg>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">
-                Ride Published!
+                {t("rideForm.successTitle")}
               </h3>
-              <p className="text-gray-600">
-                Your boat ride has been successfully listed. Passengers can now
-                book your trip!
-              </p>
+              <p className="text-gray-600">{t("rideForm.successBody")}</p>
             </div>
           </div>
         )}

@@ -1,34 +1,36 @@
 import { useSearchParams, Link } from "react-router";
 import { MailCheck, CheckCircle2, XCircle } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 export default function Verify() {
+  const { t } = useTranslation();
   const [params] = useSearchParams();
   const status = params.get("status");
 
   const states = {
     inbox: {
       icon: <MailCheck className="h-12 w-12 text-sky-600" />,
-      title: "Check your inbox",
-      body: "We've sent a verification link to your email. Open your inbox, click the link inside, and then you can close this page.",
+      title: t("verify.inboxTitle"),
+      body: t("verify.inboxBody"),
       link: null,
     },
     success: {
       icon: <CheckCircle2 className="h-12 w-12 text-emerald-600" />,
-      title: "You're verified!",
-      body: "Your account is now active. You can start booking rides.",
-      link: { to: "/", label: "Browse rides" },
+      title: t("verify.successTitle"),
+      body: t("verify.successBody"),
+      link: { to: "/", label: t("verify.browseRides") },
     },
     invalid: {
       icon: <XCircle className="h-12 w-12 text-rose-600" />,
-      title: "Link expired or invalid",
-      body: "This verification link is no longer valid. Try signing up again to get a fresh link.",
-      link: { to: "/auth", label: "Back to sign up" },
+      title: t("verify.invalidTitle"),
+      body: t("verify.invalidBody"),
+      link: { to: "/auth", label: t("verify.backToSignUp") },
     },
     missing: {
       icon: <XCircle className="h-12 w-12 text-rose-600" />,
-      title: "Something's missing",
-      body: "No verification token was provided in the link.",
-      link: { to: "/auth", label: "Back to sign up" },
+      title: t("verify.missingTitle"),
+      body: t("verify.missingBody"),
+      link: { to: "/auth", label: t("verify.backToSignUp") },
     },
   };
 

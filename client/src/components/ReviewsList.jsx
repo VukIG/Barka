@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import { Star } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useRide } from "../context/RideContext";
 import { formatDate } from "../utils/dateFormat";
 
@@ -14,6 +15,7 @@ function renderStars(rating) {
 }
 
 function ReviewsList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { reviews } = useRide();
 
@@ -22,7 +24,7 @@ function ReviewsList() {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        Reviews ({reviews.length})
+        {t("rideDetails.reviewsTitle", { count: reviews.length })}
       </h2>
       <div className="space-y-4">
         {reviews.map((review) => (
