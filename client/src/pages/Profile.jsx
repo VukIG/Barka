@@ -10,10 +10,12 @@ import {
   Phone,
 } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import { API_URL } from "../config/api";
 import { useAuth } from "../context/AuthContext";
 
 export default function Profile() {
+  const { t } = useTranslation();
   const { id } = useParams();
   const { user } = useAuth();
   const [profileData, setProfileData] = useState();
@@ -32,13 +34,13 @@ export default function Profile() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            User not found
+            {t("profile.userNotFound")}
           </h1>
           <button
             onClick={() => navigate("/")}
             className="text-blue-600 hover:text-blue-700"
           >
-            Back to Home
+            {t("common.backToHome")}
           </button>
         </div>
       </div>
@@ -73,10 +75,10 @@ export default function Profile() {
                 {profileData.user.verified ? (
                   <div className="flex items-center gap-1 px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-sm">
                     <Shield className="w-4 h-4" />
-                    <span>Verified</span>
+                    <span>{t("rideDetails.verified")}</span>
                   </div>
                 ) : (
-                  <p>Unverified</p>
+                  <p>{t("profile.unverified")}</p>
                 )}
               </div>
               <div className="flex items-center justify-center md:justify-start gap-4 mb-4">
@@ -90,12 +92,14 @@ export default function Profile() {
                     )}
                   </span>
                   <span className="text-gray-600">
-                    ({profileData.user.reviewCount} reviews)
+                    {t("profile.reviewsCountSuffix", {
+                      count: profileData.user.reviewCount,
+                    })}
                   </span>
                 </div>
                 <span className="text-gray-400">•</span>
                 <span className="text-gray-600">
-                  Member since:{" "}
+                  {t("profile.memberSinceLabel")}{" "}
                   {new Date(profileData.user.created).toLocaleDateString(
                     "en-GB",
                     {
@@ -110,7 +114,7 @@ export default function Profile() {
                 <div className="flex flex-wrap gap-3 justify-center md:justify-start">
                   <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors">
                     <Edit className="w-4 h-4" />
-                    <span>Edit Profile</span>
+                    <span>{t("profile.editProfile")}</span>
                   </button>
                 </div>
               )}
@@ -123,20 +127,26 @@ export default function Profile() {
               <div className="text-3xl font-bold text-blue-600 mb-1">
                 {profileData.trips.length}
               </div>
-              <div className="text-sm text-gray-600">Trips Offered</div>
+              <div className="text-sm text-gray-600">
+                {t("profile.tripsOffered")}
+              </div>
             </div>
             <div className="text-center p-4 bg-gray-50 rounded-lg">
               <div className="text-3xl font-bold text-blue-600 mb-1">
                 {profileData.reviews.length}
               </div>
-              <div className="text-sm text-gray-600">Reviews</div>
+              <div className="text-sm text-gray-600">
+                {t("profile.reviewsHeading")}
+              </div>
             </div>
           </div>
         </div>
 
         {/* About */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">About</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">
+            {t("profile.aboutHeading")}
+          </h2>
           <p className="text-gray-700 leading-relaxed mb-4">
             {profileData.user.description}
           </p>
@@ -146,7 +156,7 @@ export default function Profile() {
         {profileData.trips.length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-8 mb-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Active Trips
+              {t("profile.activeTripsHeading")}
             </h2>
             <div className="space-y-4">
               {profileData.trips.map((trip) => (
@@ -184,14 +194,20 @@ export default function Profile() {
                           <Anchor className="w-4 h-4" />
                           <span>{trip.boatType}</span>
                         </div>
-                        <span>{trip.boat_seats} seats available</span>
+                        <span>
+                          {t("profile.seatsAvailableSuffix", {
+                            count: trip.boat_seats,
+                          })}
+                        </span>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-2xl font-bold text-blue-600">
                         €{trip.ticket_cost}
                       </div>
-                      <div className="text-sm text-gray-500">per person</div>
+                      <div className="text-sm text-gray-500">
+                        {t("common.perPerson")}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -204,7 +220,9 @@ export default function Profile() {
         {profileData.reviews.length > 0 && (
           <div className="bg-white rounded-lg shadow-md p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">
-              Reviews ({profileData.reviews.length})
+              {t("profile.reviewsSectionTitle", {
+                count: profileData.reviews.length,
+              })}
             </h2>
             <div className="space-y-6">
               {profileData.reviews.map((review) => (

@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Check, X, Users } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useRide } from "../context/RideContext";
 import { API_URL } from "../config/api";
 
 function BookingRequestsList() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id } = useRide();
   const [bookings, setBookings] = useState([]);
@@ -38,7 +40,7 @@ function BookingRequestsList() {
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
       <h2 className="text-xl font-semibold text-gray-900 mb-4">
-        Booking Requests ({bookings.length})
+        {t("rideDetails.bookingRequestsTitle", { count: bookings.length })}
       </h2>
       <div className="space-y-4">
         {bookings.map((booking) => (
@@ -77,12 +79,13 @@ function BookingRequestsList() {
                 <div className="flex items-center gap-2 text-xs text-gray-500 mb-3">
                   <Users className="w-3 h-3" />
                   <span>
-                    {booking.number_of_tickets}{" "}
-                    {booking.number_of_tickets === 1 ? "seat" : "seats"}
+                    {t("common.seatsCount", {
+                      count: booking.number_of_tickets,
+                    })}
                   </span>
                   {!!booking.status_confirmed && (
                     <span className="text-green-600 font-medium">
-                      • Accepted
+                      • {t("rideDetails.accepted")}
                     </span>
                   )}
                 </div>
@@ -93,14 +96,14 @@ function BookingRequestsList() {
                       className="flex-1 px-3 py-1.5 bg-green-600 text-white text-sm rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-1"
                     >
                       <Check className="w-4 h-4" />
-                      Accept
+                      {t("rideDetails.accept")}
                     </button>
                     <button
                       onClick={() => respond(booking.id, "reject")}
                       className="flex-1 px-3 py-1.5 bg-red-600 text-white text-sm rounded-lg hover:bg-red-700 transition-colors flex items-center justify-center gap-1"
                     >
                       <X className="w-4 h-4" />
-                      Reject
+                      {t("rideDetails.reject")}
                     </button>
                   </div>
                 )}

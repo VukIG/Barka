@@ -1,16 +1,17 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { MessageCircle, Check } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { useRide } from "../context/RideContext";
 import { API_URL } from "../config/api";
 
-function renderSeatOptions(maxSeats) {
+function renderSeatOptions(maxSeats, t) {
   const options = [];
   for (let i = 1; i <= maxSeats; i++) {
     options.push(
       <option key={i} value={i}>
-        {i} {i === 1 ? "seat" : "seats"}
+        {t("common.seatsCount", { count: i })}
       </option>,
     );
   }
@@ -18,6 +19,7 @@ function renderSeatOptions(maxSeats) {
 }
 
 function BookingSidebar() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { id, ride } = useRide();
@@ -31,7 +33,7 @@ function BookingSidebar() {
 
   const handleBooking = () => {
     if (!user) {
-      alert("You must be logged in!");
+      alert(t("rideDetails.mustBeLoggedIn"));
       navigate("/auth");
       return;
     }
@@ -49,7 +51,7 @@ function BookingSidebar() {
       .then((res) => res.json())
       .then((data) => {
         if (!data.success) {
-          alert(data.message || "Booking failed.");
+          alert(data.message || t("rideDetails.bookingFailed"));
           return;
         }
         setShowBookingConfirm(true);
@@ -59,7 +61,7 @@ function BookingSidebar() {
       })
       .catch((err) => {
         console.log("Booking error:", err);
-        alert("Something went wrong.");
+        alert(t("rideDetails.bookingError"));
       });
   };
 
@@ -69,33 +71,32 @@ function BookingSidebar() {
         <div className="text-4xl font-bold text-blue-600 mb-1">
           €{ride.price}
         </div>
-        <div className="text-sm text-gray-500">per person</div>
+        <div className="text-sm text-gray-500">{t("common.perPerson")}</div>
       </div>
 
       <div className="mb-6">
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          Number of seats
+          {t("rideDetails.numberOfSeats")}
         </label>
         <select
           value={selectedSeats}
           onChange={(e) => setSelectedSeats(Number(e.target.value))}
           className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
         >
-          {renderSeatOptions(availableSeats)}
+          {renderSeatOptions(availableSeats, t)}
         </select>
       </div>
 
       <div className="mb-6 p-4 bg-gray-50 rounded-lg">
         <div className="flex justify-between text-sm text-gray-600 mb-2">
           <span>
-            €{ride.price} × {selectedSeats}{" "}
-            {selectedSeats === 1 ? "seat" : "seats"}
+            €{ride.price} × {t("common.seatsCount", { count: selectedSeats })}
           </span>
           <span>€{totalPrice}</span>
         </div>
         <div className="border-t border-gray-200 pt-2 mt-2">
           <div className="flex justify-between font-semibold text-gray-900">
-            <span>Total</span>
+            <span>{t("rideDetails.total")}</span>
             <span>€{totalPrice}</span>
           </div>
         </div>
@@ -105,19 +106,21 @@ function BookingSidebar() {
         className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
       >
         <MessageCircle className="w-5 h-5" />
-        Book Now
+        {t("rideDetails.bookNow")}
       </button>
       {showBookingConfirm && (
         <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-lg">
           <div className="flex items-center gap-2 text-green-700">
             <Check className="w-5 h-5" />
-            <span className="font-medium">Booking confirmed!</span>
+            <span className="font-medium">
+              {t("rideDetails.bookingConfirmed")}
+            </span>
           </div>
         </div>
       )}
 
       <p className="text-xs text-gray-500 text-center mt-4">
-        Free cancellation up to 24 hours before departure
+        {t("rideDetails.freeCancellation")}
       </p>
     </div>
   );

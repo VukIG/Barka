@@ -12,8 +12,10 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 import { API_URL } from "../config/api";
 function Home() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [date, setDate] = useState(undefined);
   const [error, setError] = useState("");
@@ -34,7 +36,7 @@ function Home() {
   const handleSearch = (e) => {
     e.preventDefault();
     if (!from || !to || !date) {
-      setError("Please select a departure, destination and date.");
+      setError(t("home.errorSelectAll"));
       return;
     }
     setError("");
@@ -59,8 +61,7 @@ function Home() {
             <h1 className="text-5xl md:text-6xl font-bold text-white">Barka</h1>
           </div>
           <p className="text-xl md:text-2xl text-blue-100 mb-12 max-w-2xl">
-            Share boat rides along the stunning Adriatic coast. Save money, meet
-            people, and explore the Adriatic.
+            {t("home.heroSubtitle")}
           </p>
 
           {/* Search Form */}
@@ -71,9 +72,9 @@ function Home() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
               {/* From */}
               <LocationSelect
-                label="From"
+                label={t("home.from")}
                 value={from}
-                placeholder="Select departure"
+                placeholder={t("home.selectDeparture")}
                 options={locations}
                 isOpen={openDropdown === "from"}
                 onToggle={() => toggle("from")}
@@ -84,9 +85,9 @@ function Home() {
               />
 
               <LocationSelect
-                label="To"
+                label={t("home.to")}
                 value={to}
-                placeholder="Select destination"
+                placeholder={t("home.selectDestination")}
                 options={locations}
                 isOpen={openDropdown === "to"}
                 onToggle={() => toggle("to")}
@@ -99,12 +100,12 @@ function Home() {
               {/* Date */}
               <div className="relative">
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Date
+                  {t("home.date")}
                 </label>
                 <DatePicker
                   selected={date}
                   onSelect={setDate}
-                  placeholder="Select date"
+                  placeholder={t("home.selectDate")}
                   minDate={new Date()}
                 />
               </div>
@@ -116,7 +117,7 @@ function Home() {
               type="submit"
               className="w-full bg-gradient-to-r from-blue-600 to-blue-500 text-white py-4 rounded-lg font-semibold hover:from-blue-700 hover:to-blue-600 transition-all shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
             >
-              Search Boat Rides
+              {t("home.searchButton")}
             </button>
           </form>
         </div>
@@ -125,7 +126,7 @@ function Home() {
       {/* How It Works */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
-          How Barka Works
+          {t("home.howItWorksTitle")}
         </h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div className="text-center">
@@ -133,33 +134,27 @@ function Home() {
               <Search className="w-8 h-8 text-blue-600" />
             </div>
             <h3 className="text-xl font-semibold mb-2 text-gray-900">
-              1. Search
+              {t("home.step1Title")}
             </h3>
-            <p className="text-gray-600">
-              Find boat rides between Adriatic coastal cities and islands
-            </p>
+            <p className="text-gray-600">{t("home.step1Body")}</p>
           </div>
           <div className="text-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Calendar className="w-8 h-8 text-blue-600" />
             </div>
             <h3 className="text-xl font-semibold mb-2 text-gray-900">
-              2. Book
+              {t("home.step2Title")}
             </h3>
-            <p className="text-gray-600">
-              Choose your captain and reserve your seat instantly
-            </p>
+            <p className="text-gray-600">{t("home.step2Body")}</p>
           </div>
           <div className="text-center">
             <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <Waves className="w-8 h-8 text-blue-600" />
             </div>
             <h3 className="text-xl font-semibold mb-2 text-gray-900">
-              3. Travel
+              {t("home.step3Title")}
             </h3>
-            <p className="text-gray-600">
-              Enjoy the ride along the beautiful Adriatic coast
-            </p>
+            <p className="text-gray-600">{t("home.step3Body")}</p>
           </div>
         </div>
       </div>
@@ -168,7 +163,7 @@ function Home() {
       <div className="bg-gray-50 py-20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12 text-gray-900">
-            Popular Routes
+            {t("home.popularRoutesTitle")}
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <RouteCard
@@ -201,16 +196,16 @@ function Home() {
               <Anchor className="w-7 h-7" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              Own a boat? Start earning today!
+              {t("home.ownerCtaTitle")}
             </h2>
             <p className="text-base md:text-lg mb-8 text-blue-100">
-              Share your boat trips and connect with passengers along the coast
+              {t("home.ownerCtaBody")}
             </p>
             <button
               onClick={() => navigate("/offer")}
               className="bg-white text-blue-600 px-8 py-3.5 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-lg"
             >
-              Offer a Ride
+              {t("home.ownerCtaButton")}
             </button>
           </div>
 
@@ -220,17 +215,16 @@ function Home() {
               <TrendingUp className="w-7 h-7" />
             </div>
             <h2 className="text-2xl md:text-3xl font-bold mb-3">
-              Own a business? Boost your revenue!
+              {t("home.businessCtaTitle")}
             </h2>
             <p className="text-base md:text-lg mb-8 text-blue-100">
-              Use insights into current boat traffic to predict when your
-              customers will arrive
+              {t("home.businessCtaBody")}
             </p>
             <button
               onClick={() => navigate("/buissnes")}
               className="bg-white text-blue-600 px-8 py-3.5 rounded-lg font-semibold hover:bg-blue-50 transition-colors shadow-lg"
             >
-              Get data access
+              {t("home.businessCtaButton")}
             </button>
           </div>
         </div>

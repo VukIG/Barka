@@ -2,6 +2,7 @@ import TripCard from "../components/TripCard";
 import { useState, useMemo, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router";
 import { Calendar, Filter, Anchor } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { API_URL } from "../config/api";
 
 function formatBoatType(type) {
@@ -9,6 +10,7 @@ function formatBoatType(type) {
 }
 
 function SearchResults() {
+  const { t } = useTranslation();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const from = searchParams.get("from") || "";
@@ -54,10 +56,10 @@ function SearchResults() {
           <div className="flex items-center gap-4 text-gray-600">
             <div className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              <span>{date || "Any date"}</span>
+              <span>{date || t("search.anyDate")}</span>
             </div>
             <span>•</span>
-            <span>{filteredRides.length} rides found</span>
+            <span>{t("search.ridesFound", { count: filteredRides.length })}</span>
           </div>
         </div>
 
@@ -67,13 +69,15 @@ function SearchResults() {
             <div className="bg-white rounded-lg shadow-md p-6 sticky top-8">
               <div className="flex items-center gap-2 mb-6">
                 <Filter className="w-5 h-5 text-blue-600" />
-                <h2 className="text-lg font-semibold text-gray-900">Filters</h2>
+                <h2 className="text-lg font-semibold text-gray-900">
+                  {t("search.filters")}
+                </h2>
               </div>
 
               {/* Boat Type */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Boat Type
+                  {t("search.boatType")}
                 </label>
                 <div className="space-y-2">
                   {boatTypes.map((type) => (
@@ -99,7 +103,7 @@ function SearchResults() {
               {/* Max Price */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Max Price: €{maxPrice}
+                  {t("search.maxPrice", { price: maxPrice })}
                 </label>
                 <input
                   type="range"
@@ -116,7 +120,7 @@ function SearchResults() {
               {/* Min Seats */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-700 mb-3">
-                  Minimum Seats Available
+                  {t("search.minSeats")}
                 </label>
                 <select
                   value={minSeats}
@@ -125,7 +129,7 @@ function SearchResults() {
                 >
                   {[1, 2, 3, 4, 5, 6].map((num) => (
                     <option key={num} value={num}>
-                      {num} {num === 1 ? "seat" : "seats"}
+                      {t("common.seatsCount", { count: num })}
                     </option>
                   ))}
                 </select>
@@ -139,16 +143,14 @@ function SearchResults() {
               <div className="bg-white rounded-lg shadow-md p-12 text-center">
                 <Anchor className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  No rides found
+                  {t("search.noRidesFound")}
                 </h3>
-                <p className="text-gray-600 mb-6">
-                  Try adjusting your filters or search for a different route
-                </p>
+                <p className="text-gray-600 mb-6">{t("search.tryAdjusting")}</p>
                 <button
                   onClick={() => navigate("/")}
                   className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors"
                 >
-                  Back to Search
+                  {t("search.backToSearch")}
                 </button>
               </div>
             ) : (

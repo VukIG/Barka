@@ -1,7 +1,9 @@
 import { useState } from "react";
 import { Upload, X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 function ImageUpload({ onFileSelect }) {
+  const { t } = useTranslation();
   const [preview, setPreview] = useState(null);
   const [fileName, setFileName] = useState("");
 
@@ -10,11 +12,11 @@ function ImageUpload({ onFileSelect }) {
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      alert("Please choose an image file.");
+      alert(t("imageUpload.pleaseChooseImage"));
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
-      alert("Image must be under 5 MB.");
+      alert(t("imageUpload.imageTooLarge"));
       return;
     }
 
@@ -34,7 +36,7 @@ function ImageUpload({ onFileSelect }) {
       <label className="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-gray-300 rounded-lg p-6 cursor-pointer hover:border-blue-400 transition-colors">
         <Upload className="w-6 h-6 text-gray-400" />
         <span className="text-sm text-gray-600">
-          {fileName || "Click to choose an image"}
+          {fileName || t("imageUpload.clickToChoose")}
         </span>
         <input
           type="file"

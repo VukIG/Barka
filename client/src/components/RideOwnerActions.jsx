@@ -1,14 +1,16 @@
 import { useNavigate } from "react-router";
 import { Edit, Trash } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { useRide } from "../context/RideContext";
 import { API_URL } from "../config/api";
 
 function RideOwnerActions() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { id, rideData } = useRide();
 
   const handleRemove = () => {
-    if (!window.confirm("Remove this ride? This cannot be undone.")) return;
+    if (!window.confirm(t("rideDetails.confirmRemove"))) return;
 
     fetch(`${API_URL}/rides/${id}`, {
       method: "DELETE",
@@ -31,14 +33,14 @@ function RideOwnerActions() {
         className="flex items-center gap-2 px-2 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
       >
         <Edit className="w-4 h-4" />
-        <span>Edit Ride</span>
+        <span>{t("rideDetails.editRide")}</span>
       </button>
       <button
         onClick={handleRemove}
         className="flex items-center gap-2 px-2 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
       >
         <Trash className="w-4 h-4" />
-        <span>Remove Ride</span>
+        <span>{t("rideDetails.removeRide")}</span>
       </button>
     </div>
   );

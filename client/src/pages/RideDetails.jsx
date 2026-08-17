@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router";
 import { ArrowLeft } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { RideProvider, useRide } from "../context/RideContext";
 import { useAuth } from "../context/AuthContext";
 import RideImage from "../components/RideImage";
@@ -11,6 +12,7 @@ import BookingRequestsList from "../components/BookingRequestsList";
 import BookingSidebar from "../components/BookingSidebar";
 
 function RideDetailsContent() {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { rideData, ride } = useRide();
@@ -20,13 +22,13 @@ function RideDetailsContent() {
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">
-            Trip not found
+            {t("rideDetails.tripNotFound")}
           </h1>
           <button
             onClick={() => navigate("/")}
             className="text-blue-600 hover:text-blue-700"
           >
-            Back to Home
+            {t("common.backToHome")}
           </button>
         </div>
       </div>
@@ -44,7 +46,7 @@ function RideDetailsContent() {
           className="flex items-center gap-2 text-blue-600 hover:text-blue-700 mb-6"
         >
           <ArrowLeft className="w-5 h-5" />
-          Back to results
+          {t("rideDetails.backToResults")}
         </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
