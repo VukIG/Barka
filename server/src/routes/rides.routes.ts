@@ -6,6 +6,7 @@ import {
   findRide,
   updateRideItem,
   deleteRide,
+  getRideTraffic,
 } from "../db/database.js";
 import { requireLogin } from "../middleware/require-login.js";
 import multer from "multer";
@@ -227,6 +228,15 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const getTraffic = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const rides = await getRideTraffic();
+    res.status(200).json(rides);
+  } catch (error) {
+    next(error);
+  }
+};
+
 const removeRide = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const ownerId = req.session.user!.id;
@@ -248,6 +258,7 @@ const removeRide = async (req: Request, res: Response, next: NextFunction) => {
 
 router.post("/updateRide", requireLogin, upload.single("image"), updateRide);
 router.get("/search", getFilteredRides);
+router.get("/traffic", getTraffic);
 router.post("/add", requireLogin, upload.single("image"), addrideItem);
 router.get("/:id", getRideDetails);
 router.delete("/:id", requireLogin, removeRide);
