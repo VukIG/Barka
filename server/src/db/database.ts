@@ -358,6 +358,28 @@ export const deleteRide = async (rideId: string, ownerId: number) => {
   return rides;
 };
 
+
+export const getRideTraffic = async () => {
+  const [rows]: any = await pool.query(
+    `SELECT
+       ride.id       AS ride_id,
+       sp.id         AS start_port_id,
+       sp.name       AS start_port_name,
+       sp.latitude   AS start_port_lat,
+       sp.longitude  AS start_port_lng,
+       ep.id         AS end_port_id,
+       ep.name       AS end_port_name,
+       ep.latitude   AS end_port_lat,
+       ep.longitude  AS end_port_lng
+     FROM ride
+     JOIN port sp ON ride.start_port_id = sp.id
+     JOIN port ep ON ride.end_port_id   = ep.id
+     WHERE ride.status = 'active'
+       AND ride.date >= NOW()`,
+  );
+  return rows;
+};
+
 export const createBooking = async (
   rideId: string,
   touristId: number,
