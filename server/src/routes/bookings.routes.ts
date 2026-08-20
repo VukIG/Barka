@@ -30,7 +30,7 @@ const getBookingsForRide = async (
 ) => {
   try {
     const ownerId = req.session.user!.id;
-    const bookings = await getRideBookings(req.params.id, ownerId);
+    const bookings = await getRideBookings(String(req.params.id), ownerId);
     res.status(200).json(bookings);
   } catch (error) {
     next(error);
@@ -44,7 +44,7 @@ const acceptBookingRequest = async (
 ) => {
   try {
     const ownerId = req.session.user!.id;
-    const result = await acceptBooking(req.params.bookingId, ownerId);
+    const result = await acceptBooking(String(req.params.bookingId), ownerId);
 
     if (result.affectedRows === 0) {
       res
@@ -66,7 +66,7 @@ const rejectBookingRequest = async (
 ) => {
   try {
     const ownerId = req.session.user!.id;
-    const result = await rejectBooking(req.params.bookingId, ownerId);
+    const result = await rejectBooking(String(req.params.bookingId), ownerId);
 
     if (result.affectedRows === 0) {
       res

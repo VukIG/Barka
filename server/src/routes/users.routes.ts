@@ -129,7 +129,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       : null;
 
     const token = crypto.randomBytes(32).toString("hex");
-    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000);
 
     const queryResult = await createUser(
       token,
@@ -144,7 +144,7 @@ const signUpUser = async (req: Request, res: Response, next: NextFunction) => {
       role,
       email,
       password,
-      description,
+      description ?? "",
     );
 
     if (queryResult === null) {
@@ -211,7 +211,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
 
 const getUserById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     if (!/^\d+$/.test(id)) {
       res.status(400).json({

@@ -13,6 +13,7 @@ import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { API_URL } from "../config/api";
 import { useAuth } from "../context/AuthContext";
+import Avatar from "../components/Avatar";
 
 export default function Profile() {
   const { t } = useTranslation();
@@ -55,18 +56,18 @@ export default function Profile() {
         {/* Profile Header */}
         <div className="bg-white rounded-lg shadow-md p-8 mb-8">
           <div className="flex flex-col md:flex-row items-center md:items-start gap-6">
-            {profileData.user.image_path ? (
-              <img
-                src={`${API_URL}/${profileData.user.image_path}`}
-                alt={profileData.user.user_name}
-                className="w-32 h-32 rounded-full object-cover shadow-lg"
-              />
-            ) : (
-              <div className="w-32 h-32 rounded-full shadow-lg bg-blue-600 flex items-center justify-center text-white text-4xl font-semibold uppercase">
-                {profileData.user.user_name[0]}
-                {profileData.user.user_name[1]}
-              </div>
-            )}
+            <Avatar
+              src={
+                profileData.user.image_path
+                  ? `${API_URL}/${profileData.user.image_path}`
+                  : null
+              }
+              name={profileData.user.user_name}
+              initials={`${profileData.user.user_name[0] ?? ""}${profileData.user.user_name[1] ?? ""}`}
+              alt={profileData.user.user_name}
+              className="w-32 h-32 rounded-full object-cover shadow-lg"
+              fallbackClassName="w-32 h-32 rounded-full shadow-lg bg-blue-600 flex items-center justify-center text-white text-4xl font-semibold uppercase"
+            />
             <div className="flex-1 text-center md:text-left">
               <div className="flex items-center justify-center md:justify-start gap-3 mb-2">
                 <h1 className="text-3xl font-bold text-gray-900">
@@ -231,24 +232,19 @@ export default function Profile() {
                   className="border-b border-gray-200 last:border-0 pb-6 last:pb-0"
                 >
                   <div className="flex items-start gap-4">
-                    {review.reviewer_image ? (
-                      <img
-                        src={`${API_URL}/${review.reviewer_image}`}
-                        alt={review.reviewer_name}
-                        onClick={() => navigate(`/profile/${review.reviewer_id}`)}
-                        className="w-10 h-10 rounded-full object-cover cursor-pointer flex-shrink-0"
-                      />
-                    ) : (
-                      <div
-                        onClick={() => navigate(`/profile/${review.reviewer_id}`)}
-                        className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold uppercase cursor-pointer flex-shrink-0"
-                      >
-                        {(
-                          review.reviewer_name[0] +
-                          (review.reviewer_name[1] ?? "")
-                        ).toUpperCase()}
-                      </div>
-                    )}
+                    <Avatar
+                      src={
+                        review.reviewer_image
+                          ? `${API_URL}/${review.reviewer_image}`
+                          : null
+                      }
+                      name={review.reviewer_name}
+                      initials={`${review.reviewer_name[0] ?? ""}${review.reviewer_name[1] ?? ""}`}
+                      alt={review.reviewer_name}
+                      onClick={() => navigate(`/profile/${review.reviewer_id}`)}
+                      className="w-10 h-10 rounded-full object-cover cursor-pointer flex-shrink-0"
+                      fallbackClassName="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center text-white text-sm font-semibold uppercase cursor-pointer flex-shrink-0"
+                    />
                     <div className="flex-1">
                       <div className="flex items-center justify-between mb-2">
                         <div>
