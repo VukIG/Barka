@@ -1,11 +1,24 @@
-import { useState } from "react";
-import { traffic } from "../data/mockData";
+import { useEffect, useState } from "react";
+import { API_URL } from "../config/api";
+import { aggregatePortTraffic } from "../utils/aggregateTraffic";
 import Map from "../components/Map";
 
 function BusinessDashboard() {
-  const [activePort, setActivePort] = useState(
-    traffic.find((p) => p.name === "Split") ?? traffic[0],
-  );
+  const [traffic, setTraffic] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [activePort, setActivePort] = useState(null);
+
+  useEffect(() => {
+    fetch(`${API_URL}/rides/traffic`)
+      .then((res) => res.json())
+      .then((rows) => {
+        const ports = aggregatePortTraffic(Array.isArray(rows) ? rows : []);
+        setTraffic(ports);
+        setActivePort(ports.find((p) => p.name === "Split") ?? ports[0] ?? null);
+      })
+      .catch((err) => console.log("Error loading traffic:", err))
+      .finally(() => setLoading(false));
+  }, []);
 
   return (
     <div className="relative h-screen w-full overflow-hidden bg-[#06141d] text-white selection:bg-[#bff2ed] selection:text-[#06141d]">
@@ -14,10 +27,28 @@ function BusinessDashboard() {
         .fade-up { animation: fadeUp .6s ease-out both; }
       `}</style>
 
-      {/* Map fills the entire screen as the background */}
-      <div className="absolute inset-0">
-        <Map ports={traffic} onPortSelect={setActivePort} />
-      </div>
+      {/* Map fills the entire screen as the background. Mounted only once
+          real data has arrived — Map.jsx builds its heatmap once on mount
+          and doesn't react to the ports prop changing afterwards, so
+          rendering it early with an empty array would leave it permanently
+          empty. */}
+      {!loading && traffic.length > 0 && (
+        <div className="absolute inset-0">
+          <Map ports={traffic} onPortSelect={setActivePort} />
+        </div>
+      )}
+
+      {loading && (
+        <div className="absolute inset-0 flex items-center justify-center text-[#8dced2]">
+          Loading live traffic...
+        </div>
+      )}
+
+      {!loading && traffic.length === 0 && (
+        <div className="absolute inset-0 flex items-center justify-center text-[#8dced2]">
+          No active rides right now.
+        </div>
+      )}
 
       {/* Everything below is overlay-only, pointer-events-none as a group so
           drags/clicks pass through to the map underneath; only re-enable
@@ -42,20 +73,22 @@ function BusinessDashboard() {
         </div>
 
         {/* Selected port readout */}
-        <div className="absolute bottom-20 left-6 rounded-xl border border-white/15 bg-[#0c2834]/90 p-4 backdrop-blur">
-          <p className="text-[10px] uppercase tracking-[.14em] text-[#8dced2]">
-            Selected port
-          </p>
-          <p className="mt-1 text-lg font-bold">{activePort.name}</p>
-          <p className="mt-1 text-sm text-[#cfdfdf]">
-            <span
-              className="font-semibold"
-              style={{ color: activePort.color }}
-            >
-              {activePort.boats} boats
-            </span>
-          </p>
-        </div>
+        {activePort && (
+          <div className="absolute bottom-20 left-6 rounded-xl border border-white/15 bg-[#0c2834]/90 p-4 backdrop-blur">
+            <p className="text-[10px] uppercase tracking-[.14em] text-[#8dced2]">
+              Selected port
+            </p>
+            <p className="mt-1 text-lg font-bold">{activePort.name}</p>
+            <p className="mt-1 text-sm text-[#cfdfdf]">
+              <span
+                className="font-semibold"
+                style={{ color: activePort.color }}
+              >
+                {activePort.boats} boats
+              </span>
+            </p>
+          </div>
+        )}
 
         {/* Heatmap legend */}
         <div className="absolute top-6 right-6 flex items-center gap-3 rounded-full border border-white/10 bg-[#0c2834]/80 px-4 py-2 text-xs text-[#c5dfe0] backdrop-blur">
