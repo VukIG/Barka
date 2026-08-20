@@ -30,7 +30,7 @@ function OfferRide() {
   const { t } = useTranslation();
   const [locations, setLocations] = useState();
   useEffect(() => {
-    fetch(`${API_URL}/locations`)
+    fetch(`${API_URL}/p`)
       .then((r) => r.json())
       .then((rows) => setLocations(rows.map((p) => p.name)))
       .catch(() => setLocations([]));
@@ -109,7 +109,6 @@ function OfferRide() {
       const result = await response.json().catch(() => ({}));
 
       if (!response.ok) {
-        // Surface whatever the server told us instead of failing silently.
         alert(result.message || t("rideForm.submitError"));
         return;
       }
@@ -170,7 +169,6 @@ function OfferRide() {
   return (
     <div className="min-h-screen bg-gray-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
             {t("rideForm.offerTitle")}
@@ -178,12 +176,10 @@ function OfferRide() {
           <p className="text-lg text-gray-600">{t("rideForm.offerSubtitle")}</p>
         </div>
 
-        {/* Form */}
         <form
           onSubmit={handleSubmit}
           className="bg-white rounded-lg shadow-md p-8"
         >
-          {/* Route Information */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-blue-600" />
@@ -263,7 +259,6 @@ function OfferRide() {
             </div>
           </div>
 
-          {/* Date & Time */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Calendar className="w-5 h-5 text-blue-600" />
@@ -271,7 +266,6 @@ function OfferRide() {
             </h2>
 
             <div className="space-y-4">
-              {/* Date on its own row */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   {t("rideForm.date")}
@@ -284,7 +278,6 @@ function OfferRide() {
                 />
               </div>
 
-              {/* Two times: stacked on mobile, side by side on md+ */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -321,7 +314,6 @@ function OfferRide() {
             </div>
           </div>
 
-          {/* Boat Details */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Anchor className="w-5 h-5 text-blue-600" />
@@ -369,13 +361,11 @@ function OfferRide() {
             </div>
           </div>
 
-          {/* Amenities */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               {t("rideForm.amenities")}
             </h2>
 
-            {/* Quick Add Common Amenities */}
             <div className="mb-4">
               <p className="text-sm text-gray-600 mb-2">
                 {t("rideForm.quickAdd")}
@@ -403,7 +393,6 @@ function OfferRide() {
               </div>
             </div>
 
-            {/* Custom Amenity Input */}
             <div className="flex gap-2 mb-4">
               <input
                 type="text"
@@ -425,7 +414,6 @@ function OfferRide() {
               </button>
             </div>
 
-            {/* Selected Amenities */}
             {amenities.length > 0 && (
               <div className="flex flex-wrap gap-2">
                 {amenities.map((amenity) => (
@@ -447,7 +435,6 @@ function OfferRide() {
             )}
           </div>
 
-          {/* Price */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4 flex items-center gap-2">
               <Euro className="w-5 h-5 text-blue-600" />
@@ -484,7 +471,6 @@ function OfferRide() {
             </p>
             <ImageUpload onFileSelect={setImageFile} />
           </div>
-          {/* Description */}
           <div className="mb-8">
             <h2 className="text-xl font-semibold text-gray-900 mb-4">
               {t("rideForm.description")}
@@ -501,7 +487,6 @@ function OfferRide() {
             />
           </div>
 
-          {/* Submit */}
           <div className="flex gap-4">
             <button
               type="button"
@@ -519,7 +504,6 @@ function OfferRide() {
           </div>
         </form>
 
-        {/* Success Modal */}
         {showSuccess && (
           <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div className="bg-white rounded-lg p-8 max-w-md w-full text-center">

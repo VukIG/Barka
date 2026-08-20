@@ -77,13 +77,13 @@ const addrideItem = async (req: Request, res: Response, next: NextFunction) => {
 
     const queryResult = await createRideItem(
       imagePath,
-      ownerId, // ownerId (dummy for now)
-      1, // boatId  (dummy for now)
-      from, // -> start_port_id
-      to, // -> end_port_id
-      price, // -> ticket_cost
-      departureTime, // -> departure -> `date`
-      arrivalTime, // -> arrival   -> expected_arrival
+      ownerId,
+      1,
+      from,
+      to,
+      price,
+      departureTime,
+      arrivalTime,
       description,
     );
 
@@ -122,7 +122,7 @@ const getRideDetails = async (
   next: NextFunction,
 ) => {
   try {
-    const { id } = req.params;
+    const id = String(req.params.id);
 
     if (!/^\d+$/.test(id)) {
       res.status(400).json({
@@ -203,7 +203,7 @@ const updateRide = async (req: Request, res: Response, next: NextFunction) => {
 
     const imagePath = req.file
       ? path.posix.join("uploads", "rides", req.file.filename)
-      : null; // BUG: null will wipe an existing image 
+      : null;
     const result = await updateRideItem({
       rideId,
       description,
@@ -240,7 +240,7 @@ const getTraffic = async (req: Request, res: Response, next: NextFunction) => {
 const removeRide = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const ownerId = req.session.user!.id;
-    const result = await deleteRide(req.params.id, ownerId);
+    const result = await deleteRide(String(req.params.id), ownerId);
 
     if (result.affectedRows === 0) {
       res
