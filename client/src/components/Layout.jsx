@@ -1,12 +1,12 @@
 import { Outlet, Link, useLocation, useNavigate } from "react-router";
 import { Anchor, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { getCurrentSession, logoutUser } from "../api/session";
 import { OrbitProgress } from "react-loading-indicators";
 import { useTranslation } from "react-i18next";
 import { useAuth } from "../context/AuthContext";
 import { API_URL } from "../config/api";
 import LanguageSwitcher from "./LanguageSwitcher";
+import Avatar from "./Avatar";
 
 function Layout() {
   const { t } = useTranslation();
@@ -14,6 +14,7 @@ function Layout() {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const { user, isLoading, signOut } = useAuth();
+  const canOfferRide = user && user.role !== "tourist";
   const handleLogout = async () => {
     await signOut();
     navigate("/auth");
@@ -64,42 +65,35 @@ function Layout() {
 
               {user ? (
                 <>
-                  <Link
-                    to="/offer"
-                    className={`text-sm transition-colors ${
-                      location.pathname === "/offer"
-                        ? "text-blue-600 font-medium"
-                        : "text-gray-600 hover:text-blue-600"
-                    }`}
-                  >
-                    {t("nav.offerRide")}
-                  </Link>
+                  {canOfferRide && (
+                    <Link
+                      to="/offer"
+                      className={`text-sm transition-colors ${
+                        location.pathname === "/offer"
+                          ? "text-blue-600 font-medium"
+                          : "text-gray-600 hover:text-blue-600"
+                      }`}
+                    >
+                      {t("nav.offerRide")}
+                    </Link>
+                  )}
                   <button
                     onClick={handleLogout}
                     className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium cursor-pointer"
                   >
                     {t("nav.signOut")}
                   </button>
-                  {user.image_path ? (
-                    <img
-                      src={`${API_URL}/${user.image_path}`}
-                      alt={user.user_name}
-                      onClick={() => {
-                        navigate(`/profile/${user.id}`);
-                      }}
-                      className="w-12 h-12 cursor-pointer rounded-full object-cover shadow-md"
-                    />
-                  ) : (
-                    <div
-                      onClick={() => {
-                        navigate(`/profile/${user.id}`);
-                      }}
-                      className="w-12 h-12 cursor-pointer rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700"
-                    >
-                      {user.user_name[0]}
-                      {user.user_name[1]}
-                    </div>
-                  )}
+                  <Avatar
+                    src={
+                      user.image_path ? `${API_URL}/${user.image_path}` : null
+                    }
+                    name={user.user_name}
+                    initials={`${user.user_name[0] ?? ""}${user.user_name[1] ?? ""}`}
+                    alt={user.user_name}
+                    onClick={() => navigate(`/profile/${user.id}`)}
+                    className="w-12 h-12 cursor-pointer rounded-full object-cover shadow-md"
+                    fallbackClassName="w-12 h-12 cursor-pointer rounded-full bg-blue-100 flex items-center justify-center font-semibold text-blue-700"
+                  />
                 </>
               ) : (
                 <Link
@@ -137,13 +131,15 @@ function Layout() {
                 >
                   {t("nav.findRide")}
                 </Link>
-                <Link
-                  to="/offer"
-                  className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  {t("nav.offerARide")}
-                </Link>
+                {canOfferRide && (
+                  <Link
+                    to="/offer"
+                    className="text-sm text-gray-600 hover:text-blue-600 transition-colors"
+                    onClick={() => setMobileMenuOpen(false)}
+                  >
+                    {t("nav.offerARide")}
+                  </Link>
+                )}
                 <Link
                   to="/business"
                   className="text-sm text-gray-600 hover:text-blue-600 transition-colors"

@@ -66,6 +66,11 @@ function OfferRide() {
       return;
     }
 
+    if (user.role === "tourist") {
+      alert(t("rideForm.touristsCannotOffer"));
+      return;
+    }
+
     if (!selectedDate) {
       alert(t("rideForm.pleasePickDate"));
       return;
@@ -94,24 +99,29 @@ function OfferRide() {
       body.append("image", imageFile);
     }
 
-    console.log("sending:", payload, imageFile);
+    try {
+      const response = await fetch(`${API_URL}/rides/add`, {
+        method: "POST",
+        credentials: "include",
+        body: body,
+      });
 
-    const response = await fetch(`${API_URL}/rides/add`, {
-      method: "POST",
-      credentials: "include",
-      body: body,
-    });
+      const result = await response.json().catch(() => ({}));
 
-    if (!response.ok) {
-      throw new Error(`HTTP error status: ${response.status}`);
+      if (!response.ok) {
+        // Surface whatever the server told us instead of failing silently.
+        alert(result.message || t("rideForm.submitError"));
+        return;
+      }
+
+      setShowSuccess(true);
+      setTimeout(() => {
+        navigate("/");
+      }, 3000);
+    } catch (err) {
+      console.error("Failed to publish ride:", err);
+      alert(t("rideForm.submitError"));
     }
-
-    const result = await response.json();
-    console.log(result);
-    setShowSuccess(true);
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
   }
 
   const addAmenity = () => {
@@ -135,6 +145,27 @@ function OfferRide() {
     t("rideForm.amenityMusic"),
     t("rideForm.amenitySundeck"),
   ];
+
+  if (user && user.role === "tourist") {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+        <div className="bg-white rounded-lg shadow-md p-8 max-w-md text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+            {t("rideForm.touristsCannotOfferTitle")}
+          </h1>
+          <p className="text-gray-600 mb-6">
+            {t("rideForm.touristsCannotOffer")}
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+          >
+            {t("common.backToHome")}
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 py-12">

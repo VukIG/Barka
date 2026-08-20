@@ -179,7 +179,7 @@ export const createUser = async (
 
 export const getUserProfile = async (userId: number) => {
   const [userRows]: any = await pool.query(
-    `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created, u.image_path, u.description,
+    `SELECT u.id, u.user_name, u.first_name, u.last_name, u.nationality, u.verified, u.created, u.image_path, u.description, u.role,
             COUNT(DISTINCT rv.id) AS review_count,
             ROUND(AVG(rv.rating), 1) AS average_rating
      FROM user u

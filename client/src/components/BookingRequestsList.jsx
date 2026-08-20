@@ -4,6 +4,7 @@ import { Check, X, Users } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useRide } from "../context/RideContext";
 import { API_URL } from "../config/api";
+import Avatar from "./Avatar";
 
 function BookingRequestsList() {
   const { t } = useTranslation();
@@ -49,21 +50,19 @@ function BookingRequestsList() {
             className="border-b border-gray-200 last:border-0 pb-4 last:pb-0"
           >
             <div className="flex items-start gap-3">
-              {booking.tourist_image ? (
-                <img
-                  src={`${API_URL}/${booking.tourist_image}`}
-                  alt={`${booking.first_name} ${booking.last_name}`}
-                  onClick={() => navigate(`/profile/${booking.tourist_id}`)}
-                  className="w-10 h-10 rounded-full object-cover cursor-pointer flex-shrink-0"
-                />
-              ) : (
-                <div
-                  onClick={() => navigate(`/profile/${booking.tourist_id}`)}
-                  className="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-semibold cursor-pointer flex-shrink-0"
-                >
-                  {booking.first_name.charAt(0).toUpperCase()}
-                </div>
-              )}
+              <Avatar
+                src={
+                  booking.tourist_image
+                    ? `${API_URL}/${booking.tourist_image}`
+                    : null
+                }
+                name={`${booking.first_name} ${booking.last_name}`}
+                initials={booking.first_name.charAt(0)}
+                alt={`${booking.first_name} ${booking.last_name}`}
+                onClick={() => navigate(`/profile/${booking.tourist_id}`)}
+                className="w-10 h-10 rounded-full object-cover cursor-pointer flex-shrink-0"
+                fallbackClassName="w-10 h-10 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center font-semibold cursor-pointer flex-shrink-0"
+              />
               <div className="flex-1">
                 <div className="flex items-center justify-between gap-2 mb-1">
                   <span
